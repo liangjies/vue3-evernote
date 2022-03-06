@@ -4,7 +4,13 @@
       <el-radio-button :label="false">expand</el-radio-button>
       <el-radio-button :label="true">collapse</el-radio-button>
     </el-radio-group>
-    <el-menu default-active="2" class="el-menu-vertical-demo" :collapse="isCollapse" @open="handleOpen" @close="handleClose">
+    <el-menu
+      default-active="2"
+      class="el-menu-vertical-demo"
+      :collapse="isCollapse"
+      @open="handleOpen"
+      @close="handleClose"
+    >
       <el-sub-menu index="1">
         <template #title>
           <el-icon>
@@ -53,14 +59,17 @@ import {
   Document,
   Menu as IconMenu,
   Setting,
-} from '@element-plus/icons-vue'
+} from "@element-plus/icons-vue";
 // import AvatarBar from './AvatarBar.vue'
 // import SearchBar from './SearchBar.vue'
-import {
-  mapState
-} from 'vuex'
 export default {
-  name: 'SiderBar',
+  name: "SiderBar",
+  components:{
+    Location,
+    Document,
+    IconMenu,
+    Setting
+  },
   created() {
     // if (this.$store.getters['isLogin'] === false) {
     //   this.$message({
@@ -78,46 +87,9 @@ export default {
   data() {
     return {
       isCollapse: false,
-      noteBookShow: false,
-      logoutModal: false,
-      isLogin: this.$store.getters['isLogin'],
-      notebooksList: [],
-      currentNotebook: {},
-      notebooks: [],
-      notes: [],
-      liIndex: -1,
-    }
+    };
   },
   computed: {
-    ...mapState({
-      allNoteBooks: state => state.note.allNoteBooks
-    }),
-  },
-  methods: {
-    cancel() {
-      this.$Message.info('取消注销');
-    },
-    onShow() {
-      this.noteBookShow = !this.noteBookShow;
-    },
-    onIndex() {
-      this.liIndex = -1
-    },
-    doRouterNotebook(notebookId, index) {
-      this.liIndex = index
-      this._getNote(notebookId)
-      this.currentNotebook = this.notebooks.find(notebook => notebook.ID == notebookId)
-      this.$store.commit('setCurrentNote', {})
-      this.$router.push({
-        path: `/note?notebookId=${notebookId}`
-      })
-    },
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
-    }
     /*
       _getNote(notebookId) {
         getNote(notebookId).then(res => {
@@ -145,7 +117,15 @@ export default {
       }
     */
   },
-}
+  methods: {
+    handleOpen(key, keyPath) {
+      console.log(key, keyPath);
+    },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath);
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>
