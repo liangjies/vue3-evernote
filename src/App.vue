@@ -16,18 +16,14 @@ export default {
 </script>
 
 <style lang="less">
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 html,
 body,
 #app {
   height: 100%;
-}
-
-.particles {
-  z-index: -100;
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  right: 0;
 }
 </style>

@@ -1,74 +1,55 @@
 <template>
-  <div class="sider-bar">
-    <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
-      <el-radio-button :label="false">expand</el-radio-button>
-      <el-radio-button :label="true">collapse</el-radio-button>
-    </el-radio-group>
-    <el-menu
-      default-active="2"
-      class="el-menu-vertical-demo"
-      :collapse="isCollapse"
-      @open="handleOpen"
-      @close="handleClose"
-    >
-      <el-sub-menu index="1">
-        <template #title>
-          <el-icon>
-            <location />
-          </el-icon>
-          <span>Navigator One</span>
-        </template>
-        <el-menu-item-group>
-          <template #title><span>Group One</span></template>
-          <el-menu-item index="1-1">item one</el-menu-item>
-          <el-menu-item index="1-2">item two</el-menu-item>
-        </el-menu-item-group>
-        <el-menu-item-group title="Group Two">
-          <el-menu-item index="1-3">item three</el-menu-item>
-        </el-menu-item-group>
-        <el-sub-menu index="1-4">
-          <template #title><span>item four</span></template>
-          <el-menu-item index="1-4-1">item one</el-menu-item>
-        </el-sub-menu>
-      </el-sub-menu>
-      <el-menu-item index="2">
-        <el-icon>
-          <icon-menu />
-        </el-icon>
-        <template #title>Navigator Two</template>
-      </el-menu-item>
-      <el-menu-item index="3" disabled>
-        <el-icon>
-          <document />
-        </el-icon>
-        <template #title>Navigator Three</template>
-      </el-menu-item>
-      <el-menu-item index="4">
-        <el-icon>
-          <setting />
-        </el-icon>
-        <template #title>Navigator Four</template>
-      </el-menu-item>
-    </el-menu>
+  <div class="sider-bar" id="sidebar">
+    <div class="sidebar-con">
+      <div class="login">
+        <img src="https://s1.ax1x.com/2022/03/07/b6Ppwj.png" alt="" class="user-image">
+        <div class="icons">
+          <div class="addNote show">
+            <el-icon>
+              <plus @click="onaddNote" />
+            </el-icon>
+          </div>
+          <div class="searchNote show">
+            <el-icon>
+              <search />
+            </el-icon>
+          </div>
+
+          <router-link to="/note" title="笔记">
+            <el-icon class="note el-icon-s-order">
+              <document @click="note" />
+            </el-icon>
+          </router-link>
+          <router-link to="/note" title="文件夹">
+            <el-icon class="book el-icon-s-platform">
+              <notebook />
+            </el-icon>
+          </router-link>
+
+          <div class="userMenu">
+            <img src="https://s1.ax1x.com/2022/03/07/b6amRI.png" alt="" class="userMenus-image">
+          </div>
+          <!-- <router-link to="/trash" title="回收站"><i class="trash el-icon-delete-solid" @click="trash"></i></router-link> -->
+        </div>
+      </div>
+      <div class="logout" @click="onLogout">
+        <i class="el-icon-switch-button"></i>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import {
-  Location,
-  Document,
-  Menu as IconMenu,
-  Setting,
-} from "@element-plus/icons-vue";
+import { Plus, Document, Notebook, Search } from "@element-plus/icons-vue";
 // import AvatarBar from './AvatarBar.vue'
 // import SearchBar from './SearchBar.vue'
 export default {
   name: "SiderBar",
-  components:{
-    Location,
+  components: {
+    Plus,
     Document,
-    IconMenu,
-    Setting
+    Notebook,
+    Search,
   },
   created() {
     // if (this.$store.getters['isLogin'] === false) {
@@ -128,9 +109,105 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
-.el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 200px;
-  max-height: 400px;
+<style scoped lang="less">
+#sidebar {
+  width: 73px;
+  background-color: #f8f8f8;
+  z-index: 99;
+  height: 100%;
+  position: absolute;
+  .sidebar-con {
+    background-color: #f8f8f8;
+    border-right: 1px solid #ececec;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    .login {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      .user-image {
+        display: inline-block;
+        width: 36px;
+        height: 36px;
+        margin-top: 12px;
+        margin-bottom: 30px;
+        //position: relative;
+        text-align: center;
+        outline: none;
+      }
+      .icons {
+        margin-top: 10px;
+
+        // display: flex;
+        // flex-direction: column;
+        .searchNote,
+        .book,
+        .note,
+        .trash,
+        .addNote {
+          cursor: pointer;
+          font-size: 20px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 50%;
+          width: 35px;
+          height: 35px;
+          // padding: 6px 0;
+          margin: 15px;
+          color: #2dbe60;
+          border: 1px solid #f8f8f8;
+          transition: all 250ms;
+          &:hover {
+            border: 1px solid #2dbe60;
+            background-color: #2dbe60;
+            color: #fff;
+          }
+        }
+        .addNote .searchNote {
+          background-color: #fff;
+          border: 1px solid #ccc;
+          margin-bottom: 40px;
+        }
+        .searchNote {
+          margin-bottom: 56px;
+        }
+        .userMenu{
+          border-top: 1px solid #e1e1e1;
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 17px;
+          .userMenus-image{
+            width: 36px;
+            height: 36px;
+            border-radius: 18px;
+          }
+        }
+      }
+      .icons .show {
+        // color:#fff;
+        border: 1px solid #2dbe60;
+        background-color: #fff;
+      }
+    }
+    .logout {
+      cursor: pointer;
+      margin: 15px auto;
+      font-size: 20px;
+      width: 35px;
+      height: 35px;
+      color: #2dbe60;
+      // background: yellow;
+      display: flex;
+      i {
+        margin: auto;
+      }
+    }
+  }
 }
 </style>
