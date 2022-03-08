@@ -36,11 +36,27 @@
         <i class="el-icon-switch-button"></i>
       </div>
     </div>
+    <div class="user-pop">
+      <div class="user-pop-img">
+        <img src="https://s1.ax1x.com/2022/03/07/b6amRI.png" alt="" class="user-image">
+        <div class="user-name">{{userNmae}}</div>
+      </div>
+      <div class="user-pop-func">
+        <div tabindex="0" id="AccountMenu-logout">
+          <div class="GM2GFRGCP3 GM2GFRGCFK GM2GFRGCHK">
+            <el-icon class="user-pop-icon">
+              <circle-close />
+            </el-icon>
+            <span class="user-pop-text">退出登录</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { Plus, Document, Notebook, Search } from "@element-plus/icons-vue";
+import { Plus, Document, Notebook, Search, CircleClose } from "@element-plus/icons-vue";
 // import AvatarBar from './AvatarBar.vue'
 // import SearchBar from './SearchBar.vue'
 export default {
@@ -50,6 +66,7 @@ export default {
     Document,
     Notebook,
     Search,
+    CircleClose,
   },
   created() {
     // if (this.$store.getters['isLogin'] === false) {
@@ -67,6 +84,7 @@ export default {
   },
   data() {
     return {
+      userName: '梁杰s',
       isCollapse: false,
     };
   },
@@ -175,14 +193,14 @@ export default {
         .searchNote {
           margin-bottom: 56px;
         }
-        .userMenu{
+        .userMenu {
           border-top: 1px solid #e1e1e1;
           position: absolute;
           bottom: 0;
           left: 0;
           right: 0;
           padding: 17px;
-          .userMenus-image{
+          .userMenus-image {
             width: 36px;
             height: 36px;
             border-radius: 18px;
@@ -207,6 +225,37 @@ export default {
       i {
         margin: auto;
       }
+    }
+  }
+  .user-pop {
+    position: fixed;
+    top: 493px;
+    left: 63px;
+    background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 4px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    transition: opacity 500ms ease-in-out;
+    width: 354px;
+    overflow: hidden;
+    z-index: 9001;
+    .user-pop-img {
+      text-align: center;
+      .user-image {
+        border: 1px solid #d1d1d1;
+        border-radius: 50%;
+        height: 62px;
+        margin-top: 20px;
+        vertical-align: top;
+        width: 62px;
+      }
+    }
+    .user-pop-icon {
+      margin: 8px 0 0 7px;
+    }
+    .user-pop-text {
+      padding: 9px 15px 10px 5px;
     }
   }
 }
