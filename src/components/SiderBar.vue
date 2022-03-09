@@ -9,12 +9,13 @@
               <plus @click="onaddNote" />
             </el-icon>
           </div>
-          <div class="searchNote show">
-            <el-icon>
-              <search />
-            </el-icon>
-          </div>
-
+          <router-link to="/Search" title="搜索">
+            <div class="searchNote show">
+              <el-icon>
+                <search />
+              </el-icon>
+            </div>
+          </router-link>
           <router-link to="/note" title="笔记">
             <el-icon class="note el-icon-s-order">
               <document @click="note" />
