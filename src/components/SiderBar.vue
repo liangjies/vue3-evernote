@@ -25,9 +25,7 @@
               <notebook />
             </el-icon>
           </router-link>
-  <div style="margin: 15px">
-    <el-button @click="showClick">show</el-button>
-  </div>
+
           <div class="userMenu">
             <img src="https://s1.ax1x.com/2022/03/07/b6amRI.png" alt="" class="userMenus-image">
           </div>
@@ -138,9 +136,6 @@ export default {
     */
   },
   methods: {
-    showClick() {
-      dropdown1.value.handleOpen()
-    },
     test(){
       console.log("run")
     }
