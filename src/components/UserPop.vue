@@ -45,11 +45,36 @@ export default {
   },
   data() {
     return {
-      userName: "梁杰s",
-    };
+      open: false
+    }
   },
   created() {
   },
+  methods: {
+    toggleOpen: function () {
+      console.log("toggleOpen")
+      this.open = !this.open;
+    },
+    close: function (e) {
+      console.log("close")
+      if (this.$el.contains(e.target)) return;
+      this.open = false;
+    },
+  },
+  directives: {
+    clickoutside: {
+      bind: function (el, binding, vnode) {
+        const documentHandler = function (e) {
+          if (!vnode.context || el.contains(e.target)) return;
+          binding.value(e);
+        };
+
+        setTimeout(() => {
+          document.addEventListener('click', documentHandler);
+        }, 0);
+      }
+    }
+  }
 }
 </script>
 <style scoped lang="less">

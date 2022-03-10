@@ -1,25 +1,20 @@
 <template>
   <div id="app">
-    <sider-bar></sider-bar>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import SiderBar from './components/SiderBar.vue'
-
 export default {
   name: 'App',
-  components: {
-    SiderBar
-  }
 }
 </script>
 
 <style lang="less">
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 html,
 body,

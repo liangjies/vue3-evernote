@@ -6,7 +6,7 @@
         <div class="icons">
           <div class="addNote show">
             <el-icon>
-              <plus @click="onaddNote" />
+              <plus />
             </el-icon>
           </div>
           <router-link to="/Search" title="搜索">
@@ -16,12 +16,12 @@
               </el-icon>
             </div>
           </router-link>
-          <router-link to="/note" title="笔记">
+          <router-link to="/" title="笔记">
             <el-icon class="note el-icon-s-order">
-              <document @click="note" />
+              <document />
             </el-icon>
           </router-link>
-          <router-link to="/note" title="文件夹">
+          <router-link to="/" title="文件夹">
             <el-icon class="book el-icon-s-platform">
               <notebook />
             </el-icon>
@@ -37,7 +37,7 @@
       </div>
     </div>
     <div v-if="open">
-    <user-pop v-clickoutside="handleClickOutside"></user-pop>
+      <user-pop v-clickoutside="handleClickOutside"></user-pop>
     </div>
   </div>
 </template>
@@ -49,7 +49,7 @@ import clickoutside from '../utils/click-outside'
 // import AvatarBar from './AvatarBar.vue'
 // import SearchBar from './SearchBar.vue'
 export default {
-  directives: {clickoutside},
+  directives: { clickoutside },
   name: "SiderBar",
   components: {
     UserPop,
@@ -107,10 +107,10 @@ export default {
     */
   },
   methods: {
-    test(){
+    test() {
       console.log("run")
     },
-    handleClickOutside(){
+    handleClickOutside() {
       this.open = false
       console.log("click outside")
     }
