@@ -16,12 +16,12 @@
               </el-icon>
             </div>
           </router-link>
-          <router-link to="/" title="笔记">
+          <router-link to="/NoteList" title="笔记">
             <el-icon class="note el-icon-s-order">
               <document />
             </el-icon>
           </router-link>
-          <div title="文件夹" @click.stop="notebookOpen = true">
+          <div title="笔记本" @click.stop="notebookOpen = true">
             <el-icon class="book el-icon-s-platform">
               <notebook />
             </el-icon>
@@ -50,8 +50,6 @@ import { Plus, Document, Notebook, Search } from "@element-plus/icons-vue";
 import UserPop from './UserPop.vue'
 import NotebookPop from './NotebookPop.vue'
 import clickoutside from '../utils/click-outside'
-// import AvatarBar from './AvatarBar.vue'
-// import SearchBar from './SearchBar.vue'
 export default {
   directives: { clickoutside },
   name: "SiderBar",

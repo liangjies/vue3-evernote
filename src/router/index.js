@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Search from '../views/search/Search.vue'
+import Search from '@/views/search/Search.vue'
+import NoteList from '@/views/note/Note.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -12,6 +13,11 @@ const router = createRouter({
       path: '/Search',
       name: 'Search',
       component: Search
+    },
+    {
+      path: '/NoteList',
+      name: 'NoteList',
+      component: NoteList
     },
   ]
 })
