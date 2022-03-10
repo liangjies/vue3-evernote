@@ -21,11 +21,11 @@
               <document />
             </el-icon>
           </router-link>
-          <router-link to="/" title="文件夹">
+          <div title="文件夹" @click.stop="notebookOpen = true">
             <el-icon class="book el-icon-s-platform">
               <notebook />
             </el-icon>
-          </router-link>
+          </div>
           <div class="userMenu" @click.stop="open = true">
             <img src="https://s1.ax1x.com/2022/03/07/b6amRI.png" alt="" class="userMenus-image">
           </div>
@@ -39,12 +39,16 @@
     <div v-if="open">
       <user-pop v-clickoutside="handleClickOutside"></user-pop>
     </div>
+    <div v-if="notebookOpen">
+      <notebook-pop v-clickoutside="notebookClickOutside"></notebook-pop>
+    </div>
   </div>
 </template>
 
 <script>
 import { Plus, Document, Notebook, Search } from "@element-plus/icons-vue";
 import UserPop from './UserPop.vue'
+import NotebookPop from './NotebookPop.vue'
 import clickoutside from '../utils/click-outside'
 // import AvatarBar from './AvatarBar.vue'
 // import SearchBar from './SearchBar.vue'
@@ -53,6 +57,7 @@ export default {
   name: "SiderBar",
   components: {
     UserPop,
+    NotebookPop,
     Plus,
     Document,
     Notebook,
@@ -76,35 +81,10 @@ export default {
     return {
       isCollapse: false,
       open: false,
+      notebookOpen: false
     };
   },
   computed: {
-    /*
-      _getNote(notebookId) {
-        getNote(notebookId).then(res => {
-          res = res.data.data
-          this.notes = res.list
-          //console.log(this.notes)
-          this.notes.sort((a, b) => a.UpdatedAt < b.UpdatedAt)
-          this.$store.commit('setAllNotes', this.notes)
-          if (this.notes.length === 0) {
-            this.$Message.info('该笔记本下暂无笔记')
-          }
-        }).catch(err => {
-          this.$Message.error('获取笔记失败')
-        })
-      },
-      _getNotebookList() {
-        getNotebooks().then(res => {
-          res = res.data.data
-          this.notebooksList = res.list
-          this.notebooksList.sort((a, b) => a.CreatedAt < b.CreatedAt)
-          this.$store.commit('setAllNoteBooks', this.notebooksList)
-        }).catch(err => {
-          this.$Message.error('网络错误')
-        })
-      }
-    */
   },
   methods: {
     test() {
@@ -113,6 +93,9 @@ export default {
     handleClickOutside() {
       this.open = false
       console.log("click outside")
+    },
+    notebookClickOutside(){
+      this.notebookOpen = false
     }
   },
 };
