@@ -45,6 +45,7 @@ export default {
   },
   data() {
     return {
+      userName: "梁杰s",
       open: false
     }
   },
@@ -80,7 +81,7 @@ export default {
 <style scoped lang="less">
 .user-pop {
   position: fixed;
-  top: 438px;
+  bottom: 10px;
   left: 63px;
   background: #fff;
   border: 1px solid #ececec;

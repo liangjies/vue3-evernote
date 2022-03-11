@@ -8,7 +8,7 @@
       <div class="notes-view-subheader">
         <div class="subheader-text">4条笔记</div>
         <div class="subheader-options">
-          <el-dropdown>
+          <el-dropdown trigger="click" placement="bottom-start">
             <span class="el-dropdown-link">
               选项
               <el-icon class="el-icon--right">
@@ -16,16 +16,28 @@
               </el-icon>
             </span>
             <template #dropdown>
-              <el-dropdown-menu class="dropdown-menu">
-                <span class="legend">排序方式</span>
-                <el-dropdown-item>Action 1</el-dropdown-item>
-                <el-dropdown-item>Action 2</el-dropdown-item>
-                <el-dropdown-item>Action 3</el-dropdown-item>
-                <el-dropdown-item disabled>Action 4</el-dropdown-item>
-                <el-dropdown-item divided>Action 5</el-dropdown-item>
+              <el-dropdown-menu>
+                <el-dropdown-item disabled style="font-size: 11px;">排序方式</el-dropdown-item>
+                <el-dropdown-item>创建日期（最早优先）</el-dropdown-item>
+                <el-dropdown-item>创建日期（最新优先）</el-dropdown-item>
+                <el-dropdown-item>更新日期（最早优先）</el-dropdown-item>
+                <el-dropdown-item>更新日期（最新优先）</el-dropdown-item>
+                <el-dropdown-item>标题（升序排列）</el-dropdown-item>
+                <el-dropdown-item>标题（降序排列）</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
+        </div>
+      </div>
+      <div class="notes-view-ScrollWindow">
+        <div>
+          <div class="notes-view-note">
+            <div class="note-hover"></div>
+            <div class="note-border"></div>
+            <div class="note-snippetContent">
+
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -98,18 +110,29 @@ export default {
             top: 2px;
           }
         }
-        .dropdown-menu {
-          padding: 12px 0;
-          margin-top: 4px;
-          color: #606060;
-          .legend {
-            font-size: 11px;
-            font-weight: 400;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #ababab;
-            margin: 7px 0 12px 20px;
-          }
+      }
+    }
+    .notes-view-ScrollWindow {
+      height: 795px;
+      .notes-view-note {
+        height: 120px;
+        cursor: pointer;
+        margin: 0 auto;
+        text-align: left;
+        overflow: hidden;
+        position: relative;
+        .note-hover :hover {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          opacity: 0;
+          background-color: rgba(43, 181, 92, 0.9);
+          transition: opacity 0.1s ease-in-out;
+        }
+        .note-border {
+          border: 3px solid #d9d9d9;
         }
       }
     }
