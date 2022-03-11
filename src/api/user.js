@@ -11,3 +11,15 @@ export const login = (data) => {
         data: data
     })
 }
+
+// @Summary 用户注册
+// @Produce  application/json
+// @Param data body {username:"string",password:"string"}
+// @Router /base/resige [post]
+export const register = (data) => {
+    return service({
+      url: '/user/register',
+      method: 'post',
+      data: data
+    })
+  }

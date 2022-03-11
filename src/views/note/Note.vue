@@ -3,6 +3,12 @@
   <div class="note-page">
     <div class="note-header">
       <div class="note-header-title">笔记</div>
+      <div class="note-add">
+        <div class="note-add-button">
+          <el-icon class="note-add-icon"><plus /></el-icon>
+          <span class="note-add-text">新建笔记</span>
+        </div>
+      </div>
     </div>
     <div class="notes-view">
       <div class="notes-view-subheader">
@@ -17,7 +23,9 @@
             </span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item disabled style="font-size: 11px;">排序方式</el-dropdown-item>
+                <el-dropdown-item disabled style="font-size: 11px"
+                  >排序方式</el-dropdown-item
+                >
                 <el-dropdown-item>创建日期（最早优先）</el-dropdown-item>
                 <el-dropdown-item>创建日期（最新优先）</el-dropdown-item>
                 <el-dropdown-item>更新日期（最早优先）</el-dropdown-item>
@@ -30,12 +38,30 @@
         </div>
       </div>
       <div class="notes-view-ScrollWindow">
-        <div>
-          <div class="notes-view-note">
+        <div v-for="(note,index) in allNotes" :key="note.id">
+          <div class="notes-view-note notes-view-note-selecteds">
+            <div class="note-snippet-divide" v-if="index>0"></div>
             <div class="note-hover"></div>
             <div class="note-border"></div>
             <div class="note-snippetContent">
-
+              <div class="note-title">{{ note.title }}</div>
+              <div class="note-date">5 天前</div>
+              <div class="note-snippet">{{ note.snippet }}</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="notes-view-note">
+            <div class="note-snippet-divide"></div>
+            <div class="note-hover"></div>
+            <div class="note-border"></div>
+            <div class="note-snippetContent">
+              <div class="note-title">温小蓝</div>
+              <div class="note-date">5 天前</div>
+              <div class="note-snippet">
+                http://miai.sinaapp.com/api/mailApi.php 请求：POST 参数：
+                txt邮件正文 title标题 to目标邮箱 返回json，ok为yes即为成功发送
+              </div>
             </div>
           </div>
         </div>
@@ -46,12 +72,17 @@
 
 <script>
 import SiderBar from "@/components/SiderBar.vue";
-import { ArrowDown } from "@element-plus/icons-vue";
+import { ArrowDown, Plus } from "@element-plus/icons-vue";
 export default {
   name: "NoteList",
-  components: { SiderBar, ArrowDown },
+  components: { SiderBar, ArrowDown, Plus },
+  data() {
+    return {
+      allNotes: [{id:1,title:"温小蓝",snippet:"片段"},{id:1,title:"温小蓝",snippet:"片段"},{id:1,title:"温小蓝",snippet:"片段"}],
+    };
+  },
   created() {
-    console.log("created");
+    // console.log("created");
   },
 };
 </script>
@@ -60,6 +91,7 @@ export default {
 .note-page {
   margin-left: 73px;
   width: 350px;
+  border-right: 1px solid #ececec;
   .note-header {
     box-sizing: border-box;
     margin: 0 auto;
@@ -76,6 +108,28 @@ export default {
       text-transform: uppercase;
       font-weight: 300;
       line-height: 26px;
+    }
+    .note-add {
+      position: absolute;
+      top: 24px;
+      right: 25px;
+      z-index: 1;
+      .note-add-button {
+        display: flex;
+        border: 1px solid #2dbe60;
+        border-radius: 3px;
+        background-color: #2dbe60;
+        font-size: 11px;
+        color: white;
+        line-height: 27px;
+        cursor: pointer;
+        .note-add-icon {
+          margin: 8px 3px 0 5px;
+        }
+        .note-add-text {
+          margin-right: 9px;
+        }
+      }
     }
   }
   .notes-view {
@@ -113,26 +167,70 @@ export default {
       }
     }
     .notes-view-ScrollWindow {
-      height: 795px;
+      height: 608px;
+      overflow: hidden scroll;
+      .notes-view-note-selected {
+        border: 3px solid #d9d9d9;
+      }
       .notes-view-note {
+        &:hover {
+          background-color: rgba(43, 181, 92, 0.9);
+          .note-snippetContent {
+            .note-title,
+            .note-date,
+            .note-snippet {
+              color: #fff;
+            }
+          }
+        }
+        .note-snippet-divide {
+          border-top: 1px solid #ececec;
+          left: 20px;
+          right: 20px;
+          top: 0;
+          position: absolute;
+        }
         height: 120px;
         cursor: pointer;
         margin: 0 auto;
         text-align: left;
         overflow: hidden;
         position: relative;
-        .note-hover :hover {
+        .note-snippetContent {
+          color: #878787;
+          left: 24px;
+          overflow: hidden;
+          overflow-wrap: break-word;
           position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          left: 0;
-          opacity: 0;
-          background-color: rgba(43, 181, 92, 0.9);
-          transition: opacity 0.1s ease-in-out;
-        }
-        .note-border {
-          border: 3px solid #d9d9d9;
+          right: 24px;
+          top: 12px;
+          word-wrap: break-word;
+          bottom: 15px;
+          .note-title {
+            font-size: 16px;
+            font-weight: 400;
+            color: #4a4a4a;
+            margin-bottom: 4px;
+            max-height: 40px;
+            overflow: hidden;
+            overflow-wrap: break-word;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            word-wrap: break-word;
+            line-height: 20px;
+            width: 302px;
+          }
+          .note-date {
+            font-size: 11px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+          }
+          .note-snippet {
+            font-size: 12px;
+            font-weight: 400;
+          }
         }
       }
     }

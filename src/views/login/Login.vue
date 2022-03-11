@@ -1,245 +1,212 @@
 <template>
-  <div class="login">
-    <div class="login-container">
-      <div class="carousel-wrapper">
-        <Carousel v-model="carouselValue" autoplay :autoplay-speed="autoplaySpeed" loop dots="none">
-          <CarouselItem>
-            <div class="poster-carousel">
-              <img src="../../../static/images/carousel1.jpeg" alt="">
-            </div>
-          </CarouselItem>
-          <CarouselItem>
-            <div class="poster-carousel">
-              <img src="../../../static/images/carousel2.jpeg" alt="">
-            </div>
-          </CarouselItem>
-          <CarouselItem>
-            <div class="poster-carousel">
-              <img src="../../../static/images/carousel3.jpeg" alt="">
-            </div>
-          </CarouselItem>
-          <CarouselItem>
-            <div class="poster-carousel">
-              <img src="../../../static/images/carousel4.jpeg" alt="">
-            </div>
-          </CarouselItem>
-          <CarouselItem>
-            <div class="poster-carousel">
-              <img src="../../../static/images/carousel5.jpeg" alt="">
-            </div>
-          </CarouselItem>
-          <CarouselItem>
-            <div class="poster-carousel">
-              <img src="../../../static/images/carousel6.jpeg" alt="">
-            </div>
-          </CarouselItem>
-        </Carousel>
-      </div>
-      <div class="login-register-wrapper">
-        <Collapse v-model="collapseValue" accordion>
-          <Panel name="1">
-            创建账户
-            <p slot="content">
-              <Form ref="login" :model="register" :rules="registerRule" inline>
-                <FormItem prop="username">
-                  <Input class="input-username" type="text" v-model="register.username" placeholder="用户名">
-                  <Icon type="ios-person-outline" slot="prepend"></Icon>
-                  </Input>
-                </FormItem>
-                <FormItem prop="password">
-                  <Input class="input-password" type="password" v-model="register.password" placeholder="密码" @on-enter="onRegister">
-                  <Icon type="ios-locked-outline" slot="prepend"></Icon>
-                  </Input>
-                </FormItem>
-                <FormItem>
-                  <div class="button-group">
-                    <Button @click="onRegister" class="login-button" type="primary">注册</Button>
-                    <Button @click="registerCancel" class="cancel-button" type="error">取消</Button>
-                  </div>
-                </FormItem>
-              </Form>
+  <div id="login">
+    <div class="all">
+      <div class="icons iconfont icon-xiang"></div>
+      <div class="con">
+        <h3 @click="showLogin">登录</h3>
+        <transition>
+          <div v-bind:class="{ show: isShowLogin }" class="login">
+            <el-input
+              class="input"
+              v-model="login.username"
+              placeholder="用户名"
+            />
+            <el-input
+              class="input"
+              v-model="login.password"
+              placeholder="密码"
+              show-password
+            />
+            <p v-bind:class="{ error: login.isError }">{{ login.notice }}</p>
+            <el-button class="button" @click="onLogin">登录账号</el-button>
+          </div>
+        </transition>
+        <h3 @click="showRegister">创建账户</h3>
+        <transition>
+          <div v-bind:class="{ show: isShowRegister }" class="register">
+            <el-input
+              class="input"
+              v-model="register.username"
+              placeholder="用户名"
+            />
+            <el-input
+              class="input"
+              v-model="register.password"
+              placeholder="密码"
+              show-password
+            />
+            <p v-bind:class="{ error: register.isError }">
+              {{ register.notice }}
             </p>
-          </Panel>
-          <Panel name="2">
-            登陆
-            <p slot="content">
-              <Form ref="login" :model="login" :rules="loginRule" inline>
-                <FormItem prop="username">
-                  <Input class="input-username" type="text" v-model="login.username" placeholder="用户名">
-                  <Icon type="ios-person-outline" slot="prepend"></Icon>
-                  </Input>
-                </FormItem>
-                <FormItem prop="password">
-                  <Input class="input-password" type="password" v-model="login.password" placeholder="密码" @on-enter="onLogin">
-                  <Icon type="ios-locked-outline" slot="prepend"></Icon>
-                  </Input>
-                </FormItem>
-                <FormItem>
-                  <div class="button-group">
-                    <Button @click="onLogin" class="login-button" type="primary">登陆</Button>
-                    <Button @click="loginCancel" class="cancel-button" type="error">取消</Button>
-                  </div>
-                </FormItem>
-              </Form>
-            </p>
-          </Panel>
-        </Collapse>
+            <el-button class="button" @click="onRegister">注册账号</el-button>
+          </div>
+        </transition>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  import { getDataByPost, getDataByGet } from '../../common/js/request.js'
-  import { API_LOGIN, API_REGISTER } from '../../common/js/apis.js'
-  export default {
-    name: 'Login',
-    data() {
-      return {
-        carouselValue: 0,
-        collapseValue: "2",
-        autoplaySpeed: 5000,
-        login: {
-          username: '',
-          password: ''
-        },
-        register: {
-          username: '',
-          password: '',
-        },
-        loginRule: {
-          username: [{
-            required: true,
-            message: '用户名不能为空',
-            trigger: 'blur'
-          }],
-          password: [{
-              required: true,
-              message: '密码不能为空.',
-              trigger: 'blur'
-            },
-            {
-              type: 'string',
-              min: 3,
-              max: 15,
-              message: ' 密码长度应在3-15之间',
-              trigger: 'blur'
-            }
-          ]
-        },
-        registerRule: {
-          username: [{
-            required: true,
-            message: '用户名不能为空',
-            trigger: 'blur'
-          }],
-          password: [{
-            required: true,
-            message: '密码不能为空.',
-            trigger: 'blur'
-          }]
-        }
+import { login } from "@/api/user";
+import { ElMessage } from 'element-plus'
+export default {
+  name: "Login",
+  data() {
+    return {
+      isShowLogin: true,
+      isShowRegister: false,
+      login: {
+        username: "",
+        password: "",
+        notice: "",
+        isError: false,
+      },
+      register: {
+        username: "",
+        password: "",
+        notice: "",
+        isError: false,
+      },
+    };
+  },
+  methods: {
+    showRegister() {
+      this.isShowLogin = false;
+      this.isShowRegister = true;
+    },
+    showLogin() {
+      this.isShowLogin = true;
+      this.isShowRegister = false;
+    },
+    async onLogin() {
+      if (!/^[\w\u4e00-\u9fa5]{3,15}$/.test(this.login.username)) {
+        this.login.isError = true;
+        this.login.notice = "用户名3-15个字符，仅限字母数字下划线中文";
+        return;
+      }
+      if (!/^.{6,16}$/.test(this.login.password)) {
+        this.login.isError = true;
+        this.login.notice = "密码长度为6~16个字符";
+        return;
+      }
+      const res = await login({
+        username: this.login.username,
+        password: this.login.password,
+      });
+      if (res.code === 200) {
+        ElMessage({
+          showClose: true,
+          message: res.msg,
+          type: "success",
+        });
+        this.$store.commit("setUsername", this.login.username);
+        this.$store.commit("setToken", res.data.token);
+        this.$store.commit("changeIsLogin", true);
+        this.$router.push({
+          path: "/Note",
+        });
       }
     },
-    methods: {
-      onLogin() {
-        getDataByPost(API_LOGIN, {
-          username: this.login.username,
-          password: this.login.password
-        }).then(res => {
-          res = res.data
-          if (res.code === 200) {
-            this.$Message.success(res.msg)
-            this.$store.commit('setUsername', this.login.username)
-            this.$store.commit('setToken', res.data.token)
-            this.$store.commit('changeIsLogin', true)
-            this._clearLogin()
-            this.$router.push({
-              path: '/notebook-list'
-            })
-          }else{
-            this.$Message.error(res.msg)
+    async onRegister() {
+      if (!/^[\w\u4e00-\u9fa5]{3,15}$/.test(this.register.username)) {
+        this.register.isError = true;
+        this.register.notice = "用户名3~15个字符，仅限于字母数字下划线中文";
+        return;
+      }
+      if (!/^.{6,16}$/.test(this.register.password)) {
+        this.register.isError = true;
+        this.register.notice = "密码长度为6~16个字符";
+        return;
+      }
+      const res = await register({
+        username: this.register.username,
+        password: this.register.password,
+      });
+      if (res.code === 200) {
+        ElMessage({
+          showClose: true,
+          message: res.msg,
+          type: "success",
+        });
+        this.$store.commit("setUsername", this.login.username);
+        this.$store.commit("setToken", res.data.token);
+        this.$store.commit("changeIsLogin", true);
+        this.$router.push({
+          path: "/Note",
+        });
+      }
+    },
+  },
+};
+</script>
+
+<style lang="less" scoped>
+#login {
+  position: absolute;
+  width: 100%;
+  min-height: 100%;
+  background-color: #f3f3f3;
+  z-index: 100;
+  display: flex;
+  // flex-direction: column;
+  .all {
+    margin: 120px auto;
+    .icons {
+      display: flex;
+      justify-content: center;
+      font-size: 60px;
+      margin: 20px auto 20px auto;
+    }
+    .con {
+      background-color: #fff;
+      padding-bottom: 20px;
+      margin: auto;
+      max-width: 400px;
+      // height: 400px;
+      border: 1px solid #dedede;
+      border-radius: 2px;
+      p {
+        font-size: 12px;
+        margin-left: 25px;
+      }
+
+      h3 {
+        margin-top: 20px;
+        font-size: large;
+        text-align: center;
+        cursor: pointer;
+      }
+      .login,
+      .register {
+        height: 0;
+        overflow: hidden;
+        transition: height 0.4s;
+        margin-top: 20px;
+        .error {
+          color: red;
+        }
+        .input,
+        .button {
+          width: 350px;
+          margin: 10px 25px;
+        }
+        .button {
+          margin-top: 20px;
+          background-color: #2dbe60;
+          color: #fff;
+          border-radius: 5px;
+          border: none;
+          font-size: medium;
+          &:hover {
+            background-color: #23a04f;
+            border-color: #23a04f;
           }
-        }).catch(err => {
-          this.$Message.error('登录失败,q')
-          console.log("运行这里");
-        })
-      },
-      onRegister() {
-        getDataByPost(API_REGISTER, {
-          username: this.register.username,
-          password: this.register.password
-        }).then(res => {
-          res = res.data
-          console.log('register', res)
-          this.$Message.success(res.msg)
-          this._clearRegister()
-        }).catch(err => {
-          this.$Message.error('注册失败-用户名以重复')
-        })
-      },
-      loginCancel() {
-        this._clearLogin()
-        this.$Message.error('取消登陆');
-      },
-      registerCancel() {
-        this._clearRegister()
-        this.$Message.error('取消注册')
-      },
-      _clearLogin() {
-        this.login.username = ''
-        this.login.password = ''
-      },
-      _clearRegister() {
-        this.register.username = ''
-        this.register.password = ''
+        }
+        &.show {
+          height: 210px;
+        }
       }
     }
   }
-</script>
-
-<style lang="stylus" scoped>
-  @import '../../common/stylus/variables.styl';
-  .login >>> .ivu-collapse-header
-    color $theme-text-color
-    background-color #fff
-
-  .input-username, .input-password
-    width 230px
-    margin-bottom 10px
-  .button-group
-    width 220px
-    text-align center
-
-  .login
-    width 100%
-    height 100%
-    // background-color $mask-color
-    z-index 100
-    .login-container
-      display flex
-      flex-flow wrap
-      width 700px
-      height 400px
-      position absolute
-      left 50%
-      top 40%
-      transform translate(-50%, -50%)
-      .carousel-wrapper
-        width 430px
-        height 100%
-        background-color $theme-color
-        border-radius 4px 0 0 4px
-        img
-          width 400px
-          left 15px
-          height 400px
-          border-radius 4px
-          position relative
-          padding 10px 0
-      .login-register-wrapper
-        width 270px
-        height 100%
-        background-color #fff
-        border-radius 0 4px 4px 0
+}
 </style>

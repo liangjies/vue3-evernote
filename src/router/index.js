@@ -19,6 +19,11 @@ const router = createRouter({
       name: 'NoteList',
       component: NoteList
     },
+    {
+      path: '/Login',
+      name: 'Login',
+      component: () => import('@/views/login/Login.vue')
+    },
   ]
 })
 export default router
