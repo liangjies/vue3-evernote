@@ -6,17 +6,8 @@
         <h3 @click="showLogin">登录</h3>
         <transition>
           <div v-bind:class="{ show: isShowLogin }" class="login">
-            <el-input
-              class="input"
-              v-model="login.username"
-              placeholder="用户名"
-            />
-            <el-input
-              class="input"
-              v-model="login.password"
-              placeholder="密码"
-              show-password
-            />
+            <el-input class="input" v-model="login.username" placeholder="用户名" />
+            <el-input class="input" v-model="login.password" placeholder="密码" show-password />
             <p v-bind:class="{ error: login.isError }">{{ login.notice }}</p>
             <el-button class="button" @click="onLogin">登录账号</el-button>
           </div>
@@ -24,17 +15,8 @@
         <h3 @click="showRegister">创建账户</h3>
         <transition>
           <div v-bind:class="{ show: isShowRegister }" class="register">
-            <el-input
-              class="input"
-              v-model="register.username"
-              placeholder="用户名"
-            />
-            <el-input
-              class="input"
-              v-model="register.password"
-              placeholder="密码"
-              show-password
-            />
+            <el-input class="input" v-model="register.username" placeholder="用户名" />
+            <el-input class="input" v-model="register.password" placeholder="密码" show-password />
             <p v-bind:class="{ error: register.isError }">
               {{ register.notice }}
             </p>
@@ -47,7 +29,8 @@
 </template>
 
 <script>
-import { login } from "@/api/user";
+import { mapActions } from 'vuex'
+import { register } from "@/api/user";
 import { ElMessage } from 'element-plus'
 export default {
   name: "Login",
@@ -70,6 +53,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions('user', ['LoginIn']),
     showRegister() {
       this.isShowLogin = false;
       this.isShowRegister = true;
@@ -89,23 +73,7 @@ export default {
         this.login.notice = "密码长度为6~16个字符";
         return;
       }
-      const res = await login({
-        username: this.login.username,
-        password: this.login.password,
-      });
-      if (res.code === 200) {
-        ElMessage({
-          showClose: true,
-          message: res.msg,
-          type: "success",
-        });
-        this.$store.commit("setUsername", this.login.username);
-        this.$store.commit("setToken", res.data.token);
-        this.$store.commit("changeIsLogin", true);
-        this.$router.push({
-          path: "/Note",
-        });
-      }
+      return await this.LoginIn(this.login)
     },
     async onRegister() {
       if (!/^[\w\u4e00-\u9fa5]{3,15}$/.test(this.register.username)) {

@@ -1,28 +1,63 @@
+import { login } from '@/api/user'
+import { jsonInBlacklist } from '@/api/jwt'
+import router from '@/router/index'
 
 export const user = {
+  namespaced: true,
   state: {
-    isLogin: false,
-    username: '未登录',
+    userInfo: {
+      uuid: '',
+      nickName: '',
+      headerImg: '',
+    },
     token: ''
   },
   mutations: {
-    changeIsLogin(state, payload) {
-      state.isLogin = payload
-    },
-    setUsername(state, payload) {
-      state.username = payload
+    setUserInfo(state, userInfo) {
+      // 这里的 `state` 对象是模块的局部状态
+      state.userInfo = userInfo
     },
     setToken(state, token) {
       // 这里的 `state` 对象是模块的局部状态
       state.token = token
     },
+    LoginOut(state) {
+      state.userInfo = {}
+      state.token = ''
+      sessionStorage.clear()
+      router.push({ name: 'Login', replace: true })
+      window.location.reload()
+    },
+  },
+  actions: {
+    async LoginIn({ commit, dispatch, rootGetters, getters }, loginInfo) {
+      const res = await login(loginInfo)
+      if (res.code === 0) {
+        commit('setUserInfo', res.data.user)
+        commit('setToken', res.data.token)
+        await dispatch('router/SetAsyncRouter', {}, { root: true })
+        const asyncRouters = rootGetters['router/asyncRouters']
+        router.addRoutes(asyncRouters)
+        // const redirect = router.history.current.query.redirect
+        // console.log(redirect)
+        // if (redirect) {
+        //     router.push({ path: redirect })
+        // } else {
+        router.push({ name: getters['userInfo'].authority.defaultRouter })
+        // }
+        return true
+      }
+    },
+    async LoginOut({ commit }) {
+      const res = await jsonInBlacklist()
+      if (res.code === 0) {
+        commit('LoginOut')
+      }
+    },
   },
   getters: {
-    isLogin(state) {
-      return state.isLogin
-    },
-    username(state) {
-      return state.username
+    userInfo(state) {
+      return state.userInfo
     },
     token(state) {
       return state.token
