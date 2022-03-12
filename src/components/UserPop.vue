@@ -1,7 +1,11 @@
 <template>
   <div class="user-pop">
     <div class="user-pop-img">
-      <img src="https://s1.ax1x.com/2022/03/07/b6amRI.png" alt="" class="user-image">
+      <img
+        :src="headerImg"
+        alt=""
+        class="user-image"
+      />
       <div class="user-name">{{ userName }}</div>
       <div class="user-type">印象笔记免费帐户</div>
     </div>
@@ -35,29 +39,33 @@
 </template>
 <script>
 import { CircleClose, Setting, QuestionFilled } from "@element-plus/icons-vue";
-
+import { mapState } from "vuex";
 export default {
   name: "UserPop",
   components: {
     CircleClose,
     Setting,
-    QuestionFilled
+    QuestionFilled,
   },
   data() {
     return {
-      userName: "梁杰s",
-      open: false
-    }
+      open: false,
+    };
   },
-  created() {
+  created() {},
+  computed: {
+    ...mapState({
+      userName: (state) => state.user.userInfo.nickName,
+      headerImg: (state) => state.user.userInfo.headerImg,
+    }),
   },
   methods: {
     toggleOpen: function () {
-      console.log("toggleOpen")
+      console.log("toggleOpen");
       this.open = !this.open;
     },
     close: function (e) {
-      console.log("close")
+      console.log("close");
       if (this.$el.contains(e.target)) return;
       this.open = false;
     },
@@ -71,12 +79,12 @@ export default {
         };
 
         setTimeout(() => {
-          document.addEventListener('click', documentHandler);
+          document.addEventListener("click", documentHandler);
         }, 0);
-      }
-    }
-  }
-}
+      },
+    },
+  },
+};
 </script>
 <style scoped lang="less">
 .user-pop {

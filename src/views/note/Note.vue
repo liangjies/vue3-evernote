@@ -12,7 +12,7 @@
     </div>
     <div class="notes-view">
       <div class="notes-view-subheader">
-        <div class="subheader-text">4条笔记</div>
+        <div class="subheader-text">{{ noteNum }}条笔记</div>
         <div class="subheader-options">
           <el-dropdown trigger="click" placement="bottom-start">
             <span class="el-dropdown-link">
@@ -38,9 +38,9 @@
         </div>
       </div>
       <div class="notes-view-ScrollWindow">
-        <div v-for="(note,index) in allNotes" :key="note.id">
+        <div v-for="(note, index) in allNotes" :key="note.id">
           <div class="notes-view-note notes-view-note-selecteds">
-            <div class="note-snippet-divide" v-if="index>0"></div>
+            <div class="note-snippet-divide" v-if="index > 0"></div>
             <div class="note-hover"></div>
             <div class="note-border"></div>
             <div class="note-snippetContent">
@@ -73,16 +73,30 @@
 <script>
 import SiderBar from "@/components/SiderBar.vue";
 import { ArrowDown, Plus } from "@element-plus/icons-vue";
+import { GetAllNotes } from "@/api/note";
 export default {
   name: "NoteList",
   components: { SiderBar, ArrowDown, Plus },
   data() {
     return {
-      allNotes: [{id:1,title:"温小蓝",snippet:"片段"},{id:1,title:"温小蓝",snippet:"片段"},{id:1,title:"温小蓝",snippet:"片段"}],
+      noteNum: 0,
+      allNotes: '',
     };
   },
   created() {
+    this.getNotes();
     // console.log("created");
+  },
+  methods: {
+    async getNotes() {
+      const res = await GetAllNotes();
+      console.log(res)
+      if (res.code === 200) {
+        console.log(res.data.list)
+        this.allNotes = res.data.list;
+        this.noteNum = res.data.total;
+      }
+    },
   },
 };
 </script>

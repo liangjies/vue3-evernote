@@ -68,11 +68,11 @@ export default {
         this.login.notice = "用户名3-15个字符，仅限字母数字下划线中文";
         return;
       }
-      if (!/^.{6,16}$/.test(this.login.password)) {
-        this.login.isError = true;
-        this.login.notice = "密码长度为6~16个字符";
-        return;
-      }
+      // if (!/^.{6,16}$/.test(this.login.password)) {
+      //   this.login.isError = true;
+      //   this.login.notice = "密码长度为6~16个字符";
+      //   return;
+      // }
       return await this.LoginIn(this.login)
     },
     async onRegister() {
@@ -81,11 +81,11 @@ export default {
         this.register.notice = "用户名3~15个字符，仅限于字母数字下划线中文";
         return;
       }
-      if (!/^.{6,16}$/.test(this.register.password)) {
-        this.register.isError = true;
-        this.register.notice = "密码长度为6~16个字符";
-        return;
-      }
+      // if (!/^.{6,16}$/.test(this.register.password)) {
+      //   this.register.isError = true;
+      //   this.register.notice = "密码长度为6~16个字符";
+      //   return;
+      // }
       const res = await register({
         username: this.register.username,
         password: this.register.password,

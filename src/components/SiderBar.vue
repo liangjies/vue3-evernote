@@ -2,7 +2,11 @@
   <div class="sider-bar" id="sidebar">
     <div class="sidebar-con">
       <div class="login">
-        <img src="https://s1.ax1x.com/2022/03/07/b6Ppwj.png" alt="" class="user-image">
+        <img
+          src="https://s1.ax1x.com/2022/03/07/b6Ppwj.png"
+          alt=""
+          class="user-image"
+        />
         <div class="icons">
           <div class="addNote show">
             <el-icon>
@@ -27,7 +31,11 @@
             </el-icon>
           </div>
           <div class="userMenu" @click.stop="open = true">
-            <img src="https://s1.ax1x.com/2022/03/07/b6amRI.png" alt="" class="userMenus-image">
+            <img
+              src="https://s1.ax1x.com/2022/03/07/b6amRI.png"
+              alt=""
+              class="userMenus-image"
+            />
           </div>
           <!-- <router-link to="/trash" title="回收站"><i class="trash el-icon-delete-solid" @click="trash"></i></router-link> -->
         </div>
@@ -47,9 +55,10 @@
 
 <script>
 import { Plus, Document, Notebook, Search } from "@element-plus/icons-vue";
-import UserPop from './UserPop.vue'
-import NotebookPop from './NotebookPop.vue'
-import clickoutside from '../utils/click-outside'
+import UserPop from "./UserPop.vue";
+import NotebookPop from "./NotebookPop.vue";
+import clickoutside from "../utils/click-outside";
+
 export default {
   directives: { clickoutside },
   name: "SiderBar",
@@ -59,7 +68,7 @@ export default {
     Plus,
     Document,
     Notebook,
-    Search
+    Search,
   },
   created() {
     // if (this.$store.getters['isLogin'] === false) {
@@ -79,22 +88,21 @@ export default {
     return {
       isCollapse: false,
       open: false,
-      notebookOpen: false
+      notebookOpen: false,
     };
   },
-  computed: {
-  },
+
   methods: {
     test() {
-      console.log("run")
+      console.log("run");
     },
     handleClickOutside() {
-      this.open = false
-      console.log("click outside")
+      this.open = false;
+      console.log("click outside");
     },
-    notebookClickOutside(){
-      this.notebookOpen = false
-    }
+    notebookClickOutside() {
+      this.notebookOpen = false;
+    },
   },
 };
 </script>
