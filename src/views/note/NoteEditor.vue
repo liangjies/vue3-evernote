@@ -22,7 +22,7 @@ import "tinymce/icons/default"; //引入编辑器图标icon，不引入则不显
 import "tinymce/plugins/advlist"; //高级列表
 import "tinymce/plugins/anchor"; //锚点
 import "tinymce/plugins/autolink"; //自动链接
-import "tinymce/plugins/autoresize"; //编辑器高度自适应,注：plugins里引入此插件时，Init里设置的height将失效
+// import "tinymce/plugins/autoresize"; //编辑器高度自适应,注：plugins里引入此插件时，Init里设置的height将失效
 import "tinymce/plugins/autosave"; //自动存稿
 import "tinymce/plugins/charmap"; //特殊字符
 import "tinymce/plugins/code"; //编辑源码
@@ -75,7 +75,7 @@ export default {
     plugins: {
       type: [String, Array],
       default:
-        "autoresize print preview searchreplace autolink directionality visualblocks visualchars fullscreen image link media template code codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount textpattern autosave ",
+        "print preview searchreplace autolink directionality visualblocks visualchars fullscreen image link media template code codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount textpattern autosave ",
     },
     toolbar: {
       type: [String, Array],
@@ -104,7 +104,9 @@ export default {
           "微软雅黑=Microsoft YaHei,Helvetica Neue,PingFang SC,sans-serif;苹果苹方=PingFang SC,Microsoft YaHei,sans-serif;宋体=simsun,serif;仿宋体=FangSong,serif;黑体=SimHei,sans-serif;Arial=arial,helvetica,sans-serif;Arial Black=arial black,avant garde;Book Antiqua=book antiqua,palatino;", //字体样式
         lineheight_formats: "0.5 0.8 1 1.2 1.5 1.75 2 2.5 3 4 5", //行高配置，也可配置成"12px 14px 16px 20px"这种形式
 
-        height: 500, //注：引入autoresize插件时，此属性失效
+        height: '85vh', //注：引入autoresize插件时，此属性失效
+        // height: '100%', //注：引入autoresize插件时，此属性失效
+
         placeholder: "在这里输入文字",
         branding: false, //tiny技术支持信息是否显示
         resize: false, //编辑器宽高是否可变，false-否,true-高可变，'both'-宽高均可，注意引号

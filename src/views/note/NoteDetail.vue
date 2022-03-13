@@ -9,44 +9,50 @@
         </div>
         <div class="note-operation-right">
           <el-icon class="note-operation-icon"><full-screen /></el-icon>
+          <div class="note-notebook">
+            <el-icon class="note-notebook-icon"><notebook /></el-icon>
+            <div class="note-tags">
+              <el-icon class="note-tags-icon"><price-tag /></el-icon>
+              <span class="note-tag"> 微信 </span>
+            </div>
+            <el-dropdown trigger="click" style="margin-top: 1px">
+              <span class="el-dropdown-link">
+                微信
+                <el-icon class="el-icon--right">
+                  <arrow-down />
+                </el-icon>
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item>Action 1</el-dropdown-item>
+                  <el-dropdown-item>Action 2</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+            <div class="note-label-split"></div>
+          </div>
         </div>
       </div>
-      <div class="note-label">
-        <div class="note-notebook">
-          <el-icon class="note-notebook-icon"><notebook /></el-icon>
-          <el-dropdown trigger="click">
-            <span class="el-dropdown-link">
-              微信
-              <el-icon class="el-icon--right">
-                <arrow-down />
-              </el-icon>
-            </span>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item>Action 1</el-dropdown-item>
-                <el-dropdown-item>Action 2</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-          <div class="note-label-split"></div>
-        </div>
-        <div class="note-tags">
-          <el-icon class="note-tags-icon"><price-tag /></el-icon>
-          <span class="note-tag"> 微信 </span>
-        </div>
-      </div>
+      <div class="note-label"></div>
+    </div>
+    <div class="note-title">
+      <input
+        class="note-title-input"
+        v-model="input"
+        placeholder="请输入标题"
+      />
     </div>
     <!-- 编辑器容器 -->
     <div id="editor">
-        <note-editor></note-editor>
+      <note-editor></note-editor>
     </div>
   </div>
 </template>
 
 <script>
-import Note from "@/views/note/Note.vue"
-import Editor from "@tinymce/tinymce-vue"
-import NoteEditor from "@/views/note/NoteEditor.vue"
+import Note from "@/views/note/Note.vue";
+import Editor from "@tinymce/tinymce-vue";
+import NoteEditor from "@/views/note/NoteEditor.vue";
 import {
   Delete,
   InfoFilled,
@@ -64,10 +70,12 @@ export default {
     Notebook,
     ArrowDown,
     PriceTag,
-    NoteEditor
+    NoteEditor,
   },
   data() {
-    return {};
+    return {
+      input: "",
+    };
   },
   mounted() {},
   methods: {},
@@ -110,7 +118,58 @@ export default {
     .note-operation-right {
       float: right;
       margin-left: 20px;
+      .note-notebook {
+        margin-top: 2px;
+        float: right;
+        .note-notebook-icon {
+          margin-top: 2px;
+          vertical-align: top;
+          opacity: 0.5;
+          font-size: 14px;
+        }
+        .el-dropdown-link {
+          margin-left: 5px;
+          font-size: 13px;
+          font-weight: 400;
+          color: #878787;
+          .el-icon--right {
+            opacity: 0.5;
+            margin-left: 0;
+            top: 2px;
+          }
+        }
+        .note-label-split {
+          border-left: 1px solid #ececec;
+          height: 19px;
+          display: inline-block;
+          vertical-align: top;
+          margin: 0 8px 0;
+        }
+      }
+      .note-tags {
+        margin: 0 16px 0 0;
+        float: right;
+        .note-tags-icon {
+          opacity: 0.5;
+        }
+        .note-tag {
+          float: right;
+          margin-left: 5px;
+          color: #fff;
+          border-color: #2dbe60;
+          background-color: #2dbe60;
+          vertical-align: top;
+          padding: 1px 8px 1px 6px;
+          border-radius: 4px;
+          font-size: 12px;
+          font-weight: 400;
+          line-height: 17px;
+          text-align: center;
+        }
+      }
       .note-operation-icon {
+        margin-right: 8px;
+        float: right;
         cursor: pointer;
         opacity: 0.4;
         font-size: 23px;
@@ -122,58 +181,24 @@ export default {
         }
       }
     }
-  }
-  .note-label {
-    position: relative;
-    max-width: 960px;
-    min-width: 240px;
-    padding: 0 48px;
-    margin: 0 auto 38px;
-    height: 35px;
-    border-bottom: 1px solid #ececec;
-    .note-notebook {
-      float: left;
-      .note-notebook-icon {
-        opacity: 0.5;
-        font-size: 14px;
-      }
-      .el-dropdown-link {
-        margin-left: 5px;
-        font-size: 13px;
-        font-weight: 400;
-        color: #878787;
-        .el-icon--right {
-          opacity: 0.5;
-          margin-left: 0;
-          top: 2px;
-        }
-      }
-      .note-label-split {
-        border-left: 1px solid #ececec;
-        height: 19px;
-        display: inline-block;
-        vertical-align: top;
-        margin: 5px 8px 0;
-      }
+    .note-label {
+      position: relative;
+      max-width: 960px;
+      min-width: 240px;
+      padding: 0 48px;
+      margin: 0 auto 38px;
+      height: 35px;
+      border-bottom: 1px solid #ececec;
     }
-    .note-tags {
-      .note-tags-icon {
-        opacity: 0.5;
-      }
-      .note-tag {
-        margin-left: 5px;
-        color: #fff;
-        border-color: #2dbe60;
-        background-color: #2dbe60;
-        vertical-align: top;
-        padding: 1px 8px 1px 6px;
-        // margin: 1px 8px 1px 8px;
-        border-radius: 4px;
-        font-size: 12px;
-        font-weight: 400;
-        line-height: 17px;
-        text-align: center;
-      }
+  }
+  .note-title {
+    .note-title-input {
+      width: 100%;
+      padding: 10px 20px;
+      font-size: 25px;
+      font-weight: 700;
+      outline: none;
+      border: none;
     }
   }
 }
