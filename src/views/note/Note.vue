@@ -38,30 +38,15 @@
         </div>
       </div>
       <div class="notes-view-ScrollWindow">
-        <div v-for="(note, index) in allNotes" :key="note.id">
-          <div class="notes-view-note notes-view-note-selecteds">
+        <div v-for="(note, index) in allNotes" :key="note.id" @click="openNote(note.id)" >
+          <div class="notes-view-note" :class="{'notes-view-note-selected':currentIndex==index}">
             <div class="note-snippet-divide" v-if="index > 0"></div>
             <div class="note-hover"></div>
             <div class="note-border"></div>
             <div class="note-snippetContent">
               <div class="note-title">{{ note.title }}</div>
-              <div class="note-date">5 天前</div>
+              <div class="note-date">{{ _formateDate(note.updatedAt) }}</div>
               <div class="note-snippet">{{ note.snippet }}</div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div class="notes-view-note">
-            <div class="note-snippet-divide"></div>
-            <div class="note-hover"></div>
-            <div class="note-border"></div>
-            <div class="note-snippetContent">
-              <div class="note-title">温小蓝</div>
-              <div class="note-date">5 天前</div>
-              <div class="note-snippet">
-                http://miai.sinaapp.com/api/mailApi.php 请求：POST 参数：
-                txt邮件正文 title标题 to目标邮箱 返回json，ok为yes即为成功发送
-              </div>
             </div>
           </div>
         </div>
@@ -74,13 +59,15 @@
 import SiderBar from "@/components/SiderBar.vue";
 import { ArrowDown, Plus } from "@element-plus/icons-vue";
 import { GetAllNotes } from "@/api/note";
+import { friendlyDate } from "@/utils/util";
 export default {
   name: "NoteList",
   components: { SiderBar, ArrowDown, Plus },
   data() {
     return {
       noteNum: 0,
-      allNotes: '',
+      allNotes: "",
+      currentIndex: 0,
     };
   },
   created() {
@@ -90,12 +77,16 @@ export default {
   methods: {
     async getNotes() {
       const res = await GetAllNotes();
-      console.log(res)
       if (res.code === 200) {
-        console.log(res.data.list)
         this.allNotes = res.data.list;
         this.noteNum = res.data.total;
       }
+    },
+    openNote(id){
+      console.log(id)
+    },
+    _formateDate(dateStr) {
+      return friendlyDate(dateStr);
     },
   },
 };
@@ -105,7 +96,7 @@ export default {
 .note-page {
   margin-left: 73px;
   width: 350px;
-  border-right: 1px solid #ececec;
+  position: absolute;
   .note-header {
     box-sizing: border-box;
     margin: 0 auto;

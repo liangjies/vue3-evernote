@@ -24,6 +24,16 @@ const router = createRouter({
       name: 'Login',
       component: () => import('@/views/login/Login.vue')
     },
+    {
+      path: '/NoteDetail',
+      name: 'NoteDetail',
+      component: () => import('@/views/note/NoteDetail.vue')
+    },
+    {
+      path: '/NoteEditor',
+      name: 'NoteEditor',
+      component: () => import('@/views/note/NoteEditor.vue')
+    },
   ]
 })
 export default router
