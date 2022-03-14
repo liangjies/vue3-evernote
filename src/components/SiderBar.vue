@@ -26,7 +26,7 @@
             </el-icon>
           </router-link>
           <div title="笔记本" @click.stop="notebookOpen = true">
-            <el-icon class="book el-icon-s-platform">
+            <el-icon class="book el-icon-s-platform" :class="{'note-book-open':notebookOpen}">
               <notebook />
             </el-icon>
           </div>
@@ -58,6 +58,7 @@ import { Plus, Document, Notebook, Search } from "@element-plus/icons-vue";
 import UserPop from "./UserPop.vue";
 import NotebookPop from "./NotebookPop.vue";
 import clickoutside from "../utils/click-outside";
+import { mapActions } from 'vuex'
 
 export default {
   directives: { clickoutside },
@@ -71,6 +72,7 @@ export default {
     Search,
   },
   created() {
+    this.GetNotebooksData()
     // if (this.$store.getters['isLogin'] === false) {
     //   this.$message({
     //     type: 'error',
@@ -93,6 +95,7 @@ export default {
   },
 
   methods: {
+    ...mapActions('notebook', ['GetNotebooksData']),
     test() {
       console.log("run");
     },
@@ -186,6 +189,11 @@ export default {
             height: 36px;
             border-radius: 18px;
           }
+        }
+        .note-book-open {
+          border: 1px solid #2dbe60;
+          background-color: #2dbe60;
+          color: #fff;
         }
       }
       .icons .show {

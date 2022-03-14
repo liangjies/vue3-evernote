@@ -1,5 +1,6 @@
 
 export const note = {
+  namespaced: true,
   state: {
     noteId: -1,
     notebookId: -1,

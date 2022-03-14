@@ -19,6 +19,18 @@
         <input type="text" class="search-input" />
       </div>
     </div>
+    <div
+      class="notebook-lists"
+      v-for="(notebook, index) in notebooks"
+      :key="notebook.id"
+    >
+      <div class="notebook-list">
+        <div class="notebook-title">{{ notebook.title }}5555555555555555555555555555555555555555555555555</div>
+        <div class="notebook-number">{{ notebook.noteCounts }} 条笔记</div>
+        <div class="notebook-operate"></div>
+        <div class="notebook-split"></div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -27,6 +39,14 @@ import { FolderAdd, Search } from "@element-plus/icons-vue";
 export default {
   name: "NotebookPop",
   components: { FolderAdd, Search },
+  data() {
+    return {
+      notebooks: "",
+    };
+  },
+  created() {
+    this.notebooks = this.$store.getters['notebook/notebooks'];
+  },
 };
 </script>
 
@@ -100,6 +120,36 @@ export default {
         width: 100%;
         font-size: 13px;
         font-weight: 400;
+      }
+    }
+  }
+  .notebook-lists {
+    top: 122px;
+    .notebook-list {
+      .notebook-title {
+        white-space: nowrap;
+        color: #4a4a4a;
+        margin: 12px 80px 6px 24px;
+        cursor: pointer;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        width: 300px;
+        font-size: 16px;
+        font-weight: 400;
+      }
+      .notebook-number {
+        color: #878787;
+        margin: 0 0 12px 24px;
+        height: 12px;
+        font-size: 11px;
+        font-weight: 500;
+      }
+      .notebook-split {
+        border-bottom: 1px solid #ececec;
+        position: absolute;
+        left: 12px;
+        right: 12px;
       }
     }
   }
