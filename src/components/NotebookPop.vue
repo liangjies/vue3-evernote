@@ -19,33 +19,41 @@
         <input type="text" class="search-input" />
       </div>
     </div>
-    <div
-      class="notebook-lists"
-      v-for="(notebook, index) in notebooks"
-      :key="notebook.id"
-    >
-      <div class="notebook-list">
-        <div class="notebook-title">{{ notebook.title }}5555555555555555555555555555555555555555555555555</div>
-        <div class="notebook-number">{{ notebook.noteCounts }} 条笔记</div>
-        <div class="notebook-operate"></div>
-        <div class="notebook-split"></div>
+    <div class="notebook-lists-box">
+      <div
+        class="notebook-lists"
+        v-for="(notebook, index) in notebooks"
+        :key="notebook.id"
+      >
+        <div class="notebook-list">
+          <div class="notebook-title">
+            {{
+              notebook.title
+            }}5555555555555555555555555555555555555555555555555
+          </div>
+          <div class="notebook-number">{{ notebook.noteCounts }} 条笔记</div>
+          <div class="notebook-operate">
+            <el-icon class="notebook-operate-icon"><delete-filled /></el-icon>
+          </div>
+          <div class="notebook-split"></div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { FolderAdd, Search } from "@element-plus/icons-vue";
+import { FolderAdd, Search, DeleteFilled } from "@element-plus/icons-vue";
 export default {
   name: "NotebookPop",
-  components: { FolderAdd, Search },
+  components: { FolderAdd, Search, DeleteFilled },
   data() {
     return {
       notebooks: "",
     };
   },
   created() {
-    this.notebooks = this.$store.getters['notebook/notebooks'];
+    this.notebooks = this.$store.getters["notebook/notebooks"];
   },
 };
 </script>
@@ -123,33 +131,66 @@ export default {
       }
     }
   }
-  .notebook-lists {
+  .notebook-lists-box {
     top: 122px;
-    .notebook-list {
-      .notebook-title {
-        white-space: nowrap;
-        color: #4a4a4a;
-        margin: 12px 80px 6px 24px;
-        cursor: pointer;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: inline-block;
-        width: 300px;
-        font-size: 16px;
-        font-weight: 400;
-      }
-      .notebook-number {
-        color: #878787;
-        margin: 0 0 12px 24px;
-        height: 12px;
-        font-size: 11px;
-        font-weight: 500;
-      }
-      .notebook-split {
-        border-bottom: 1px solid #ececec;
-        position: absolute;
-        left: 12px;
-        right: 12px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    .notebook-lists {
+      .notebook-list {
+        box-sizing: border-box;
+        position: sticky;
+        height: 66px;
+        .notebook-title {
+          white-space: nowrap;
+          color: #4a4a4a;
+          margin: 12px 80px 6px 24px;
+          cursor: pointer;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: inline-block;
+          width: 300px;
+          height: 20px;
+          font-size: 16px;
+          font-weight: 400;
+        }
+        .notebook-number {
+          color: #878787;
+          margin: 0 0 12px 24px;
+          height: 12px;
+          font-size: 11px;
+          font-weight: 500;
+        }
+        .notebook-operate {
+          display: inline-block;
+          position: absolute;
+          right: 18px;
+          top: 17px;
+          z-index: 4;
+          // opacity: 0;
+          .notebook-operate-icon {
+            font-weight: 1000;
+            color: #fff;
+            display: inline-block;
+            cursor: pointer;
+            margin-left: 8px;
+            vertical-align: top;
+          }
+        }
+        .notebook-split {
+          border-bottom: 1px solid #ececec;
+          position: absolute;
+          left: 12px;
+          right: 12px;
+        }
+        &:hover {
+          background-color: rgba(43, 181, 92, 0.9);
+          .notebook-title,
+          .notebook-number {
+            color: #fff;
+          }
+        }
       }
     }
   }
