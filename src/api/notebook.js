@@ -28,11 +28,10 @@ export const CreateNotebook = (data) => {
 // @Summary 删除笔记本
 // @Produce  application/json
 // @Param data
-// @Router /notebooks/del [delete]
+// @Router /notebooks/del [post]
 export const DeleteNotebook = (data) => {
     return service({
-        url: '/notebook/del',
+        url: '/notebook/del/'+data.id,
         method: 'delete',
-        data
     })
 }

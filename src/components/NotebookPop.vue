@@ -47,11 +47,24 @@
           </div>
           <div class="notebook-number">{{ notebook.noteCounts }} 条笔记</div>
           <div class="notebook-operate">
-            <el-icon class="notebook-operate-icon"><delete-filled /></el-icon>
+            <el-icon
+              class="notebook-operate-icon"
+              @click="deleteDialog(notebook.id)"
+              ><delete-filled
+            /></el-icon>
           </div>
           <div class="notebook-split"></div>
         </div>
       </div>
+      <el-dialog v-model="dialogDeleteVisible" title="删除笔记本">
+        <span>确定删除 {{ deleteInfo.title }} ?</span>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="dialogDeleteVisible = false">取消</el-button>
+            <el-button type="primary" @click="deleteNotebook()">确定</el-button>
+          </span>
+        </template>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -63,8 +76,8 @@ import {
   DeleteFilled,
   Notebook,
 } from "@element-plus/icons-vue";
-import { mapState } from 'vuex'
-import { CreateNotebook } from "@/api/notebook";
+import { mapState } from "vuex";
+import { CreateNotebook, DeleteNotebook } from "@/api/notebook";
 import { mapActions } from "vuex";
 import { ElMessage } from "element-plus";
 export default {
@@ -74,6 +87,8 @@ export default {
     return {
       notebookInput: "",
       dialogFormVisible: false,
+      dialogDeleteVisible: false,
+      deleteInfo: { id: -1, title: "" },
     };
   },
   created() {
@@ -97,6 +112,32 @@ export default {
         });
         this.dialogFormVisible = false;
       }
+    },
+    deleteDialog(notebookId) {
+      this.deleteInfo.id = notebookId;
+      this.getNotebookById(notebookId);
+      this.dialogDeleteVisible = true;
+    },
+    async deleteNotebook() {
+      const res = await DeleteNotebook({ id: this.deleteInfo.id });
+      if (res.code === 200) {
+        this.GetNotebooksData();
+        ElMessage({
+          showClose: true,
+          message: res.msg,
+          type: "success",
+        });
+        this.deleteInfo = { id: -1, title: "" };
+        this.dialogDeleteVisible = false;
+      }
+    },
+    getNotebookById(id) {
+      this.notebooks.forEach((notebook) => {
+        if (notebook.id == id) {
+          this.deleteInfo.title = notebook.title;
+          //return notebook.title
+        }
+      });
     },
   },
 };
