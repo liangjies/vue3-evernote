@@ -3,11 +3,36 @@ import service from '@/utils/request'
 // @Summary 获取笔记本
 // @Produce  application/json
 // @Param data
-// @Router /notebooks [get]
+// @Router /notebooks/get [get]
 export const GetNotebooks = (data) => {
     return service({
-        url: '/notebooks',
+        url: '/notebook/get',
         method: 'get',
+        data
+    })
+}
+
+
+// @Summary 新建笔记本
+// @Produce  application/json
+// @Param data
+// @Router /notebooks/add [post]
+export const CreateNotebook = (data) => {
+    return service({
+        url: '/notebook/add',
+        method: 'post',
+        data
+    })
+}
+
+// @Summary 删除笔记本
+// @Produce  application/json
+// @Param data
+// @Router /notebooks/del [delete]
+export const DeleteNotebook = (data) => {
+    return service({
+        url: '/notebook/del',
+        method: 'delete',
         data
     })
 }
