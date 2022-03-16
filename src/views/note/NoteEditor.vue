@@ -60,6 +60,7 @@ import "tinymce/plugins/wordcount"; //字数统计
 
 export default {
   name: "NoteEditor",
+  emits: ['inputData'],
   components: {
     Editor,
   },
@@ -153,10 +154,12 @@ export default {
       this.contentValue = newValue;
     },
     contentValue(newValue) {
-      this.$emit("input", newValue);
+      this.$emit("inputData", newValue);
     },
   },
-  created() {},
+  created() {
+    // this.contentValue ="test"
+  },
   mounted() {
     tinymce.init({});
   },

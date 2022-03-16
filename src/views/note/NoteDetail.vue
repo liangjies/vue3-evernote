@@ -1,5 +1,5 @@
 <template>
-  <note></note>
+  <note v-on:childByValue="childByValue"></note>
   <div class="note-detail">
     <div class="note-header">
       <div class="note-operation">
@@ -8,7 +8,14 @@
           <el-icon class="note-operation-icon"><delete /></el-icon>
         </div>
         <div class="note-operation-right">
-          <el-icon class="note-operation-icon"><full-screen /></el-icon>
+          <el-button
+            type="primary"
+            class="note-operation-icon"
+            @click="doUpdateNote()"
+            size="small"
+          >
+            保存
+          </el-button>
           <div class="note-notebook">
             <el-icon class="note-notebook-icon"><notebook /></el-icon>
             <div class="note-tags">
@@ -17,15 +24,19 @@
             </div>
             <el-dropdown trigger="click" style="margin-top: 1px">
               <span class="el-dropdown-link">
-                微信
+                {{ notebook }}
                 <el-icon class="el-icon--right">
                   <arrow-down />
                 </el-icon>
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item>Action 1</el-dropdown-item>
-                  <el-dropdown-item>Action 2</el-dropdown-item>
+                  <el-dropdown-item
+                    v-for="notebook in notebooks"
+                    :key="notebook.id"
+                    @click="updateNotebook(notebook.id)"
+                    >{{ notebook.title }}</el-dropdown-item
+                  >
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -38,21 +49,23 @@
     <div class="note-title">
       <input
         class="note-title-input"
-        v-model="input"
+        v-model="titleInput"
         placeholder="请输入标题"
       />
     </div>
     <!-- 编辑器容器 -->
     <div id="editor">
-      <note-editor></note-editor>
+      <note-editor :value="value" v-on:inputData="inputData"></note-editor>
     </div>
   </div>
 </template>
 
 <script>
 import Note from "@/views/note/Note.vue";
-import Editor from "@tinymce/tinymce-vue";
 import NoteEditor from "@/views/note/NoteEditor.vue";
+import { GetNoteById, UpdateNote, CreateNote } from "@/api/note";
+import { ElMessage } from "element-plus";
+import { mapState } from "vuex";
 import {
   Delete,
   InfoFilled,
@@ -74,11 +87,81 @@ export default {
   },
   data() {
     return {
-      input: "",
+      id: -1,
+      titleInput: "",
+      value: "",
+      content: "",
+      notebook: "笔记本",
+      notebookID: -1,
     };
   },
+  computed: {
+    ...mapState({
+      notebooks: (state) => state.notebook.notebooks,
+    }),
+  },
   mounted() {},
-  methods: {},
+  methods: {
+    childByValue: function (childValue) {
+      // childValue就是子组件传过来的值
+      //console.log(childValue);
+      this.titleInput = childValue.title;
+      this.id = childValue.id;
+      this.GetNote(childValue.id);
+    },
+    async GetNote(noteId) {
+      const res = await GetNoteById({ id: noteId });
+      if (res.code === 200) {
+        this.value = res.data.list[0].content;
+        this.notebookID = res.data.list[0].notebookId;
+        this.setNotebookTitle(res.data.list[0].notebookId);
+      }
+    },
+    inputData: function (inputData) {
+      // childValue就是子组件传过来的值
+      this.content = inputData;
+    },
+    async doUpdateNote() {
+      if (this.id != -2) {
+        const res = await UpdateNote({
+          id: this.id,
+          title: this.titleInput,
+          content: this.content,
+          notebookId: this.notebookID,
+        });
+        if (res.code === 200) {
+          ElMessage({
+            showClose: true,
+            message: res.msg,
+            type: "success",
+          });
+        }
+      } else if (this.id == -2) {
+        const res = await CreateNote({
+          title: this.titleInput,
+          content: this.content,
+        });
+        if (res.code === 200) {
+          ElMessage({
+            showClose: true,
+            message: res.msg,
+            type: "success",
+          });
+        }
+      }
+    },
+    async updateNotebook(id) {
+      this.notebookID = id;
+      this.setNotebookTitle(id);
+    },
+    setNotebookTitle(id) {
+      this.notebooks.forEach((notebook) => {
+        if (notebook.id == id) {
+          this.notebook = notebook.title;
+        }
+      });
+    },
+  },
 };
 </script>
 
@@ -170,15 +253,6 @@ export default {
       .note-operation-icon {
         margin-right: 8px;
         float: right;
-        cursor: pointer;
-        opacity: 0.4;
-        font-size: 23px;
-        color: black;
-        margin: 0 16px 0 0;
-        &:hover {
-          opacity: 1;
-          color: #2dbe60;
-        }
       }
     }
     .note-label {

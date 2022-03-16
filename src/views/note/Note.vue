@@ -4,7 +4,7 @@
     <div class="note-header">
       <div class="note-header-title">笔记</div>
       <div class="note-add">
-        <div class="note-add-button">
+        <div class="note-add-button" @click="addNote">
           <el-icon class="note-add-icon"><plus /></el-icon>
           <span class="note-add-text">新建笔记</span>
         </div>
@@ -38,8 +38,15 @@
         </div>
       </div>
       <div class="notes-view-ScrollWindow">
-        <div v-for="(note, index) in allNotes" :key="note.id" @click="openNote(note.id)" >
-          <div class="notes-view-note" :class="{'notes-view-note-selected':currentIndex==index}">
+        <div
+          v-for="(note, index) in allNotes"
+          :key="note.id"
+          @click="openNote(note, index)"
+        >
+          <div
+            class="notes-view-note"
+            :class="{ 'notes-view-note-selected': currentIndex == index }"
+          >
             <div class="note-snippet-divide" v-if="index > 0"></div>
             <div class="note-hover"></div>
             <div class="note-border"></div>
@@ -62,6 +69,7 @@ import { GetAllNotes } from "@/api/note";
 import { friendlyDate } from "@/utils/util";
 export default {
   name: "NoteList",
+  emits: ["childByValue"],
   components: { SiderBar, ArrowDown, Plus },
   data() {
     return {
@@ -82,11 +90,21 @@ export default {
         this.noteNum = res.data.total;
       }
     },
-    openNote(id){
-      console.log(id)
+    openNote(note, index) {
+      this.currentIndex = index;
+      this.$emit("childByValue", note);
+      // console.log(id)
     },
     _formateDate(dateStr) {
-      return friendlyDate(dateStr);
+      if (dateStr == "") {
+        return "";
+      } else {
+        return friendlyDate(dateStr);
+      }
+    },
+    addNote() {
+      this.allNotes.unshift({ id: -1, title: "", updatedAt: "" });
+      this.$emit("childByValue", { id: -2, title: ""});
     },
   },
 };
