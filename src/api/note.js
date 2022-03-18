@@ -47,3 +47,14 @@ export const CreateNote = (data) => {
         data
     })
 }
+
+// @Summary 用户删除笔记本
+// @Produce  application/json
+// @Param data body {username:"string",password:"string"}
+// @Router /notes/add [post]
+export const DeleteNote = (data) => {
+    return service({
+        url: '/notes/'+data.id,
+        method: 'delete',
+    })
+}

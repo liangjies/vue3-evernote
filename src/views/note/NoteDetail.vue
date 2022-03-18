@@ -1,13 +1,24 @@
 <template>
-  <note v-on:childByValue="childByValue"></note>
+  <note v-on:childByValue="childByValue" :refresh="refresh"></note>
   <div class="note-detail">
     <div class="note-header">
       <div class="note-operation">
         <div class="note-operation-left">
           <el-icon class="note-operation-icon"><info-filled /></el-icon>
-          <el-icon class="note-operation-icon"><delete /></el-icon>
+          <el-icon class="note-operation-icon" @click="doDelete()"
+            ><delete
+          /></el-icon>
         </div>
         <div class="note-operation-right">
+          <el-button
+            v-if="id == -2"
+            type="danger"
+            class="note-operation-icon"
+            @click="doCancel()"
+            size="small"
+          >
+            取消
+          </el-button>
           <el-button
             type="primary"
             class="note-operation-icon"
@@ -63,8 +74,8 @@
 <script>
 import Note from "@/views/note/Note.vue";
 import NoteEditor from "@/views/note/NoteEditor.vue";
-import { GetNoteById, UpdateNote, CreateNote } from "@/api/note";
-import { ElMessage } from "element-plus";
+import { GetNoteById, UpdateNote, CreateNote, DeleteNote } from "@/api/note";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { mapState } from "vuex";
 import {
   Delete,
@@ -91,8 +102,9 @@ export default {
       titleInput: "",
       value: "",
       content: "",
-      notebook: "笔记本",
+      notebook: "",
       notebookID: -1,
+      refresh: false,
     };
   },
   computed: {
@@ -110,6 +122,12 @@ export default {
       this.GetNote(childValue.id);
     },
     async GetNote(noteId) {
+      if (noteId == -2) {
+        this.value = "";
+        this.notebook = this.notebooks[0].title;
+        this.notebookID = this.notebooks[0].id;
+        return;
+      }
       const res = await GetNoteById({ id: noteId });
       if (res.code === 200) {
         this.value = res.data.list[0].content;
@@ -137,11 +155,15 @@ export default {
           });
         }
       } else if (this.id == -2) {
+        console.log(this.notebookID)
         const res = await CreateNote({
           title: this.titleInput,
           content: this.content,
+          notebookId: this.notebookID,
         });
         if (res.code === 200) {
+          this.refresh = !this.refresh;
+          this.id = res.data.id;
           ElMessage({
             showClose: true,
             message: res.msg,
@@ -158,6 +180,27 @@ export default {
       this.notebooks.forEach((notebook) => {
         if (notebook.id == id) {
           this.notebook = notebook.title;
+        }
+      });
+    },
+    doCancel() {
+      this.id = -1;
+      this.refresh = !this.refresh;
+    },
+    doDelete() {
+      ElMessageBox.confirm("是否删除?", "提示", {
+        confirmButtonText: "是",
+        cancelButtonText: "否",
+        type: "warning",
+      }).then(async () => {
+        const res = await DeleteNote({ id: this.id });
+        if (res.code === 200) {
+          this.refresh = !this.refresh;
+          ElMessage({
+            showClose: true,
+            message: res.msg,
+            type: "success",
+          });
         }
       });
     },

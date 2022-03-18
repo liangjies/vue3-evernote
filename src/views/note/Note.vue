@@ -71,6 +71,12 @@ export default {
   name: "NoteList",
   emits: ["childByValue"],
   components: { SiderBar, ArrowDown, Plus },
+  props: {
+    refresh: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       noteNum: 0,
@@ -80,7 +86,8 @@ export default {
   },
   created() {
     this.getNotes();
-    // console.log("created");
+  },
+  mounted(){
   },
   methods: {
     async getNotes() {
@@ -88,12 +95,14 @@ export default {
       if (res.code === 200) {
         this.allNotes = res.data.list;
         this.noteNum = res.data.total;
+        if(this.currentIndex==0){
+          this.$emit("childByValue", this.allNotes[0]);
+        }
       }
     },
     openNote(note, index) {
       this.currentIndex = index;
       this.$emit("childByValue", note);
-      // console.log(id)
     },
     _formateDate(dateStr) {
       if (dateStr == "") {
@@ -103,8 +112,14 @@ export default {
       }
     },
     addNote() {
-      this.allNotes.unshift({ id: -1, title: "", updatedAt: "" });
-      this.$emit("childByValue", { id: -2, title: ""});
+      this.allNotes.unshift({ id: -2, title: "", updatedAt: "" });
+      this.$emit("childByValue", { id: -2, title: "" });
+    },
+  },
+  watch: {
+    refresh(newValue) {
+      this.getNotes();
+      console.log(newValue)
     },
   },
 };

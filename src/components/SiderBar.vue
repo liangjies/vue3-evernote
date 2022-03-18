@@ -30,6 +30,11 @@
               <notebook />
             </el-icon>
           </div>
+          <router-link to="/NoteList" title="回收站">
+            <el-icon class="note el-icon-s-order">
+              <delete />
+            </el-icon>
+          </router-link>
           <div class="userMenu" @click.stop="open = true">
             <img
               src="https://s1.ax1x.com/2022/03/07/b6amRI.png"
@@ -54,7 +59,7 @@
 </template>
 
 <script>
-import { Plus, Document, Notebook, Search } from "@element-plus/icons-vue";
+import { Plus, Document, Notebook, Search, Delete } from "@element-plus/icons-vue";
 import UserPop from "./UserPop.vue";
 import NotebookPop from "./NotebookPop.vue";
 import clickoutside from "../utils/click-outside";
@@ -70,6 +75,7 @@ export default {
     Document,
     Notebook,
     Search,
+    Delete,
   },
   created() {
     this.GetNotebooksData()
