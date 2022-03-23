@@ -34,6 +34,7 @@ service.interceptors.response.use(
         if (response.headers['new-token']) {
             store.commit('user/setToken', response.headers['new-token'])
         }
+
         if (response.data.code === 200 || response.headers.success === 'true') {
             return response.data
         } else {
@@ -42,6 +43,7 @@ service.interceptors.response.use(
                 message: response.data.msg || decodeURI(response.headers.msg),
                 type: response.headers.msgtype || 'error'
             })
+            
             if (response.data.data && response.data.data.reload) {
                 store.commit('user/LoginOut')
             }

@@ -20,7 +20,7 @@
               </el-icon>
             </div>
           </router-link>
-          <router-link to="/NoteList" title="笔记">
+          <router-link to="/NoteDetail" title="笔记">
             <el-icon class="note el-icon-s-order">
               <document />
             </el-icon>
@@ -30,7 +30,7 @@
               <notebook />
             </el-icon>
           </div>
-          <router-link to="/NoteList" title="回收站">
+          <router-link to="/NoteTrash" title="回收站">
             <el-icon class="note el-icon-s-order">
               <delete />
             </el-icon>

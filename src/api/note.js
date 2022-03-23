@@ -1,6 +1,6 @@
 import service from '@/utils/request'
 
-// @Summary 用户登录
+// @Summary 获取所有笔记
 // @Produce  application/json
 // @Param data body {username:"string",password:"string"}
 // @Router /base/login [post]

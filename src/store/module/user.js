@@ -24,9 +24,8 @@ export const user = {
     LoginOut(state) {
       state.userInfo = {}
       state.token = ''
-      sessionStorage.clear()
       router.push({ name: 'Login', replace: true })
-      window.location.reload()
+      // window.location.reload()
     },
   },
   actions: {
@@ -36,14 +35,8 @@ export const user = {
         commit('setUserInfo', res.data.user)
         commit('setToken', res.data.token)
         console.log(res.data.token)
-        router.push({ path: "/NoteList" })
+        router.push({ path: "/" })
         return true
-      }
-    },
-    async LoginOut({ commit }) {
-      const res = await jsonInBlacklist()
-      if (res.code === 0) {
-        commit('LoginOut')
       }
     },
   },

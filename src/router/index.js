@@ -15,11 +15,6 @@ const router = createRouter({
       component: Search
     },
     {
-      path: '/NoteList',
-      name: 'NoteList',
-      component: NoteList
-    },
-    {
       path: '/Login',
       name: 'Login',
       component: () => import('@/views/login/Login.vue')
@@ -33,6 +28,11 @@ const router = createRouter({
       path: '/NoteEditor',
       name: 'NoteEditor',
       component: () => import('@/views/note/NoteEditor.vue')
+    },
+    {
+      path: '/NoteTrash',
+      name: 'NoteTrash',
+      component: () => import('@/views/trash/NoteTrash.vue')
     },
   ]
 })
