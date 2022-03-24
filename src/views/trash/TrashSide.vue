@@ -35,7 +35,7 @@
         <div
           v-for="(note, index) in allNotes"
           :key="note.id"
-          @click="openNote(note, index)"
+          @click="openTrash(note, index)"
         >
           <div
             class="notes-view-note"
@@ -50,8 +50,12 @@
               <div class="note-snippet">{{ note.snippet }}</div>
             </div>
             <div class="note-operate">
-              <button class="note-operate-button">彻底删除</button>
-              <button class="note-operate-button">还原</button>
+              <button class="note-operate-button" @click="deleteTrash(note)">
+                彻底删除
+              </button>
+              <button class="note-operate-button" @click="revertNote(note)">
+                还原
+              </button>
             </div>
           </div>
         </div>
@@ -65,8 +69,11 @@ import SiderBar from "@/components/SiderBar.vue";
 import { ArrowDown, Plus } from "@element-plus/icons-vue";
 import { GetTrashs } from "@/api/trash";
 import { friendlyDate } from "@/utils/util";
+import { DeleteTrash, RevertNote } from "@/api/trash";
+import { ElMessage, ElMessageBox } from "element-plus";
 export default {
   name: "TrashSide",
+  emits: ["childByValue"],
   components: { SiderBar, ArrowDown, Plus },
   data() {
     return {
@@ -84,7 +91,52 @@ export default {
       if (res.code === 200) {
         this.allNotes = res.data.list;
         this.noteNum = res.data.total;
+        if (this.currentIndex == 0) {
+          this.$emit("childByValue", this.allNotes[0]);
+        }
       }
+    },
+    openTrash(note, index) {
+      this.currentIndex = index;
+      this.$emit("childByValue", note);
+    },
+    deleteTrash(note) {
+      ElMessageBox.confirm("是否彻底删除?", "提示", {
+        confirmButtonText: "是",
+        cancelButtonText: "否",
+        type: "warning",
+      }).then(async () => {
+        const res = await DeleteTrash({ id: note.id });
+        if (res.code === 200) {
+          this._deleteNotes(note.id);
+          ElMessage({
+            showClose: true,
+            message: res.msg,
+            type: "success",
+          });
+        }
+      });
+    },
+    async revertNote(note) {
+      const res = await RevertNote({ id: note.id });
+      if (res.code === 200) {
+        this._deleteNotes(note.id);
+        ElMessage({
+          showClose: true,
+          message: res.msg,
+          type: "success",
+        });
+      }
+    },
+    _deleteNotes(id) {
+      let tempNotes = [];
+      for (let i = 0; i < this.allNotes.length; i++) {
+        if (this.allNotes[i].id != id) {
+          tempNotes.push(this.allNotes[i]);
+        }
+      }
+      this.allNotes = tempNotes;
+      this.$emit("childByValue", this.allNotes[0]);
     },
     _formateDate(dateStr) {
       if (dateStr == "") {
@@ -262,10 +314,10 @@ export default {
           padding: 0 5px;
           vertical-align: top;
           outline: none;
-          &:hover{
+          &:hover {
             color: #2dbe60;
             background-color: #fff;
-    border-color: transparent;
+            border-color: transparent;
           }
         }
       }
