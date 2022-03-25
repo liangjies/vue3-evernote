@@ -17,9 +17,7 @@
             </span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item disabled style="font-size: 11px"
-                  >排序方式</el-dropdown-item
-                >
+                <el-dropdown-item disabled style="font-size: 11px">排序方式</el-dropdown-item>
                 <el-dropdown-item>创建日期（最早优先）</el-dropdown-item>
                 <el-dropdown-item>创建日期（最新优先）</el-dropdown-item>
                 <el-dropdown-item>更新日期（最早优先）</el-dropdown-item>
@@ -32,15 +30,8 @@
         </div>
       </div>
       <div class="notes-view-ScrollWindow">
-        <div
-          v-for="(note, index) in allNotes"
-          :key="note.id"
-          @click="openTrash(note, index)"
-        >
-          <div
-            class="notes-view-note"
-            :class="{ 'notes-view-note-selected': currentIndex == index }"
-          >
+        <div v-for="(note, index) in allNotes" :key="note.id" @click="openTrash(note, index)">
+          <div class="notes-view-note" :class="{ 'notes-view-note-selected': currentIndex == index }">
             <div class="note-snippet-divide" v-if="index > 0"></div>
             <div class="note-hover"></div>
             <div class="note-border"></div>
@@ -66,15 +57,15 @@
 
 <script>
 import SiderBar from "@/components/SiderBar.vue";
-import { ArrowDown, Plus } from "@element-plus/icons-vue";
+import { ArrowDown } from "@element-plus/icons-vue";
 import { GetTrashs } from "@/api/trash";
 import { friendlyDate } from "@/utils/util";
 import { DeleteTrash, RevertNote } from "@/api/trash";
 import { ElMessage, ElMessageBox } from "element-plus";
 export default {
   name: "TrashSide",
-  emits: ["childByValue"],
-  components: { SiderBar, ArrowDown, Plus },
+  emits: ["TrashValue"],
+  components: { SiderBar, ArrowDown },
   data() {
     return {
       noteNum: 0,
@@ -91,14 +82,14 @@ export default {
       if (res.code === 200) {
         this.allNotes = res.data.list;
         this.noteNum = res.data.total;
-        if (this.currentIndex == 0) {
-          this.$emit("childByValue", this.allNotes[0]);
+        if (this.allNotes.length > 0 && this.currentIndex == 0) {
+          this.$emit("TrashValue", this.allNotes[0]);
         }
       }
     },
     openTrash(note, index) {
       this.currentIndex = index;
-      this.$emit("childByValue", note);
+      this.$emit("TrashValue", note);
     },
     deleteTrash(note) {
       ElMessageBox.confirm("是否彻底删除?", "提示", {
@@ -136,7 +127,7 @@ export default {
         }
       }
       this.allNotes = tempNotes;
-      this.$emit("childByValue", this.allNotes[0]);
+      this.$emit("TrashValue", this.allNotes[0]);
     },
     _formateDate(dateStr) {
       if (dateStr == "") {

@@ -1,22 +1,20 @@
 <template>
-  <trash-side v-on:childByValue="childByValue"></trash-side>
-  <div class="note-detail">
+  <trash-side v-on:TrashValue="TrashValue"></trash-side>
+  <div class="note-detail" v-show="this.id != -1">
     <div class="note-header">
       <div class="note-operation">
         <div class="note-operation-left">
-          <el-icon class="note-operation-icon"><info-filled /></el-icon>
-          <el-icon class="note-operation-icon" @click="doDelete()"
-            ><delete
-          /></el-icon>
+          <el-icon class="note-operation-icon">
+            <info-filled />
+          </el-icon>
+          <el-icon class="note-operation-icon" @click="doDelete()">
+            <delete />
+          </el-icon>
         </div>
       </div>
     </div>
     <div class="note-title">
-      <input
-        class="note-title-input"
-        v-model="titleInput"
-        placeholder="请输入标题"
-      />
+      <input class="note-title-input" v-model="titleInput" placeholder="请输入标题" />
     </div>
     <!-- 编辑器容器 -->
     <div id="editor">
@@ -28,14 +26,10 @@
 <script>
 import TrashSide from "@/views/trash/TrashSide.vue";
 import NoteEditor from "@/views/note/NoteEditor.vue";
-import {GetTrashById} from "@/api/trash";
+import { GetTrashById } from "@/api/trash";
 import {
   Delete,
-  InfoFilled,
-  FullScreen,
-  Notebook,
-  ArrowDown,
-  PriceTag,
+  InfoFilled
 } from "@element-plus/icons-vue";
 export default {
   name: "NoteTrash",
@@ -43,11 +37,7 @@ export default {
     TrashSide,
     NoteEditor,
     Delete,
-    InfoFilled,
-    FullScreen,
-    Notebook,
-    ArrowDown,
-    PriceTag,
+    InfoFilled
   },
   data() {
     return {
@@ -61,10 +51,10 @@ export default {
     };
   },
   methods: {
-    childByValue: function (childValue) {
-      this.titleInput = childValue.title;
-      this.id = childValue.id;
-      this.GetNote(childValue.id);
+    TrashValue: function (trashValue) {
+      this.titleInput = trashValue.title;
+      this.id = trashValue.id;
+      this.GetNote(trashValue.id);
     },
     async GetNote(noteId) {
       if (noteId == -2) {

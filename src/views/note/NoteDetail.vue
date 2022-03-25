@@ -1,36 +1,31 @@
 <template>
   <note v-on:childByValue="childByValue" :refresh="refresh"></note>
-  <div class="note-detail">
+  <div class="note-detail" v-show="this.id != -1">
     <div class="note-header">
       <div class="note-operation">
         <div class="note-operation-left">
-          <el-icon class="note-operation-icon"><info-filled /></el-icon>
-          <el-icon class="note-operation-icon" @click="doDelete()"
-            ><delete
-          /></el-icon>
+          <el-icon class="note-operation-icon">
+            <info-filled />
+          </el-icon>
+          <el-icon class="note-operation-icon" @click="doDelete()">
+            <delete />
+          </el-icon>
         </div>
         <div class="note-operation-right">
-          <el-button
-            v-if="id == -2"
-            type="danger"
-            class="note-operation-icon"
-            @click="doCancel()"
-            size="small"
-          >
+          <el-button v-if="id == -2" type="danger" class="note-operation-icon" @click="doCancel()" size="small">
             取消
           </el-button>
-          <el-button
-            type="primary"
-            class="note-operation-icon"
-            @click="doUpdateNote()"
-            size="small"
-          >
+          <el-button type="primary" class="note-operation-icon" @click="doUpdateNote()" size="small">
             保存
           </el-button>
           <div class="note-notebook">
-            <el-icon class="note-notebook-icon"><notebook /></el-icon>
+            <el-icon class="note-notebook-icon">
+              <notebook />
+            </el-icon>
             <div class="note-tags">
-              <el-icon class="note-tags-icon"><price-tag /></el-icon>
+              <el-icon class="note-tags-icon">
+                <price-tag />
+              </el-icon>
               <span class="note-tag"> 微信 </span>
             </div>
             <el-dropdown trigger="click" style="margin-top: 1px">
@@ -42,12 +37,7 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item
-                    v-for="notebook in notebooks"
-                    :key="notebook.id"
-                    @click="updateNotebook(notebook.id)"
-                    >{{ notebook.title }}</el-dropdown-item
-                  >
+                  <el-dropdown-item v-for="notebook in notebooks" :key="notebook.id" @click="updateNotebook(notebook.id)">{{ notebook.title }}</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -58,11 +48,7 @@
       <div class="note-label"></div>
     </div>
     <div class="note-title">
-      <input
-        class="note-title-input"
-        v-model="titleInput"
-        placeholder="请输入标题"
-      />
+      <input class="note-title-input" v-model="titleInput" placeholder="请输入标题" />
     </div>
     <!-- 编辑器容器 -->
     <div id="editor">
@@ -80,7 +66,6 @@ import { mapState } from "vuex";
 import {
   Delete,
   InfoFilled,
-  FullScreen,
   Notebook,
   ArrowDown,
   PriceTag,
@@ -90,7 +75,6 @@ export default {
     Note,
     Delete,
     InfoFilled,
-    FullScreen,
     Notebook,
     ArrowDown,
     PriceTag,
@@ -112,7 +96,7 @@ export default {
       notebooks: (state) => state.notebook.notebooks,
     }),
   },
-  mounted() {},
+  mounted() { },
   methods: {
     childByValue: function (childValue) {
       // childValue就是子组件传过来的值
