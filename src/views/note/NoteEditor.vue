@@ -1,11 +1,6 @@
 <template>
   <div class="tinymce-box">
-    <Editor
-      v-model="contentValue"
-      :init="init"
-      :disabled="disabled"
-      @onClick="onClick"
-    />
+    <Editor v-model="contentValue" :init="init" :disabled="disabled" @onClick="onClick" />
   </div>
 </template>
 
@@ -23,7 +18,7 @@ import "tinymce/plugins/advlist"; //高级列表
 import "tinymce/plugins/anchor"; //锚点
 import "tinymce/plugins/autolink"; //自动链接
 // import "tinymce/plugins/autoresize"; //编辑器高度自适应,注：plugins里引入此插件时，Init里设置的height将失效
-import "tinymce/plugins/autosave"; //自动存稿
+// import "tinymce/plugins/autosave"; //自动存稿
 import "tinymce/plugins/charmap"; //特殊字符
 import "tinymce/plugins/code"; //编辑源码
 import "tinymce/plugins/codesample"; //代码示例
@@ -76,7 +71,7 @@ export default {
     plugins: {
       type: [String, Array],
       default:
-        "print preview searchreplace autolink directionality visualblocks visualchars fullscreen image link media template code codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount textpattern autosave ",
+        "print preview searchreplace autolink directionality visualblocks visualchars fullscreen image link media template code codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount textpattern",
     },
     toolbar: {
       type: [String, Array],
