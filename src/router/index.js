@@ -20,9 +20,9 @@ const router = createRouter({
       component: () => import('@/views/login/Login.vue')
     },
     {
-      path: '/NoteDetail',
+      path: '/NoteDetail/:id',
       name: 'NoteDetail',
-      component: () => import('@/views/note/NoteDetail.vue')
+      component: () => import('@/views/note/NoteDetail.vue'),
     },
     {
       path: '/NoteEditor',

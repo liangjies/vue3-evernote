@@ -41,7 +41,7 @@
         v-for="(notebook, index) in notebooks"
         :key="notebook.id"
       >
-        <div class="notebook-list">
+        <div class="notebook-list" @click="doClickNotebook(notebook.id)">
           <div class="notebook-title">
             {{ notebook.title }}
           </div>
@@ -80,8 +80,10 @@ import { mapState } from "vuex";
 import { CreateNotebook, DeleteNotebook } from "@/api/notebook";
 import { mapActions } from "vuex";
 import { ElMessage } from "element-plus";
+import router from "@/router/index";
 export default {
   name: "NotebookPop",
+  emits: ["PopOpenValue"],
   components: { FolderAdd, Search, DeleteFilled, Notebook },
   data() {
     return {
@@ -89,6 +91,7 @@ export default {
       dialogFormVisible: false,
       dialogDeleteVisible: false,
       deleteInfo: { id: -1, title: "" },
+      open:true
     };
   },
   created() {
@@ -135,9 +138,13 @@ export default {
       this.notebooks.forEach((notebook) => {
         if (notebook.id == id) {
           this.deleteInfo.title = notebook.title;
-          //return notebook.title
         }
       });
+    },
+    doClickNotebook(id) {
+      router.push({ path: "/NoteDetail/" + id });
+      this.open = !this.open
+      this.$emit("PopOpenValue", this.open);
     },
   },
 };
@@ -232,6 +239,7 @@ export default {
     bottom: 0;
     width: 100%;
     .notebook-lists {
+      cursor: pointer;
       .notebook-list {
         box-sizing: border-box;
         position: sticky;
@@ -240,7 +248,6 @@ export default {
           white-space: nowrap;
           color: #4a4a4a;
           margin: 12px 80px 6px 24px;
-          cursor: pointer;
           overflow: hidden;
           text-overflow: ellipsis;
           display: inline-block;

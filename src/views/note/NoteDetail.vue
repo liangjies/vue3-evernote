@@ -4,7 +4,7 @@
     <div class="note-header">
       <div class="note-operation">
         <div class="note-operation-left">
-          <el-icon class="note-operation-icon">
+          <el-icon class="note-operation-icon" ref="upload">
             <info-filled />
           </el-icon>
           <el-icon class="note-operation-icon" @click="doDelete()">
@@ -12,10 +12,21 @@
           </el-icon>
         </div>
         <div class="note-operation-right">
-          <el-button v-if="id == -2" type="danger" class="note-operation-icon" @click="doCancel()" size="small">
+          <el-button
+            v-if="id == -2"
+            type="danger"
+            class="note-operation-icon"
+            @click="doCancel()"
+            size="small"
+          >
             取消
           </el-button>
-          <el-button type="primary" class="note-operation-icon" @click="doUpdateNote()" size="small">
+          <el-button
+            type="primary"
+            class="note-operation-icon"
+            @click="doUpdateNote()"
+            size="small"
+          >
             保存
           </el-button>
           <div class="note-notebook">
@@ -37,7 +48,12 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item v-for="notebook in notebooks" :key="notebook.id" @click="updateNotebook(notebook.id)">{{ notebook.title }}</el-dropdown-item>
+                  <el-dropdown-item
+                    v-for="notebook in notebooks"
+                    :key="notebook.id"
+                    @click="updateNotebook(notebook.id)"
+                    >{{ notebook.title }}</el-dropdown-item
+                  >
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -48,11 +64,19 @@
       <div class="note-label"></div>
     </div>
     <div class="note-title">
-      <input class="note-title-input" v-model="titleInput" placeholder="请输入标题" />
+      <input
+        class="note-title-input"
+        v-model="titleInput"
+        placeholder="请输入标题"
+      />
     </div>
     <!-- 编辑器容器 -->
     <div id="editor">
-      <note-editor :value="value" v-on:inputData="inputData"></note-editor>
+      <note-editor
+        :value="value"
+        v-on:inputData="inputData"
+        v-on:onClickEidtor="onClickEidtor"
+      ></note-editor>
     </div>
   </div>
 </template>
@@ -96,7 +120,7 @@ export default {
       notebooks: (state) => state.notebook.notebooks,
     }),
   },
-  mounted() { },
+  mounted() {},
   methods: {
     childByValue: function (childValue) {
       // childValue就是子组件传过来的值
@@ -104,6 +128,11 @@ export default {
       this.titleInput = childValue.title;
       this.id = childValue.id;
       this.GetNote(childValue.id);
+    },
+    onClickEidtor: function (onClickEidtor) {
+      // console.log(this.$refs.upload)
+      this.$refs.upload.$el.click();
+      console.log(onClickEidtor);
     },
     async GetNote(noteId) {
       if (noteId == -2) {
@@ -139,7 +168,7 @@ export default {
           });
         }
       } else if (this.id == -2) {
-        console.log(this.notebookID)
+        console.log(this.notebookID);
         const res = await CreateNote({
           title: this.titleInput,
           content: this.content,
@@ -187,6 +216,9 @@ export default {
           });
         }
       });
+    },
+    test() {
+      console.log("click here");
     },
   },
 };

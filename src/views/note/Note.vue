@@ -2,7 +2,7 @@
   <sider-bar></sider-bar>
   <div class="note-page">
     <div class="note-header">
-      <div class="note-header-title">笔记</div>
+      <div class="note-header-title">{{ title }}</div>
       <div class="note-add">
         <div class="note-add-button" @click="addNote">
           <el-icon class="note-add-icon"><plus /></el-icon>
@@ -65,7 +65,7 @@
 <script>
 import SiderBar from "@/components/SiderBar.vue";
 import { ArrowDown, Plus } from "@element-plus/icons-vue";
-import { GetAllNotes } from "@/api/note";
+import { GetAllNotes, GetNotes } from "@/api/note";
 import { friendlyDate } from "@/utils/util";
 export default {
   name: "NoteList",
@@ -82,20 +82,37 @@ export default {
       noteNum: 0,
       allNotes: "",
       currentIndex: 0,
+      title: "笔记",
     };
   },
   created() {
-    this.getNotes();
+    if (this.$route.params.id == 0) {
+      this.getAllNotes();
+      this.title = "笔记";
+    } else {
+      this.getNotes(this.$route.params.id);
+    }
   },
-  mounted(){
-  },
+  mounted() {},
   methods: {
-    async getNotes() {
+    async getAllNotes() {
+      console.log("run" + this.$route.params.id);
       const res = await GetAllNotes();
       if (res.code === 200) {
         this.allNotes = res.data.list;
         this.noteNum = res.data.total;
-        if(this.currentIndex==0){
+        if (this.currentIndex == 0) {
+          this.$emit("childByValue", this.allNotes[0]);
+        }
+      }
+    },
+    async getNotes(id) {
+      const res = await GetNotes({ id: id });
+      if (res.code === 200) {
+        this.title = res.msg;
+        this.allNotes = res.data.list;
+        this.noteNum = res.data.total;
+        if (this.currentIndex == 0) {
           this.$emit("childByValue", this.allNotes[0]);
         }
       }
@@ -119,7 +136,15 @@ export default {
   watch: {
     refresh(newValue) {
       this.getNotes();
-      console.log(newValue)
+      console.log(newValue);
+    },
+    "$route.params.id": function () {
+      if (this.$route.params.id == 0) {
+        this.getAllNotes();
+        this.title = "笔记";
+      } else {
+        this.getNotes(this.$route.params.id);
+      }
     },
   },
 };

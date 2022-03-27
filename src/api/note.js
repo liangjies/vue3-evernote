@@ -3,12 +3,23 @@ import service from '@/utils/request'
 // @Summary 获取所有笔记
 // @Produce  application/json
 // @Param data body {username:"string",password:"string"}
-// @Router /base/login [post]
+// @Router /notes/list/all [get]
 export const GetAllNotes = (data) => {
     return service({
-        url: '/notes/all',
+        url: '/notes/list/all',
         method: 'get',
         data
+    })
+}
+
+// @Summary 获取笔记本笔记列表
+// @Produce  application/json
+// @Param data body {username:"string",password:"string"}
+// @Router /base/login [post]
+export const GetNotes = (data) => {
+    return service({
+        url: '/notes/list/'+data.id,
+        method: 'get',
     })
 }
 

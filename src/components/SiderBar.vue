@@ -20,13 +20,16 @@
               </el-icon>
             </div>
           </router-link>
-          <router-link to="/NoteDetail" title="笔记">
+          <router-link to="/NoteDetail/0" title="笔记">
             <el-icon class="note el-icon-s-order">
               <document />
             </el-icon>
           </router-link>
-          <div title="笔记本" @click.stop="notebookOpen = true">
-            <el-icon class="book el-icon-s-platform" :class="{'note-book-open':notebookOpen}">
+          <div title="笔记本" @click.stop="doClickOpenNotebook">
+            <el-icon
+              class="book el-icon-s-platform"
+              :class="{ 'note-book-open': notebookOpen }"
+            >
               <notebook />
             </el-icon>
           </div>
@@ -53,17 +56,26 @@
       <user-pop v-clickoutside="handleClickOutside"></user-pop>
     </div>
     <div v-if="notebookOpen">
-      <notebook-pop v-clickoutside="notebookClickOutside"></notebook-pop>
+      <notebook-pop
+        v-clickoutside="notebookClickOutside"
+        v-on:PopOpenValue="PopOpenValue"
+      ></notebook-pop>
     </div>
   </div>
 </template>
 
 <script>
-import { Plus, Document, Notebook, Search, Delete } from "@element-plus/icons-vue";
+import {
+  Plus,
+  Document,
+  Notebook,
+  Search,
+  Delete,
+} from "@element-plus/icons-vue";
 import UserPop from "./UserPop.vue";
 import NotebookPop from "./NotebookPop.vue";
 import clickoutside from "../utils/click-outside";
-import { mapActions } from 'vuex'
+import { mapActions } from "vuex";
 
 export default {
   directives: { clickoutside },
@@ -78,19 +90,7 @@ export default {
     Delete,
   },
   created() {
-    this.GetNotebooksData()
-    // if (this.$store.getters['isLogin'] === false) {
-    //   this.$message({
-    //     type: 'error',
-    //     message: '没有权限-请先登录',
-    //     showClose: true
-    //   })
-    //   this.$router.push({
-    //     path: '/login'
-    //   })
-    // } else {
-    //   this._getNotebookList()
-    // }
+    this.GetNotebooksData();
   },
   data() {
     return {
@@ -101,9 +101,9 @@ export default {
   },
 
   methods: {
-    ...mapActions('notebook', ['GetNotebooksData']),
-    test() {
-      console.log("run");
+    ...mapActions("notebook", ["GetNotebooksData"]),
+    PopOpenValue: function (popOpenValue) {
+      this.notebookOpen = false;
     },
     handleClickOutside() {
       this.open = false;
@@ -111,6 +111,9 @@ export default {
     },
     notebookClickOutside() {
       this.notebookOpen = false;
+    },
+    doClickOpenNotebook() {
+      this.notebookOpen = !this.notebookOpen;
     },
   },
 };
@@ -223,5 +226,4 @@ export default {
     }
   }
 }
-
 </style>

@@ -1,7 +1,6 @@
 
 const clickoutside = {
     mounted(el, binding) {
-        console.log("mounted")
       function documentHandler(e) {
         if (el.contains(e.target)) {
           return false
