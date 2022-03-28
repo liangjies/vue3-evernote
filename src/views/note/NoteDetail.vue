@@ -124,9 +124,11 @@ export default {
   methods: {
     childByValue: function (childValue) {
       // childValue就是子组件传过来的值
-      //console.log(childValue);
+      // console.log(childValue);
       this.titleInput = childValue.title;
       this.id = childValue.id;
+      this.notebookID = Number(childValue.notebookID);
+      // this.notebook = this.getNotebookById(this.notebookID);
       this.GetNote(childValue.id);
     },
     onClickEidtor: function (onClickEidtor) {
@@ -137,8 +139,8 @@ export default {
     async GetNote(noteId) {
       if (noteId == -2) {
         this.value = "";
-        this.notebook = this.notebooks[0].title;
-        this.notebookID = this.notebooks[0].id;
+        // this.notebook = this.notebooks[0].title;
+        // this.notebookID = this.notebooks[0].id;
         return;
       }
       const res = await GetNoteById({ id: noteId });
@@ -219,6 +221,13 @@ export default {
     },
     test() {
       console.log("click here");
+    },
+    getNotebookById(id) {
+      this.notebooks.forEach((notebook) => {
+        if (notebook.id == id) {
+          this.deleteInfo.title = notebook.title;
+        }
+      });
     },
   },
 };

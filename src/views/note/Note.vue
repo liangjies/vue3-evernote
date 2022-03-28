@@ -86,12 +86,7 @@ export default {
     };
   },
   created() {
-    if (this.$route.params.id == 0) {
-      this.getAllNotes();
-      this.title = "笔记";
-    } else {
-      this.getNotes(this.$route.params.id);
-    }
+    this._getNotes();
   },
   mounted() {},
   methods: {
@@ -117,6 +112,14 @@ export default {
         }
       }
     },
+    _getNotes() {
+      if (this.$route.params.id == 0) {
+        this.getAllNotes();
+        this.title = "笔记";
+      } else {
+        this.getNotes(this.$route.params.id);
+      }
+    },
     openNote(note, index) {
       this.currentIndex = index;
       this.$emit("childByValue", note);
@@ -130,19 +133,22 @@ export default {
     },
     addNote() {
       this.allNotes.unshift({ id: -2, title: "", updatedAt: "" });
-      this.$emit("childByValue", { id: -2, title: "" });
+      this.$emit("childByValue", {
+        id: -2,
+        title: "",
+        notebookID: this.$route.params.id,
+      });
     },
   },
   watch: {
     refresh(newValue) {
-      this.getNotes();
-      console.log(newValue);
+      this._getNotes();
     },
     "$route.params.id": function () {
       if (this.$route.params.id == 0) {
         this.getAllNotes();
         this.title = "笔记";
-      } else {
+      } else if (this.$route.params.id > 0) {
         this.getNotes(this.$route.params.id);
       }
     },
