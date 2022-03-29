@@ -38,33 +38,20 @@
     <div class="notebook-lists-box">
       <div
         class="notebook-lists"
-        v-for="(notebook, index) in notebooks"
+        v-for="notebook in notebooks"
         :key="notebook.id"
       >
-        <div class="notebook-list" @click="doClickNotebook(notebook.id)">
+        <div class="notebook-list"  @click="doClickNotebook(notebook.id)">
           <div class="notebook-title">
             {{ notebook.title }}
           </div>
           <div class="notebook-number">{{ notebook.noteCounts }} 条笔记</div>
-          <div class="notebook-operate">
-            <el-icon
-              class="notebook-operate-icon"
-              @click="deleteDialog(notebook.id)"
-              ><delete-filled
-            /></el-icon>
+          <div class="notebook-operate" @click="deleteDialog(notebook.id)">
+            <el-icon class="notebook-operate-icon"><delete-filled /></el-icon>
           </div>
           <div class="notebook-split"></div>
         </div>
       </div>
-      <el-dialog v-model="dialogDeleteVisible" title="删除笔记本">
-        <span>确定删除 {{ deleteInfo.title }} ?</span>
-        <template #footer>
-          <span class="dialog-footer">
-            <el-button @click="dialogDeleteVisible = false">取消</el-button>
-            <el-button type="primary" @click="deleteNotebook()">确定</el-button>
-          </span>
-        </template>
-      </el-dialog>
     </div>
   </div>
 </template>
@@ -79,7 +66,7 @@ import {
 import { mapState } from "vuex";
 import { CreateNotebook, DeleteNotebook } from "@/api/notebook";
 import { mapActions } from "vuex";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import router from "@/router/index";
 export default {
   name: "NotebookPop",
@@ -89,9 +76,7 @@ export default {
     return {
       notebookInput: "",
       dialogFormVisible: false,
-      dialogDeleteVisible: false,
-      deleteInfo: { id: -1, title: "" },
-      open:true
+      open: true,
     };
   },
   created() {
@@ -117,22 +102,23 @@ export default {
       }
     },
     deleteDialog(notebookId) {
-      this.deleteInfo.id = notebookId;
-      this.getNotebookById(notebookId);
-      this.dialogDeleteVisible = true;
-    },
-    async deleteNotebook() {
-      const res = await DeleteNotebook({ id: this.deleteInfo.id });
-      if (res.code === 200) {
-        this.GetNotebooksData();
-        ElMessage({
-          showClose: true,
-          message: res.msg,
-          type: "success",
-        });
-        this.deleteInfo = { id: -1, title: "" };
-        this.dialogDeleteVisible = false;
-      }
+      ElMessageBox.confirm("是否删除?", "提示", {
+        confirmButtonText: "是",
+        cancelButtonText: "否",
+        type: "warning",
+      })
+        .then(async () => {
+          const res = await DeleteNotebook({ id: notebookId });
+          if (res.code === 200) {
+            this.GetNotebooksData();
+            ElMessage({
+              showClose: true,
+              message: res.msg,
+              type: "success",
+            });
+          }
+        })
+        .catch((err) => {});
     },
     getNotebookById(id) {
       this.notebooks.forEach((notebook) => {
@@ -143,7 +129,7 @@ export default {
     },
     doClickNotebook(id) {
       router.push({ path: "/NoteDetail/" + id });
-      this.open = !this.open
+      this.open = !this.open;
       this.$emit("PopOpenValue", this.open);
     },
   },
@@ -268,7 +254,7 @@ export default {
           position: absolute;
           right: 18px;
           top: 17px;
-          z-index: 4;
+          z-index: 1000;
           // opacity: 0;
           .notebook-operate-icon {
             font-weight: 1000;

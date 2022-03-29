@@ -25,7 +25,9 @@
             </span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item disabled style="font-size: 11px">排序方式</el-dropdown-item>
+                <el-dropdown-item disabled style="font-size: 11px"
+                  >排序方式</el-dropdown-item
+                >
                 <el-dropdown-item>创建日期（最早优先）</el-dropdown-item>
                 <el-dropdown-item>创建日期（最新优先）</el-dropdown-item>
                 <el-dropdown-item>更新日期（最早优先）</el-dropdown-item>
@@ -38,8 +40,15 @@
         </div>
       </div>
       <div class="notes-view-ScrollWindow">
-        <div v-for="(note, index) in allNotes" :key="note.id" @click="openNote(note, index)">
-          <div class="notes-view-note" :class="{ 'notes-view-note-selected': currentIndex == index }">
+        <div
+          v-for="(note, index) in allNotes"
+          :key="note.id"
+          @click="openNote(note, index)"
+        >
+          <div
+            class="notes-view-note"
+            :class="{ 'notes-view-note-selected': currentIndex == index }"
+          >
             <div class="note-snippet-divide" v-if="index > 0"></div>
             <div class="note-hover"></div>
             <div class="note-border"></div>
@@ -76,26 +85,28 @@ export default {
       allNotes: "",
       currentIndex: 0,
       title: "笔记",
-      addNoteState: false
+      addNoteState: false,
     };
   },
-  created() {
+  created() {},
+  mounted() {
     this._getNotes();
   },
-  mounted() { },
   methods: {
     addNoteValue: function (value) {
       if (this.addNoteState == false && value == true) {
-        this.addNoteState = true
-        this.addNote()
+        this.addNoteState = true;
+        this.addNote();
       }
     },
     async getAllNotes() {
-      console.log("run" + this.$route.params.id);
       const res = await GetAllNotes();
       if (res.code === 200) {
         this.allNotes = res.data.list;
         this.noteNum = res.data.total;
+        if (this.$route.params.id == -1) {
+          return;
+        }
         if (this.currentIndex == 0) {
           this.$emit("childByValue", this.allNotes[0]);
         }
@@ -107,16 +118,19 @@ export default {
         this.title = res.msg;
         this.allNotes = res.data.list;
         this.noteNum = res.data.total;
-        console.log(this.allNotes[0])
         if (this.currentIndex == 0) {
           this.$emit("childByValue", this.allNotes[0]);
         }
       }
     },
-    _getNotes() {
+    async _getNotes() {
       if (this.$route.params.id == 0) {
         this.getAllNotes();
         this.title = "笔记";
+      } else if (this.$route.params.id == -1) {
+        await this.getAllNotes();
+        this.title = "笔记";
+        this.addNote();
       } else {
         this.getNotes(this.$route.params.id);
       }
@@ -143,7 +157,7 @@ export default {
   },
   watch: {
     refresh() {
-      this.addNoteState = false
+      this.addNoteState = false;
       this._getNotes();
     },
     "$route.params.id": function () {
@@ -153,7 +167,7 @@ export default {
       } else if (this.$route.params.id > 0) {
         this.getNotes(this.$route.params.id);
       } else if (this.$route.params.id == -1) {
-        this.getNotes(this.$route.params.id);
+        this.addNote();
       }
     },
   },
