@@ -2,13 +2,9 @@
   <div class="sider-bar" id="sidebar">
     <div class="sidebar-con">
       <div class="login">
-        <img
-          src="https://s1.ax1x.com/2022/03/07/b6Ppwj.png"
-          alt=""
-          class="user-image"
-        />
+        <img src="https://s1.ax1x.com/2022/03/07/b6Ppwj.png" alt="" class="user-image" />
         <div class="icons">
-          <div class="addNote show">
+          <div class="addNote show" @click="addNote">
             <el-icon>
               <plus />
             </el-icon>
@@ -26,10 +22,7 @@
             </el-icon>
           </router-link>
           <div title="笔记本" @click.stop="doClickOpenNotebook">
-            <el-icon
-              class="book el-icon-s-platform"
-              :class="{ 'note-book-open': notebookOpen }"
-            >
+            <el-icon class="book el-icon-s-platform" :class="{ 'note-book-open': notebookOpen }">
               <notebook />
             </el-icon>
           </div>
@@ -39,11 +32,7 @@
             </el-icon>
           </router-link>
           <div class="userMenu" @click.stop="open = true">
-            <img
-              src="https://s1.ax1x.com/2022/03/07/b6amRI.png"
-              alt=""
-              class="userMenus-image"
-            />
+            <img src="https://s1.ax1x.com/2022/03/07/b6amRI.png" alt="" class="userMenus-image" />
           </div>
           <!-- <router-link to="/trash" title="回收站"><i class="trash el-icon-delete-solid" @click="trash"></i></router-link> -->
         </div>
@@ -56,10 +45,7 @@
       <user-pop v-clickoutside="handleClickOutside"></user-pop>
     </div>
     <div v-if="notebookOpen">
-      <notebook-pop
-        v-clickoutside="notebookClickOutside"
-        v-on:PopOpenValue="PopOpenValue"
-      ></notebook-pop>
+      <notebook-pop v-clickoutside="notebookClickOutside" v-on:PopOpenValue="PopOpenValue"></notebook-pop>
     </div>
   </div>
 </template>
@@ -76,10 +62,12 @@ import UserPop from "./UserPop.vue";
 import NotebookPop from "./NotebookPop.vue";
 import clickoutside from "../utils/click-outside";
 import { mapActions } from "vuex";
+import router from '@/router/index'
 
 export default {
   directives: { clickoutside },
   name: "SiderBar",
+  emits: ["addNoteValue"],
   components: {
     UserPop,
     NotebookPop,
@@ -102,7 +90,7 @@ export default {
 
   methods: {
     ...mapActions("notebook", ["GetNotebooksData"]),
-    PopOpenValue: function (popOpenValue) {
+    PopOpenValue: function () {
       this.notebookOpen = false;
     },
     handleClickOutside() {
@@ -115,6 +103,13 @@ export default {
     doClickOpenNotebook() {
       this.notebookOpen = !this.notebookOpen;
     },
+    addNote() {
+      if (this.$route.path.split("/")[1] != "NoteDetail") {
+        router.push({ path: "/NoteDetail/-1" })
+      } else {
+        this.$emit("addNoteValue", true);
+      }
+    }
   },
 };
 </script>

@@ -12,21 +12,10 @@
           </el-icon>
         </div>
         <div class="note-operation-right">
-          <el-button
-            v-if="id == -2"
-            type="danger"
-            class="note-operation-icon"
-            @click="doCancel()"
-            size="small"
-          >
+          <el-button v-if="id == -2" type="danger" class="note-operation-icon" @click="doCancel()" size="small">
             取消
           </el-button>
-          <el-button
-            type="primary"
-            class="note-operation-icon"
-            @click="doUpdateNote()"
-            size="small"
-          >
+          <el-button type="primary" class="note-operation-icon" @click="doUpdateNote()" size="small">
             保存
           </el-button>
           <div class="note-notebook">
@@ -48,12 +37,7 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item
-                    v-for="notebook in notebooks"
-                    :key="notebook.id"
-                    @click="updateNotebook(notebook.id)"
-                    >{{ notebook.title }}</el-dropdown-item
-                  >
+                  <el-dropdown-item v-for="notebook in notebooks" :key="notebook.id" @click="updateNotebook(notebook.id)">{{ notebook.title }}</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -64,19 +48,11 @@
       <div class="note-label"></div>
     </div>
     <div class="note-title">
-      <input
-        class="note-title-input"
-        v-model="titleInput"
-        placeholder="请输入标题"
-      />
+      <input class="note-title-input" v-model="titleInput" placeholder="请输入标题" />
     </div>
     <!-- 编辑器容器 -->
     <div id="editor">
-      <note-editor
-        :value="value"
-        v-on:inputData="inputData"
-        v-on:onClickEidtor="onClickEidtor"
-      ></note-editor>
+      <note-editor :value="value" v-on:inputData="inputData" v-on:onClickEidtor="onClickEidtor"></note-editor>
     </div>
   </div>
 </template>
@@ -120,16 +96,24 @@ export default {
       notebooks: (state) => state.notebook.notebooks,
     }),
   },
-  mounted() {},
+  mounted() { },
   methods: {
     childByValue: function (childValue) {
       // childValue就是子组件传过来的值
-      // console.log(childValue);
-      this.titleInput = childValue.title;
-      this.id = childValue.id;
-      this.notebookID = Number(childValue.notebookID);
-      // this.notebook = this.getNotebookById(this.notebookID);
-      this.GetNote(childValue.id);
+      console.log(typeof (childValue));
+      if (typeof (childValue) != "undefined") {
+        this.titleInput = childValue.title;
+        this.id = childValue.id;
+        this.notebookID = Number(childValue.notebookID);
+        // this.notebook = this.getNotebookById(this.notebookID);
+        this.GetNote(childValue.id);
+      } else {
+        this.titleInput = "";
+        this.id = childValue.id;
+        this.notebookID = this.$route.params.id
+      }
+
+
     },
     onClickEidtor: function (onClickEidtor) {
       // console.log(this.$refs.upload)
