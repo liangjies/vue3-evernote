@@ -25,9 +25,7 @@
             </span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item disabled style="font-size: 11px"
-                  >排序方式</el-dropdown-item
-                >
+                <el-dropdown-item disabled style="font-size: 11px">排序方式</el-dropdown-item>
                 <el-dropdown-item>创建日期（最早优先）</el-dropdown-item>
                 <el-dropdown-item>创建日期（最新优先）</el-dropdown-item>
                 <el-dropdown-item>更新日期（最早优先）</el-dropdown-item>
@@ -40,15 +38,8 @@
         </div>
       </div>
       <div class="notes-view-ScrollWindow">
-        <div
-          v-for="(note, index) in allNotes"
-          :key="note.id"
-          @click="openNote(note, index)"
-        >
-          <div
-            class="notes-view-note"
-            :class="{ 'notes-view-note-selected': currentIndex == index }"
-          >
+        <div v-for="(note, index) in allNotes" :key="note.id" @click="openNote(note, index)">
+          <div class="notes-view-note" :class="{ 'notes-view-note-selected': currentIndex == index }">
             <div class="note-snippet-divide" v-if="index > 0"></div>
             <div class="note-hover"></div>
             <div class="note-border"></div>
@@ -88,7 +79,7 @@ export default {
       addNoteState: false,
     };
   },
-  created() {},
+  created() { },
   mounted() {
     this._getNotes();
   },
@@ -161,6 +152,12 @@ export default {
       this._getNotes();
     },
     "$route.params.id": function () {
+      // 清空富媒体
+      this.$emit("childByValue", {
+        id: -2,
+        title: "",
+        notebookID: this.$route.params.id,
+      });
       if (this.$route.params.id == 0) {
         this.getAllNotes();
         this.title = "笔记";

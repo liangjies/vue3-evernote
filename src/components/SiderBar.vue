@@ -32,7 +32,7 @@
             </el-icon>
           </router-link>
           <div class="userMenu" @click.stop="open = true">
-            <img src="https://s1.ax1x.com/2022/03/07/b6amRI.png" alt="" class="userMenus-image" />
+            <img :src="headerImg" alt="" class="userMenus-image" />
           </div>
           <!-- <router-link to="/trash" title="回收站"><i class="trash el-icon-delete-solid" @click="trash"></i></router-link> -->
         </div>
@@ -61,7 +61,7 @@ import {
 import UserPop from "./UserPop.vue";
 import NotebookPop from "./NotebookPop.vue";
 import clickoutside from "../utils/click-outside";
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 import router from '@/router/index'
 
 export default {
@@ -87,7 +87,11 @@ export default {
       notebookOpen: false,
     };
   },
-
+  computed: {
+    ...mapState({
+      headerImg: (state) => state.user.userInfo.headerImg,
+    }),
+  },
   methods: {
     ...mapActions("notebook", ["GetNotebooksData"]),
     PopOpenValue: function () {

@@ -1,11 +1,7 @@
 <template>
   <div class="user-pop">
     <div class="user-pop-img">
-      <img
-        :src="headerImg"
-        alt=""
-        class="user-image"
-      />
+      <img :src="headerImg" alt="" class="user-image" />
       <div class="user-name">{{ userName }}</div>
       <div class="user-type">印象笔记免费帐户</div>
     </div>
@@ -26,7 +22,7 @@
           <span class="user-pop-text">使用指南</span>
         </div>
       </div>
-      <div class="user-pop-ourside user-logout">
+      <div class="user-pop-ourside user-logout" @click="doLogout">
         <div class="user-pop-box">
           <el-icon class="user-pop-icon">
             <circle-close />
@@ -39,7 +35,7 @@
 </template>
 <script>
 import { CircleClose, Setting, QuestionFilled } from "@element-plus/icons-vue";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 export default {
   name: "UserPop",
   components: {
@@ -52,7 +48,7 @@ export default {
       open: false,
     };
   },
-  created() {},
+  created() { },
   computed: {
     ...mapState({
       userName: (state) => state.user.userInfo.nickName,
@@ -60,6 +56,7 @@ export default {
     }),
   },
   methods: {
+    ...mapActions('user', ['LoginOut']),
     toggleOpen: function () {
       console.log("toggleOpen");
       this.open = !this.open;
@@ -69,6 +66,9 @@ export default {
       if (this.$el.contains(e.target)) return;
       this.open = false;
     },
+    doLogout() {
+      this.LoginOut()
+    }
   },
   directives: {
     clickoutside: {
