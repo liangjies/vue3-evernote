@@ -1,5 +1,4 @@
-import { login } from '@/api/user'
-import { jsonInBlacklist } from '@/api/jwt'
+import { login, logout } from '@/api/user'
 import router from '@/router/index'
 
 export const user = {
@@ -37,6 +36,12 @@ export const user = {
         console.log(res.data.token)
         router.push({ path: "/" })
         return true
+      }
+    },
+    async LoginOut({ commit }) {
+      const res = await logout()
+      if (res.code === 200) {
+        commit('LoginOut')
       }
     },
   },

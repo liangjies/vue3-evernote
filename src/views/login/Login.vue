@@ -6,8 +6,74 @@
         <h3 @click="showLogin">登录</h3>
         <transition>
           <div v-bind:class="{ show: isShowLogin }" class="login">
-            <el-input class="input" v-model="login.username" placeholder="用户名" />
-            <el-input class="input" v-model="login.password" placeholder="密码" show-password />
+            <el-input
+              class="input"
+              v-model="login.username"
+              placeholder="用户名"
+            />
+            <el-input
+              class="input"
+              v-model="login.password"
+              placeholder="密码"
+              show-password
+            />
+            <el-form :inline="true">
+              <el-form-item>
+                <el-col :span="18">
+                  <el-input
+                    v-model="login.captcha"
+                    name="logVerify"
+                    placeholder="请输入验证码"
+                  />
+                </el-col>
+                <el-col :span="1"></el-col>
+                <el-col :span="5">
+                  <div class="vPic">
+                    <img
+                      :src="picPath"
+                      alt="请输入验证码"
+                      @click="loginVerify()"
+                    />
+                  </div>
+                </el-col>
+              </el-form-item>
+            </el-form>
+            <!-- <el-form-item style="position: relative">
+              <el-input
+                v-model="loginForm.captcha"
+                name="logVerify"
+                placeholder="请输入验证码"
+                style="width: 60%"
+              />
+              <div class="vPic">
+                <img
+                  v-if="picPath"
+                  :src="picPath"
+                  width="100%"
+                  height="100%"
+                  alt="请输入验证码"
+                  @click="loginVerify()"
+                />
+              </div>
+            </el-form-item> -->
+            <!-- <div class="captcha">
+              <el-input
+                class="captcha-input"
+                v-model="login.captcha"
+                placeholder="请输入验证码"
+              />
+              <div class="vPic">
+                <img
+                  v-if="picPath"
+                  :src="picPath"
+                  width="100%"
+                  height="100%"
+                  alt="请输入验证码"
+                  @click="loginVerify()"
+                />
+              </div>
+            </div> -->
+
             <p v-bind:class="{ error: login.isError }">{{ login.notice }}</p>
             <el-button class="button" @click="onLogin">登录账号</el-button>
           </div>
@@ -15,8 +81,17 @@
         <h3 @click="showRegister">创建账户</h3>
         <transition>
           <div v-bind:class="{ show: isShowRegister }" class="register">
-            <el-input class="input" v-model="register.username" placeholder="用户名" />
-            <el-input class="input" v-model="register.password" placeholder="密码" show-password />
+            <el-input
+              class="input"
+              v-model="register.username"
+              placeholder="用户名"
+            />
+            <el-input
+              class="input"
+              v-model="register.password"
+              placeholder="密码"
+              show-password
+            />
             <p v-bind:class="{ error: register.isError }">
               {{ register.notice }}
             </p>
@@ -29,9 +104,9 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { register } from "@/api/user";
-import { ElMessage } from 'element-plus'
+import { mapActions } from "vuex";
+import { register, captcha } from "@/api/user";
+import { ElMessage } from "element-plus";
 export default {
   name: "Login",
   data() {
@@ -41,6 +116,8 @@ export default {
       login: {
         username: "",
         password: "",
+        captcha: "",
+        captchaId: "",
         notice: "",
         isError: false,
       },
@@ -50,10 +127,14 @@ export default {
         notice: "",
         isError: false,
       },
+      picPath: "",
     };
   },
+  created() {
+    this.loginVerify();
+  },
   methods: {
-    ...mapActions('user', ['LoginIn']),
+    ...mapActions("user", ["LoginIn"]),
     showRegister() {
       this.isShowLogin = false;
       this.isShowRegister = true;
@@ -73,7 +154,7 @@ export default {
       //   this.login.notice = "密码长度为6~16个字符";
       //   return;
       // }
-      return await this.LoginIn(this.login)
+      return await this.LoginIn(this.login);
     },
     async onRegister() {
       if (!/^[\w\u4e00-\u9fa5]{3,15}$/.test(this.register.username)) {
@@ -103,6 +184,12 @@ export default {
           path: "/Note",
         });
       }
+    },
+    loginVerify() {
+      captcha({}).then((ele) => {
+        this.picPath = ele.data.picPath;
+        this.login.captchaId = ele.data.captchaId;
+      });
     },
   },
 };
