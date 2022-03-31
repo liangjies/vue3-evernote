@@ -28,113 +28,11 @@
       </div>
     </div>
   </div>
-  <!-- <div id="login">
-    <div class="all">
-      <div class="icons iconfont icon-xiang"></div>
-      <div class="con">
-        <h3 @click="showLogin">登录</h3>
-        <transition>
-          <div v-bind:class="{ show: isShowLogin }" class="login">
-            <el-input
-              class="input"
-              v-model="login.username"
-              placeholder="用户名"
-            />
-            <el-input
-              class="input"
-              v-model="login.password"
-              placeholder="密码"
-              show-password
-            />
-            <el-form :inline="true">
-              <el-form-item>
-                <el-col :span="18">
-                  <el-input
-                    v-model="login.captcha"
-                    name="logVerify"
-                    placeholder="请输入验证码"
-                  />
-                </el-col>
-                <el-col :span="1"></el-col>
-                <el-col :span="5">
-                  <div class="vPic">
-                    <img
-                      :src="picPath"
-                      alt="请输入验证码"
-                      @click="loginVerify()"
-                    />
-                  </div>
-                </el-col>
-              </el-form-item>
-            </el-form>
-           <el-form-item style="position: relative">
-              <el-input
-                v-model="loginForm.captcha"
-                name="logVerify"
-                placeholder="请输入验证码"
-                style="width: 60%"
-              />
-              <div class="vPic">
-                <img
-                  v-if="picPath"
-                  :src="picPath"
-                  width="100%"
-                  height="100%"
-                  alt="请输入验证码"
-                  @click="loginVerify()"
-                />
-              </div>
-            </el-form-item> 
-            <div class="captcha">
-              <el-input
-                class="captcha-input"
-                v-model="login.captcha"
-                placeholder="请输入验证码"
-              />
-              <div class="vPic">
-                <img
-                  v-if="picPath"
-                  :src="picPath"
-                  width="100%"
-                  height="100%"
-                  alt="请输入验证码"
-                  @click="loginVerify()"
-                />
-              </div>
-            </div> 
-
-            <p v-bind:class="{ error: login.isError }">{{ login.notice }}</p>
-            <el-button class="button" @click="onLogin">登录账号</el-button>
-          </div>
-        </transition>
-        <h3 @click="showRegister">创建账户</h3>
-        <transition>
-          <div v-bind:class="{ show: isShowRegister }" class="register">
-            <el-input
-              class="input"
-              v-model="register.username"
-              placeholder="用户名"
-            />
-            <el-input
-              class="input"
-              v-model="register.password"
-              placeholder="密码"
-              show-password
-            />
-            <p v-bind:class="{ error: register.isError }">
-              {{ register.notice }}
-            </p>
-            <el-button class="button" @click="onRegister">注册账号</el-button>
-          </div>
-        </transition>
-      </div>
-    </div>
-  </div> -->
 </template>
 
 <script>
 import { mapActions } from "vuex";
-import { register, captcha } from "@/api/user";
+import { register } from "@/api/user";
 import { ElMessage } from "element-plus";
 import Account from "@/views/login/component/Account.vue";
 import SiderBar from "@/components/SiderBar.vue";
@@ -146,17 +44,9 @@ export default {
   },
   data() {
     return {
-      tabsActiveName:"",
+      tabsActiveName:"account",
       isShowLogin: true,
       isShowRegister: false,
-      login: {
-        username: "",
-        password: "",
-        captcha: "",
-        captchaId: "",
-        notice: "",
-        isError: false,
-      },
       register: {
         username: "",
         password: "",
@@ -167,7 +57,7 @@ export default {
     };
   },
   created() {
-    this.loginVerify();
+
   },
   methods: {
     ...mapActions("user", ["LoginIn"]),
@@ -220,12 +110,6 @@ export default {
           path: "/Note",
         });
       }
-    },
-    loginVerify() {
-      captcha({}).then((ele) => {
-        this.picPath = ele.data.picPath;
-        this.login.captchaId = ele.data.captchaId;
-      });
     },
   },
 };

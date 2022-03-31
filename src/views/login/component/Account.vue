@@ -1,7 +1,13 @@
 <template>
   <el-form size="large" class="login-content-form">
     <el-form-item class="login-animation1">
-      <el-input type="text" placeholder="用户名" clearable autocomplete="off" v-model="login.username">
+      <el-input
+        type="text"
+        placeholder="用户名"
+        clearable
+        autocomplete="off"
+        v-model="login.username"
+      >
         <template #prefix>
           <el-icon class="el-input__icon"><user /></el-icon>
         </template>
@@ -9,21 +15,13 @@
     </el-form-item>
     <el-form-item class="login-animation2">
       <el-input
-        :type="isShowPassword ? 'text' : 'password'"
         placeholder="密码"
         autocomplete="off"
         v-model="login.password"
+        show-password
       >
         <template #prefix>
           <el-icon class="el-input__icon"><unlock /></el-icon>
-        </template>
-        <template #suffix>
-          <i
-            class="iconfont el-input__icon login-content-password"
-            :class="isShowPassword ? 'icon-yincangmima' : 'icon-xianshimima'"
-            @click="isShowPassword = !isShowPassword"
-          >
-          </i>
         </template>
       </el-input>
     </el-form-item>
@@ -44,7 +42,14 @@
       </el-col>
       <el-col :span="1"></el-col>
       <el-col :span="8">
-        <el-button class="login-content-code">1234</el-button>
+        <div class="login-content-code">
+          <img
+            v-if="picPath"
+            :src="picPath"
+            alt="请输入验证码"
+            @click="loginVerify()"
+          />
+        </div>
       </el-col>
     </el-form-item>
     <el-form-item class="login-animation4">
@@ -54,7 +59,7 @@
         round
         @click="onSignIn"
       >
-        <span>bb</span>
+        <span>登录</span>
       </el-button>
     </el-form-item>
   </el-form>
@@ -62,14 +67,17 @@
 
 <script>
 import { User, Unlock, Position } from "@element-plus/icons-vue";
-
+import { captcha } from "@/api/user";
+import { mapActions } from "vuex";
 export default {
   name: "Account",
   components: { User, Unlock, Position },
-  created() {},
+  created() {
+    this.loginVerify();
+  },
   data() {
     return {
-      isShowPassword: false,
+      picPath: "",
       login: {
         username: "",
         password: "",
@@ -81,7 +89,20 @@ export default {
     };
   },
   methods: {
-    onSignIn() {},
+    ...mapActions("user", ["LoginIn"]),
+    async onSignIn() {
+      const data = await this.LoginIn(this.login);
+      // 验证码错误刷新验证码
+      if(data.msg=="验证码错误"){
+        this.loginVerify();
+      }
+    },
+    loginVerify() {
+      captcha({}).then((ele) => {
+        this.picPath = ele.data.picPath;
+        this.login.captchaId = ele.data.captchaId;
+      });
+    },
   },
 };
 </script>

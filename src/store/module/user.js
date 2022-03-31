@@ -36,6 +36,8 @@ export const user = {
         console.log(res.data.token)
         router.push({ path: "/" })
         return true
+      }else{
+        return res
       }
     },
     async LoginOut({ commit }) {
