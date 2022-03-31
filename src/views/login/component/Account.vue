@@ -1,0 +1,124 @@
+<template>
+  <el-form size="large" class="login-content-form">
+    <el-form-item class="login-animation1">
+      <el-input type="text" placeholder="用户名" clearable autocomplete="off" v-model="login.username">
+        <template #prefix>
+          <el-icon class="el-input__icon"><user /></el-icon>
+        </template>
+      </el-input>
+    </el-form-item>
+    <el-form-item class="login-animation2">
+      <el-input
+        :type="isShowPassword ? 'text' : 'password'"
+        placeholder="密码"
+        autocomplete="off"
+        v-model="login.password"
+      >
+        <template #prefix>
+          <el-icon class="el-input__icon"><unlock /></el-icon>
+        </template>
+        <template #suffix>
+          <i
+            class="iconfont el-input__icon login-content-password"
+            :class="isShowPassword ? 'icon-yincangmima' : 'icon-xianshimima'"
+            @click="isShowPassword = !isShowPassword"
+          >
+          </i>
+        </template>
+      </el-input>
+    </el-form-item>
+    <el-form-item class="login-animation3">
+      <el-col :span="15">
+        <el-input
+          type="text"
+          maxlength="4"
+          placeholder="验证码"
+          clearable
+          autocomplete="off"
+          v-model="login.captcha"
+        >
+          <template #prefix>
+            <el-icon class="el-input__icon"><position /></el-icon>
+          </template>
+        </el-input>
+      </el-col>
+      <el-col :span="1"></el-col>
+      <el-col :span="8">
+        <el-button class="login-content-code">1234</el-button>
+      </el-col>
+    </el-form-item>
+    <el-form-item class="login-animation4">
+      <el-button
+        type="primary"
+        class="login-content-submit"
+        round
+        @click="onSignIn"
+      >
+        <span>bb</span>
+      </el-button>
+    </el-form-item>
+  </el-form>
+</template>
+
+<script>
+import { User, Unlock, Position } from "@element-plus/icons-vue";
+
+export default {
+  name: "Account",
+  components: { User, Unlock, Position },
+  created() {},
+  data() {
+    return {
+      isShowPassword: false,
+      login: {
+        username: "",
+        password: "",
+        captcha: "",
+        captchaId: "",
+        notice: "",
+        isError: false,
+      },
+    };
+  },
+  methods: {
+    onSignIn() {},
+  },
+};
+</script>
+
+<style scoped lang="less">
+.loop(@i) when (@i > 0) {
+  .loop((@i - 1)); // 递归调用自身
+  .login-animation@{i} {
+    opacity: 1;
+    animation-name: error-num;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+    animation-delay: calc(@i / 10) + s;
+  }
+}
+.login-content-form {
+  margin-top: 20px;
+  .loop(4);
+  .login-content-password {
+    display: inline-block;
+    width: 20px;
+    cursor: pointer;
+    &:hover {
+      color: #909399;
+    }
+  }
+  .login-content-code {
+    width: 100%;
+    padding: 0;
+    font-weight: bold;
+    letter-spacing: 5px;
+  }
+  .login-content-submit {
+    width: 100%;
+    letter-spacing: 2px;
+    font-weight: 300;
+    margin-top: 15px;
+  }
+}
+</style>
