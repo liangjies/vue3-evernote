@@ -32,6 +32,9 @@ export function getFullDate(dateStr) {
   // let lastDotIndex = dateStr.lastIndexOf('.')
   // dateStr = dateStr.substring(0, lastDotIndex)
   // return dateStr.split('T').join(' ')
+  if(typeof dateStr=="undefined"){
+    return ""
+  }
   let newDate
   if(dateStr.indexOf("Z") == -1){
     let date = new Date(dateStr).toJSON();

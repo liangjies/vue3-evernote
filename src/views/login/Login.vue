@@ -20,8 +20,8 @@
             <el-tab-pane label="登录" name="account">
               <account></account>
             </el-tab-pane>
-            <el-tab-pane label="注册" name="mobile">
-              <!-- <Mobile /> -->
+            <el-tab-pane label="注册" name="register">
+              <Register />
             </el-tab-pane>
           </el-tabs>
         </div>
@@ -35,12 +35,12 @@ import { mapActions } from "vuex";
 import { register } from "@/api/user";
 import { ElMessage } from "element-plus";
 import Account from "@/views/login/component/Account.vue";
-import SiderBar from "@/components/SiderBar.vue";
+import Register from "@/views/login/component/Register.vue"
 export default {
   name: "Login",
   components: {
     Account,
-    SiderBar
+    Register
   },
   data() {
     return {

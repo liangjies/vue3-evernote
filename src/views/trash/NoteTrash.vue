@@ -1,24 +1,49 @@
 <template>
-  <trash-side v-on:TrashValue="TrashValue"></trash-side>
+  <trash-side v-on:TrashValue="TrashValue" ref="child"></trash-side>
   <div class="note-detail" v-show="this.id != -1">
     <div class="note-header">
       <div class="note-operation">
         <div class="note-operation-left">
-          <el-icon class="note-operation-icon">
-            <info-filled />
-          </el-icon>
-          <el-icon class="note-operation-icon" @click="doDelete()">
+          <el-popover placement="bottom" :width="300" trigger="hover">
+            <template #reference>
+              <el-icon class="note-operation-icon" ref="upload">
+                <info-filled />
+              </el-icon>
+            </template>
+            <el-table :data="gridData" :show-header="false">
+              <el-table-column width="100" property="name" label="name" />
+              <el-table-column width="300" property="time" label="time" />
+            </el-table>
+          </el-popover>
+          <el-icon
+            class="note-operation-icon"
+            @click="revertNote()"
+            title="还原"
+            ><refresh-left
+          /></el-icon>
+          <el-icon
+            class="note-operation-icon"
+            @click="deleteTrash()"
+            title="彻底删除"
+          >
             <delete />
           </el-icon>
         </div>
       </div>
     </div>
     <div class="note-title">
-      <input class="note-title-input" v-model="titleInput" placeholder="请输入标题" />
+      <input
+        class="note-title-input"
+        v-model="titleInput"
+        placeholder="请输入标题"
+      />
     </div>
     <!-- 编辑器容器 -->
     <div id="editor">
-      <note-editor :value="value"></note-editor>
+      <note-editor
+        :value="value"
+        v-on:onClickEidtor="onClickEidtor"
+      ></note-editor>
     </div>
   </div>
 </template>
@@ -26,18 +51,17 @@
 <script>
 import TrashSide from "@/views/trash/TrashSide.vue";
 import NoteEditor from "@/views/note/NoteEditor.vue";
-import { GetTrashById } from "@/api/trash";
-import {
-  Delete,
-  InfoFilled
-} from "@element-plus/icons-vue";
+import { GetTrashById, DeleteTrash, RevertNote } from "@/api/trash";
+import { getFullDate } from "@/utils/util";
+import { Delete, InfoFilled, RefreshLeft } from "@element-plus/icons-vue";
 export default {
   name: "NoteTrash",
   components: {
     TrashSide,
     NoteEditor,
     Delete,
-    InfoFilled
+    InfoFilled,
+    RefreshLeft,
   },
   data() {
     return {
@@ -48,13 +72,29 @@ export default {
       notebook: "",
       notebookID: -1,
       refresh: false,
+      gridData: [
+        {
+          name: "创建时间",
+          time: "",
+        },
+        {
+          name: "删除时间",
+          time: "",
+        },
+      ],
     };
   },
   methods: {
     TrashValue: function (trashValue) {
       this.titleInput = trashValue.title;
       this.id = trashValue.id;
+      this.gridData[0].time = getFullDate(trashValue.createdAt);
+      this.gridData[1].time = getFullDate(trashValue.updatedAt);
       this.GetNote(trashValue.id);
+    },
+    onClickEidtor: function () {
+      this.$refs.upload.$el.click();
+      // this.setNotebookTitle(this.$route.params.id);
     },
     async GetNote(noteId) {
       if (noteId == -2) {
@@ -68,6 +108,12 @@ export default {
         this.value = res.data.list[0].content;
         this.notebookID = res.data.list[0].notebookId;
       }
+    },
+    revertNote() {
+      this.$refs.child.revertNote({ id: this.id });
+    },
+    deleteTrash() {
+      this.$refs.child.deleteTrash({ id: this.id });
     },
   },
 };

@@ -4,18 +4,38 @@
     <div class="note-header">
       <div class="note-operation">
         <div class="note-operation-left">
-          <el-icon class="note-operation-icon" ref="upload">
-            <info-filled />
-          </el-icon>
+          <el-popover placement="bottom" :width="300" trigger="hover">
+            <template #reference>
+              <el-icon class="note-operation-icon" ref="upload">
+                <info-filled />
+              </el-icon>
+            </template>
+            <el-table :data="gridData" :show-header="false">
+              <el-table-column width="100" property="name" label="name" />
+              <el-table-column width="300" property="time" label="time" />
+            </el-table>
+          </el-popover>
+          <span></span>
           <el-icon class="note-operation-icon" @click="doDelete()">
             <delete />
           </el-icon>
         </div>
         <div class="note-operation-right">
-          <el-button v-if="id == -2" type="danger" class="note-operation-icon" @click="doCancel()" size="small">
+          <el-button
+            v-if="id == -2"
+            type="danger"
+            class="note-operation-icon"
+            @click="doCancel()"
+            size="small"
+          >
             取消
           </el-button>
-          <el-button type="primary" class="note-operation-icon" @click="doUpdateNote()" size="small">
+          <el-button
+            type="primary"
+            class="note-operation-icon"
+            @click="doUpdateNote()"
+            size="small"
+          >
             保存
           </el-button>
           <div class="note-notebook">
@@ -37,7 +57,12 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item v-for="notebook in notebooks" :key="notebook.id" @click="updateNotebook(notebook.id)">{{ notebook.title }}</el-dropdown-item>
+                  <el-dropdown-item
+                    v-for="notebook in notebooks"
+                    :key="notebook.id"
+                    @click="updateNotebook(notebook.id)"
+                    >{{ notebook.title }}</el-dropdown-item
+                  >
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -48,11 +73,19 @@
       <div class="note-label"></div>
     </div>
     <div class="note-title">
-      <input class="note-title-input" v-model="titleInput" placeholder="请输入标题" />
+      <input
+        class="note-title-input"
+        v-model="titleInput"
+        placeholder="请输入标题"
+      />
     </div>
     <!-- 编辑器容器 -->
     <div id="editor">
-      <note-editor :value="value" v-on:inputData="inputData" v-on:onClickEidtor="onClickEidtor"></note-editor>
+      <note-editor
+        :value="value"
+        v-on:inputData="inputData"
+        v-on:onClickEidtor="onClickEidtor"
+      ></note-editor>
     </div>
   </div>
 </template>
@@ -62,6 +95,7 @@ import Note from "@/views/note/Note.vue";
 import NoteEditor from "@/views/note/NoteEditor.vue";
 import { GetNoteById, UpdateNote, CreateNote, DeleteNote } from "@/api/note";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { getFullDate } from "@/utils/util";
 import { mapState } from "vuex";
 import router from "@/router/index";
 import {
@@ -90,6 +124,16 @@ export default {
       notebook: "",
       notebookID: -1,
       refresh: false,
+      gridData: [
+        {
+          name: "创建时间",
+          time: "",
+        },
+        {
+          name: "更新时间",
+          time: "",
+        },
+      ],
     };
   },
   computed: {
@@ -97,7 +141,7 @@ export default {
       notebooks: (state) => state.notebook.notebooks,
     }),
   },
-  mounted() { },
+  mounted() {},
   methods: {
     childByValue: function (childValue) {
       // childValue就是子组件传过来的值
@@ -106,6 +150,8 @@ export default {
         this.id = childValue.id;
         this.notebookID = Number(childValue.notebookID);
         // this.notebook = this.getNotebookById(this.notebookID);
+        this.gridData[0].time = getFullDate(childValue.createdAt);
+        this.gridData[1].time = getFullDate(childValue.updatedAt);
         this.GetNote(childValue.id);
       } else {
         this.titleInput = "";
@@ -125,10 +171,9 @@ export default {
           this.notebook = "笔记本";
           this.notebookID = 0;
         } else {
-          this.setNotebookTitle(this.$route.params.id)
+          this.setNotebookTitle(this.$route.params.id);
           this.notebookID = Number(this.$route.params.id);
         }
-
       } else {
         const res = await GetNoteById({ id: noteId });
         if (res.code === 200) {
