@@ -16,7 +16,11 @@
       <div class="notes-view-subheader">
         <div class="subheader-text">{{ noteNum }}条笔记</div>
         <div class="subheader-options">
-          <el-dropdown trigger="click" placement="bottom-start">
+          <el-dropdown
+            trigger="click"
+            placement="bottom-start"
+            @command="orderCommand"
+          >
             <span class="el-dropdown-link">
               选项
               <el-icon class="el-icon--right">
@@ -25,21 +29,42 @@
             </span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item disabled style="font-size: 11px">排序方式</el-dropdown-item>
-                <el-dropdown-item>创建日期（最早优先）</el-dropdown-item>
-                <el-dropdown-item>创建日期（最新优先）</el-dropdown-item>
-                <el-dropdown-item>更新日期（最早优先）</el-dropdown-item>
-                <el-dropdown-item>更新日期（最新优先）</el-dropdown-item>
-                <el-dropdown-item>标题（升序排列）</el-dropdown-item>
-                <el-dropdown-item>标题（降序排列）</el-dropdown-item>
+                <el-dropdown-item disabled style="font-size: 11px"
+                  >排序方式</el-dropdown-item
+                >
+                <el-dropdown-item command="1"
+                  >创建日期（最早优先）</el-dropdown-item
+                >
+                <el-dropdown-item command="2"
+                  >创建日期（最新优先）</el-dropdown-item
+                >
+                <el-dropdown-item command="3"
+                  >更新日期（最早优先）</el-dropdown-item
+                >
+                <el-dropdown-item command="4"
+                  >更新日期（最新优先）</el-dropdown-item
+                >
+                <el-dropdown-item command="5"
+                  >标题（升序排列）</el-dropdown-item
+                >
+                <el-dropdown-item command="6"
+                  >标题（降序排列）</el-dropdown-item
+                >
               </el-dropdown-menu>
             </template>
           </el-dropdown>
         </div>
       </div>
       <div class="notes-view-ScrollWindow">
-        <div v-for="(note, index) in allNotes" :key="note.id" @click="openNote(note, index)">
-          <div class="notes-view-note" :class="{ 'notes-view-note-selected': currentIndex == index }">
+        <div
+          v-for="(note, index) in allNotes"
+          :key="note.id"
+          @click="openNote(note, index)"
+        >
+          <div
+            class="notes-view-note"
+            :class="{ 'notes-view-note-selected': currentIndex == index }"
+          >
             <div class="note-snippet-divide" v-if="index > 0"></div>
             <div class="note-hover"></div>
             <div class="note-border"></div>
@@ -79,7 +104,7 @@ export default {
       addNoteState: false,
     };
   },
-  created() { },
+  created() {},
   mounted() {
     this._getNotes();
   },
@@ -89,6 +114,22 @@ export default {
         this.addNoteState = true;
         this.addNote();
       }
+    },
+    orderCommand(command) {
+      if (command == 1) {
+        this.allNotes.sort((a, b) => (a.CreatedAt < b.CreatedAt ? 1 : -1));
+      } else if (command == 2) {
+        this.allNotes.sort((a, b) => (a.CreatedAt > b.CreatedAt ? 1 : -1));
+      } else if (command == 3) {
+        this.allNotes.sort((a, b) => (a.UpdatedAt < b.UpdatedAt ? 1 : -1));
+      } else if (command == 4) {
+        this.allNotes.sort((a, b) => (a.UpdatedAt > b.UpdatedAt ? 1 : -1));
+      } else if (command == 5) {
+        this.allNotes.sort((a, b) => (a.title < b.title ? 1 : -1));
+      } else if (command == 6) {
+        this.allNotes.sort((a, b) => (a.title > b.title ? 1 : -1));
+      }
+      // this.$message("click on item " + command);
     },
     async getAllNotes() {
       const res = await GetAllNotes();
