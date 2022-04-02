@@ -18,7 +18,7 @@ export const GetAllNotes = (data) => {
 // @Router /base/login [post]
 export const GetNotes = (data) => {
     return service({
-        url: '/notes/list/'+data.id,
+        url: '/notes/list/' + data.id,
         method: 'get',
     })
 }
@@ -30,7 +30,7 @@ export const GetNotes = (data) => {
 // @Router /notes/:id [get]
 export const GetNoteById = (data) => {
     return service({
-        url: '/notes/'+data.id,
+        url: '/notes/' + data.id,
         method: 'get',
     })
 }
@@ -59,13 +59,25 @@ export const CreateNote = (data) => {
     })
 }
 
-// @Summary 用户删除笔记本
+// @Summary 用户删除笔记
 // @Produce  application/json
 // @Param data body {username:"string",password:"string"}
 // @Router /notes/add [post]
 export const DeleteNote = (data) => {
     return service({
-        url: '/notes/'+data.id,
+        url: '/notes/' + data.id,
         method: 'delete',
+    })
+}
+
+// @Summary 用户搜索笔记
+// @Produce  application/json
+// @Param data body {username:"string",password:"string"}
+// @Router /notes/search [post]
+export const SearchNote = (data) => {
+    return service({
+        url: 'notes/search',
+        method: 'post',
+        data
     })
 }
