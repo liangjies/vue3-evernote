@@ -34,6 +34,11 @@ const router = createRouter({
       name: 'NoteTrash',
       component: () => import('@/views/trash/NoteTrash.vue')
     },
+    {
+      path: '/History',
+      name: 'History',
+      component: () => import('@/views/note/History.vue')
+    },
   ]
 })
 export default router
