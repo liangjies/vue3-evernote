@@ -15,8 +15,14 @@
               <el-table-column width="300" property="time" label="time" />
             </el-table>
           </el-popover>
+          <el-icon
+            class="note-operation-icon"
+            title="历史记录"
+            @click="openHistory"
+            ><clock
+          /></el-icon>
           <span></span>
-          <el-icon class="note-operation-icon" @click="doDelete()">
+          <el-icon class="note-operation-icon" @click="doDelete()" title="删除">
             <delete />
           </el-icon>
         </div>
@@ -88,6 +94,8 @@
       ></note-editor>
     </div>
   </div>
+  <!-- 历史记录-->
+  <history ref="historyRef"></history>
 </template>
 
 <script>
@@ -97,6 +105,7 @@ import { GetNoteById, UpdateNote, CreateNote, DeleteNote } from "@/api/note";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { getFullDate } from "@/utils/util";
 import { mapState } from "vuex";
+import History from "@/views/note/History.vue";
 import router from "@/router/index";
 import {
   Delete,
@@ -104,6 +113,7 @@ import {
   Notebook,
   ArrowDown,
   PriceTag,
+  Clock,
 } from "@element-plus/icons-vue";
 export default {
   components: {
@@ -113,7 +123,9 @@ export default {
     Notebook,
     ArrowDown,
     PriceTag,
+    Clock,
     NoteEditor,
+    History,
   },
   data() {
     return {
@@ -124,6 +136,7 @@ export default {
       notebook: "",
       notebookID: -1,
       refresh: false,
+      showHistory: false,
       gridData: [
         {
           name: "创建时间",
@@ -256,6 +269,9 @@ export default {
           });
         }
       });
+    },
+    openHistory() {
+      this.$refs.historyRef.openHistory({id:this.id});
     },
   },
 };
