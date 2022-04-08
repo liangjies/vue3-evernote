@@ -3,24 +3,23 @@
 </template>
 
 <script>
-import SiderBar from '@/components/SiderBar.vue'
+import SiderBar from "@/components/SiderBar.vue";
 export default {
-  name: 'HomeHeader',
+  name: "HomeHeader",
   components: {
-    SiderBar
+    SiderBar,
   },
   created() {
-
+    this.$router.push({
+      path: "/NoteDetail/0",
+    });
   },
   data() {
-    return {
-    }
+    return {};
   },
-  computed: {
-  },
-  methods: {
-  },
-}
+  computed: {},
+  methods: {},
+};
 </script>
 
 <style lang="less" scoped>
