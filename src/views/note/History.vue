@@ -1,36 +1,38 @@
 <template>
-  <el-dialog v-model="dialogFormVisible" width="98%" top="2vh">
-    <div class="modal-body">
-      <div class="history-list-wrap pull-left">
-        <div class="history-list-header">
-          历史记录 (<span class="history-num">{{ historyTotal }}</span
-          >)
+  <div class="note-history">
+    <el-dialog v-model="dialogFormVisible" width="98%" top="2vh">
+      <div class="modal-body">
+        <div class="history-list-wrap pull-left">
+          <div class="history-list-header">
+            历史记录 (<span class="history-num">{{ historyTotal }}</span
+            >)
+          </div>
+          <div class="history-list list-group">
+            <a
+              class="list-group-item"
+              v-for="(data, index) in historyData"
+              :key="data.id"
+              @click="clickSwitch(index)"
+              :class="{ active: activeIndex == index }"
+              ><span class="badge" v-if="index == 0">当前</span
+              ><span class="badge" v-if="index != 0">#{{ data.version }}</span
+              >{{ _formateDate(data.createdAt) }}</a
+            >
+          </div>
         </div>
-        <div class="history-list list-group">
-          <a
-            class="list-group-item"
-            v-for="(data, index) in historyData"
-            :key="data.id"
-            @click="clickSwitch(index)"
-            :class="{ active: activeIndex == index }"
-            ><span class="badge" v-if="index == 0">当前</span
-            ><span class="badge" v-if="index != 0">#{{ data.version }}</span
-            >{{ _formateDate(data.createdAt) }}</a
-          >
+        <div class="history-content-wrap pull-left">
+          <div class="history-content-header">
+            <el-button class="button-type" type="primary" @click="doRecover"
+              >从该版本还原</el-button
+            >
+          </div>
+          <div class="history-content">
+            <div v-html="activeContent"></div>
+          </div>
         </div>
       </div>
-      <div class="history-content-wrap pull-left">
-        <div class="history-content-header">
-          <el-button class="button-type" type="primary" @click="doRecover"
-            >从该版本还原</el-button
-          >
-        </div>
-        <div class="history-content">
-          <div v-html="activeContent"></div>
-        </div>
-      </div>
-    </div>
-  </el-dialog>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -200,7 +202,9 @@ export default {
 ol {
   padding-left: 20px;
 }
-.el-dialog {
-  height: 95%;
+.note-history {
+  .el-dialog {
+    height: 95%;
+  }
 }
 </style>

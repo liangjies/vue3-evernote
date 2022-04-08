@@ -17,7 +17,9 @@
             </span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item disabled style="font-size: 11px">排序方式</el-dropdown-item>
+                <el-dropdown-item disabled style="font-size: 11px"
+                  >排序方式</el-dropdown-item
+                >
                 <el-dropdown-item>创建日期（最早优先）</el-dropdown-item>
                 <el-dropdown-item>创建日期（最新优先）</el-dropdown-item>
                 <el-dropdown-item>更新日期（最早优先）</el-dropdown-item>
@@ -30,8 +32,15 @@
         </div>
       </div>
       <div class="notes-view-ScrollWindow">
-        <div v-for="(note, index) in allNotes" :key="note.id" @click="openTrash(note, index)">
-          <div class="notes-view-note" :class="{ 'notes-view-note-selected': currentIndex == index }">
+        <div
+          v-for="(note, index) in allNotes"
+          :key="note.id"
+          @click="openTrash(note, index)"
+        >
+          <div
+            class="notes-view-note"
+            :class="{ 'notes-view-note-selected': currentIndex == index }"
+          >
             <div class="note-snippet-divide" v-if="index > 0"></div>
             <div class="note-hover"></div>
             <div class="note-border"></div>
@@ -146,6 +155,7 @@ export default {
   width: 350px;
   position: absolute;
   .note-header {
+    height: 8vh;
     box-sizing: border-box;
     margin: 0 auto;
     padding: 24px 20px 0 24px;
@@ -186,6 +196,7 @@ export default {
     }
   }
   .notes-view {
+    height: 7vh;
     color: #878787;
     height: 100%;
     width: 350px;
@@ -220,7 +231,7 @@ export default {
       }
     }
     .notes-view-ScrollWindow {
-      height: 608px;
+      height: 85vh;
       overflow: hidden scroll;
       .notes-view-note-selected {
         border: 3px solid #d9d9d9;

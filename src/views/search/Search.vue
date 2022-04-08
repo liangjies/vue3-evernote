@@ -54,7 +54,10 @@
       </div>
     </div>
     <div class="search-input-footer-split"></div>
-    <search-side :searchValue="searchValue" v-on:childByValue="childByValue"></search-side>
+    <search-side
+      :searchValue="searchValue"
+      v-on:childByValue="childByValue"
+    ></search-side>
     <div class="note-detail" v-show="this.id != -1">
       <div class="note-header">
         <div class="note-operation">
@@ -258,7 +261,7 @@ export default {
       this.$refs.search.focus();
     },
     onSearchFirst() {
-      this.detailShow = true
+      this.detailShow = true;
       this.searchValue = { searchKey: this.searchKey };
     },
     onSearch() {
@@ -523,7 +526,11 @@ export default {
       border-bottom: 1px solid #ececec;
     }
   }
+  .note-header {
+    height: 8vh;
+  }
   .note-title {
+    height: 7vh;
     .note-title-input {
       width: 100%;
       padding: 10px 20px;

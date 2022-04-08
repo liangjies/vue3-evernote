@@ -189,6 +189,7 @@ export default {
   width: 350px;
   position: absolute;
   .note-header {
+    height: 8vh;
     box-sizing: border-box;
     margin: 0 auto;
     padding: 24px 20px 0 24px;
@@ -229,6 +230,7 @@ export default {
     }
   }
   .notes-view {
+    height: 7vh;
     color: #878787;
     height: 100%;
     width: 350px;
@@ -263,7 +265,7 @@ export default {
       }
     }
     .notes-view-ScrollWindow {
-      height: 608px;
+      height: 85vh;
       overflow: hidden scroll;
       .notes-view-note-selected {
         border: 3px solid #d9d9d9;

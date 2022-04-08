@@ -58,7 +58,8 @@ import "tinymce/plugins/toc"; //目录生成器
 import "tinymce/plugins/visualblocks"; //显示元素范围
 import "tinymce/plugins/visualchars"; //显示不可见字符
 import "tinymce/plugins/wordcount"; //字数统计
-
+import { UploadFile } from "@/api/upload";
+import axios from "axios";
 export default {
   name: "NoteEditor",
   emits: ["inputData", "onClickEidtor"],
@@ -122,7 +123,7 @@ export default {
         // images_upload_url: '/apib/api-upload/uploadimg',  //后端处理程序的url，建议直接自定义上传函数image_upload_handler，这个就可以不用了
         // images_upload_base_path: '/demo',  //相对基本路径--关于图片上传建议查看--http://tinymce.ax-z.cn/general/upload-images.php
         paste_data_images: true, //图片是否可粘贴
-        images_upload_handler: (blobInfo, success, failure) => {
+        images_upload_handler: async (blobInfo, success, failure) => {
           if (blobInfo.blob().size / 1024 / 1024 > 2) {
             failure("上传失败，图片大小请控制在 2M 以内");
           } else {
@@ -133,18 +134,32 @@ export default {
                 "Content-Type": "multipart/form-data",
               },
             };
-            this.$axios
-              .post(`${api.baseUrl}/api-upload/uploadimg`, params, config)
-              .then((res) => {
-                if (res.data.code == 200) {
-                  success(res.data.msg); //上传成功，在成功函数里填入图片路径
-                } else {
-                  failure("上传失败");
-                }
-              })
-              .catch(() => {
-                failure("上传出错，服务器开小差了呢");
-              });
+            const res = await UploadFile(params);
+            if (res.code == 200) {
+              success(res.data.file.url);
+            } else {
+              failure("上传失败");
+            }
+
+            
+            // let url =
+            //   process.env.VUE_APP_BASE_PATH +
+            //   ":" +
+            //   process.env.VUE_APP_SERVER_PORT +
+            //   "/upload";
+            //  axios
+            //   .post(url, params)
+            //   .then((res) => {
+            //     if (res.data.code == 200) {
+            //       success(res.data.msg); //上传成功，在成功函数里填入图片路径
+            //     } else {
+            //       failure("上传失败");
+            //     }
+            //   })
+            //   .catch(() => {
+            //     failure("上传出错，服务器开小差了呢");
+            //   });
+            
           }
         },
       },
@@ -183,6 +198,9 @@ export default {
     //清空内容
     clear() {
       this.contentValue = "";
+    },
+    async Upload(params) {
+      return await UploadFile(params);
     },
   },
 };

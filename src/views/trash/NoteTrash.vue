@@ -153,7 +153,11 @@ export default {
       }
     }
   }
+  .note-header {
+    height: 8vh;
+  }
   .note-title {
+    height: 7vh;
     .note-title-input {
       width: 100%;
       padding: 10px 20px;
