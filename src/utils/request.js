@@ -3,9 +3,16 @@ import { ElMessage } from 'element-plus'
 import { ElMessageBox } from 'element-plus'
 import { store } from '@/store'
 
-const port = process.env.VUE_APP_SERVER_PORT
+const host = process.env.VUE_APP_BASE_PATH
+const api = process.env.VUE_APP_BASE_API
+
+const port = ""
+if (process.env.VUE_APP_SERVER_PORT != 80) {
+    port = ":" + process.env.VUE_APP_SERVER_PORT
+}
+
 const service = axios.create({
-    baseURL: 'http://127.0.0.1:' + port,
+    baseURL: host + port + api,
     timeout: 99999
 })
 // http request 拦截器
@@ -44,7 +51,7 @@ service.interceptors.response.use(
                 message: response.data.msg || decodeURI(response.headers.msg),
                 type: response.headers.msgtype || 'error'
             })
-            
+
             if (response.data.data && response.data.data.reload) {
                 store.commit('user/LoginOut')
             }
