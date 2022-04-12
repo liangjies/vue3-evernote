@@ -12,16 +12,25 @@ const router = createRouter({
     {
       path: '/Search',
       name: 'Search',
+      meta: {
+        title: '搜索'
+      },
       component: Search
     },
     {
       path: '/Login',
       name: 'Login',
+      meta: {
+        title: '登录'
+      },
       component: () => import('@/views/login/Login.vue')
     },
     {
       path: '/NoteDetail/:id',
       name: 'NoteDetail',
+      meta: {
+        title: '笔记'
+      },
       component: () => import('@/views/note/NoteDetail.vue'),
     },
     {
@@ -32,6 +41,9 @@ const router = createRouter({
     {
       path: '/NoteTrash',
       name: 'NoteTrash',
+      meta: {
+        title: '废纸篓'
+      },
       component: () => import('@/views/trash/NoteTrash.vue')
     },
     {

@@ -35,3 +35,15 @@ export const DeleteNotebook = (data) => {
         method: 'delete',
     })
 }
+
+// @Summary 用户修改笔记本
+// @Produce  application/json
+// @Param data
+// @Router /notebooks/del [post]
+export const UpdateNotebook = (data) => {
+    return service({
+        url: '/notebook/'+data.id,
+        method: 'patch',
+        data
+    })
+}

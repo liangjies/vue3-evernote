@@ -7,15 +7,14 @@
         effect="dark"
         content="创建笔记本"
         placement="bottom"
-        ><el-icon class="add-icon" @click="dialogFormVisible = true"
-          ><folder-add /></el-icon
+        ><el-icon class="add-icon" @click="addDialog"><folder-add /></el-icon
       ></el-tooltip>
-      <el-dialog v-model="dialogFormVisible" title="新建笔记本">
+      <el-dialog v-model="dialogFormVisible" :title="dialogTitle">
         <input
           v-model="notebookInput"
           class="notebook-title-input"
           placeholder="给笔记本起个名称"
-          autofocus="autofocus"
+          autofocus="true"
         />
         <template #footer>
           <span class="dialog-footer">
@@ -26,28 +25,39 @@
       </el-dialog>
 
       <div class="search-bar">
-        <div class="search-tip">
+        <div class="search-tip" v-if="!search">
           <el-icon class="search-icon">
             <search />
           </el-icon>
           <span class="search-tip-text">查找笔记本</span>
         </div>
-        <input type="text" class="search-input" />
+        <input type="text" class="search-input" v-model="search" />
       </div>
     </div>
     <div class="notebook-lists-box">
       <div
         class="notebook-lists"
-        v-for="notebook in notebooks"
+        v-for="notebook in queryPart"
         :key="notebook.id"
       >
-        <div class="notebook-list"  @click="doClickNotebook(notebook.id)">
+        <div class="notebook-list" @click.stop="doClickNotebook(notebook.id)">
           <div class="notebook-title">
             {{ notebook.title }}
           </div>
           <div class="notebook-number">{{ notebook.noteCounts }} 条笔记</div>
-          <div class="notebook-operate" @click="deleteDialog(notebook.id)">
-            <el-icon class="notebook-operate-icon"><delete-filled /></el-icon>
+          <div class="notebook-operate">
+            <el-icon
+              class="notebook-operate-icon"
+              title="编辑"
+              @click.stop="editDialog(notebook.id)"
+              ><edit
+            /></el-icon>
+            <el-icon
+              class="notebook-operate-icon"
+              title="删除"
+              @click.stop="deleteDialog(notebook.id)"
+              ><delete-filled
+            /></el-icon>
           </div>
           <div class="notebook-split"></div>
         </div>
@@ -62,21 +72,25 @@ import {
   Search,
   DeleteFilled,
   Notebook,
+  Edit,
 } from "@element-plus/icons-vue";
 import { mapState } from "vuex";
-import { CreateNotebook, DeleteNotebook } from "@/api/notebook";
+import { CreateNotebook, DeleteNotebook, UpdateNotebook } from "@/api/notebook";
 import { mapActions } from "vuex";
 import { ElMessage, ElMessageBox } from "element-plus";
 import router from "@/router/index";
 export default {
   name: "NotebookPop",
   emits: ["PopOpenValue"],
-  components: { FolderAdd, Search, DeleteFilled, Notebook },
+  components: { FolderAdd, Search, DeleteFilled, Notebook, Edit },
   data() {
     return {
       notebookInput: "",
+      notebookID: -1,
       dialogFormVisible: false,
       open: true,
+      dialogTitle: "新建笔记本",
+      search:"",
     };
   },
   created() {
@@ -86,27 +100,59 @@ export default {
     ...mapState({
       notebooks: (state) => state.notebook.notebooks,
     }),
+    queryPart() {
+      var search = this.search;
+      return this.notebooks.filter((item) => {
+        return String(item.title).toLowerCase().indexOf(search) > -1;
+      });
+      
+      return this.item;
+    },
   },
   methods: {
     ...mapActions("notebook", ["GetNotebooksData"]),
     async addNewNotebook() {
-      const res = await CreateNotebook({ title: this.notebookInput });
-      if (res.code === 200) {
-        this.GetNotebooksData();
-        ElMessage({
-          showClose: true,
-          message: res.msg,
-          type: "success",
+      if (this.dialogTitle == "新建笔记本") {
+        const res = await CreateNotebook({ title: this.notebookInput });
+        if (res.code === 200) {
+          this.GetNotebooksData();
+          ElMessage({
+            showClose: true,
+            message: res.msg,
+            type: "success",
+          });
+        }
+      } else {
+        const res = await UpdateNotebook({
+          id: this.notebookID,
+          title: this.notebookInput,
         });
-        this.dialogFormVisible = false;
+        if (res.code === 200) {
+          this.GetNotebooksData();
+          ElMessage({
+            showClose: true,
+            message: res.msg,
+            type: "success",
+          });
+        }
       }
+      this.dialogFormVisible = false;
+    },
+    addDialog() {
+      this.dialogFormVisible = true;
+      this.dialogTitle = "新建笔记本";
+      this.notebookInput = "";
     },
     deleteDialog(notebookId) {
-      ElMessageBox.confirm("是否删除?", "提示", {
-        confirmButtonText: "是",
-        cancelButtonText: "否",
-        type: "warning",
-      })
+      ElMessageBox.confirm(
+        `是否删除 ${this.getNotebookById(notebookId).title} ?`,
+        "提示",
+        {
+          confirmButtonText: "是",
+          cancelButtonText: "否",
+          type: "warning",
+        }
+      )
         .then(async () => {
           const res = await DeleteNotebook({ id: notebookId });
           if (res.code === 200) {
@@ -120,12 +166,20 @@ export default {
         })
         .catch((err) => {});
     },
+    editDialog(notebookId) {
+      this.dialogFormVisible = true;
+      this.dialogTitle = "编辑笔记本";
+      this.notebookInput = this.getNotebookById(notebookId).title;
+      this.notebookID = notebookId;
+    },
     getNotebookById(id) {
-      this.notebooks.forEach((notebook) => {
+      let res = "";
+      this.notebooks.some((notebook) => {
         if (notebook.id == id) {
-          this.deleteInfo.title = notebook.title;
+          res = notebook;
         }
       });
+      return res;
     },
     doClickNotebook(id) {
       router.push({ path: "/NoteDetail/" + id });
@@ -177,11 +231,11 @@ export default {
       border: none;
     }
     .search-bar {
-      padding: 0 0 24px;
+      padding: 0 0 10px;
       margin: 0 24px;
       position: relative;
       .search-tip {
-        position: relative;
+        position: absolute;
         left: 0;
         text-align: center;
         top: 8px;
@@ -203,13 +257,11 @@ export default {
         }
       }
       .search-input {
-        position: absolute;
+        position: relative;
         background-color: transparent;
         border: 1px solid #e1e1e1;
         border-radius: 2px;
         padding: 10px 40px 9px 8px;
-        top: 0;
-        right: 0;
         outline: none;
         box-sizing: border-box;
         width: 100%;
@@ -257,11 +309,12 @@ export default {
           z-index: 1000;
           // opacity: 0;
           .notebook-operate-icon {
+            font-size: 20px;
             font-weight: 1000;
             color: #fff;
             display: inline-block;
             cursor: pointer;
-            margin-left: 8px;
+            margin-left: 15px;
             vertical-align: top;
           }
         }

@@ -3,8 +3,9 @@ import { ElMessage } from 'element-plus'
 import { ElMessageBox } from 'element-plus'
 import { store } from '@/store'
 
+const port = process.env.VUE_APP_SERVER_PORT
 const service = axios.create({
-    baseURL: 'http://127.0.0.1:8888',
+    baseURL: 'http://127.0.0.1:' + port,
     timeout: 99999
 })
 // http request 拦截器
