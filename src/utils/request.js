@@ -6,7 +6,7 @@ import { store } from '@/store'
 const host = process.env.VUE_APP_BASE_PATH
 const api = process.env.VUE_APP_BASE_API
 
-const port = ""
+let port = ""
 if (process.env.VUE_APP_SERVER_PORT != 80) {
     port = ":" + process.env.VUE_APP_SERVER_PORT
 }
