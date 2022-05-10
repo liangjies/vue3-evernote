@@ -5,7 +5,7 @@ import { store } from '@/store'
 
 const host = process.env.VUE_APP_BASE_PATH
 const api = process.env.VUE_APP_BASE_API
-const port = ""
+let port = ""
 if (process.env.VUE_APP_SERVER_PORT != 80) {
     port = ":" + process.env.VUE_APP_SERVER_PORT
 }
@@ -48,7 +48,7 @@ service.interceptors.response.use(
                 message: response.data.msg || decodeURI(response.headers.msg),
                 type: response.headers.msgtype || 'error'
             })
-            
+
             if (response.data.data && response.data.data.reload) {
                 store.commit('user/LoginOut')
             }
