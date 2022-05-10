@@ -1,12 +1,33 @@
 <template>
   <el-tabs tab-position="left" style="height: 200px" class="demo-tabs">
-    <el-tab-pane label="User">User</el-tab-pane>
-    <el-tab-pane label="Config">Config</el-tab-pane>
+    <el-tab-pane>
+      <template #label>
+        <span class="custom-tabs-label">
+          <el-icon style="vertical-align: -10%">
+            <user-filled />
+          </el-icon>
+          账号设置
+        </span>
+      </template>
+      User
+    </el-tab-pane>
+    <el-tab-pane>
+      <template #label>
+        <span class="custom-tabs-label">
+          <el-icon style="vertical-align: -10%">
+            <setting />
+          </el-icon>
+          偏好设置
+        </span>
+      </template>
+      Config
+    </el-tab-pane>
     <el-tab-pane label="Role">Role</el-tab-pane>
     <el-tab-pane label="Task">Task</el-tab-pane>
   </el-tabs>
 </template>
 <script setup>
+import { UserFilled, Setting } from "@element-plus/icons-vue";
 
 </script>
 <style>
