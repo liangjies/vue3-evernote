@@ -3,12 +3,12 @@
     <div class="login-icon-group">
       <div class="login-icon-group-title">
         <img
-          src="https://lyt-top.gitee.io/vue-next-admin-preview/assets/logo-mini.1646368269034.svg"
+          src="@/assets/logo-mini.1646368269034.svg"
         />
         <div class="login-icon-group-title-text font25">笔记</div>
       </div>
       <img
-        src="https://lyt-top.gitee.io/vue-next-admin-preview/assets/login-icon-two.1646368269034.svg"
+        src="@/assets/login-icon-two.1646368269034.svg"
         class="login-icon-group-icon"
       />
     </div>

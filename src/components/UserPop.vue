@@ -11,7 +11,7 @@
           <el-icon class="user-pop-icon">
             <setting />
           </el-icon>
-          <span class="user-pop-text">设置</span>
+          <span class="user-pop-text" @click="dialogVisible = true">设置</span>
         </div>
       </div>
       <div class="user-pop-ourside user-question">
@@ -31,6 +31,21 @@
         </div>
       </div>
     </div>
+    <el-dialog
+      v-model="dialogVisible"
+      title="Tips"
+      width="30%"
+    >
+      <span>This is a message</span>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="dialogVisible = false"
+            >Confirm</el-button
+          >
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -45,10 +60,11 @@ export default {
   },
   data() {
     return {
+      dialogVisible: false,
       open: false,
     };
   },
-  created() { },
+  created() {},
   computed: {
     ...mapState({
       userName: (state) => state.user.userInfo.nickName,
@@ -56,7 +72,7 @@ export default {
     }),
   },
   methods: {
-    ...mapActions('user', ['LoginOut']),
+    ...mapActions("user", ["LoginOut"]),
     toggleOpen: function () {
       console.log("toggleOpen");
       this.open = !this.open;
@@ -67,8 +83,8 @@ export default {
       this.open = false;
     },
     doLogout() {
-      this.LoginOut()
-    }
+      this.LoginOut();
+    },
   },
   directives: {
     clickoutside: {
