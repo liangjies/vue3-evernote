@@ -9,9 +9,9 @@
       <div class="user-pop-ourside user-setting">
         <div class="user-pop-box">
           <el-icon class="user-pop-icon">
-            <setting />
+            <setting-icon />
           </el-icon>
-          <span class="user-pop-text" @click="dialogVisible = true">设置</span>
+          <span class="user-pop-text" @click="showSetting">设置</span>
         </div>
       </div>
       <div class="user-pop-ourside user-question">
@@ -31,36 +31,23 @@
         </div>
       </div>
     </div>
-    <el-dialog
-      v-model="dialogVisible"
-      title="Tips"
-      width="30%"
-    >
-      <span>This is a message</span>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="dialogVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="dialogVisible = false"
-            >Confirm</el-button
-          >
-        </span>
-      </template>
-    </el-dialog>
+    <set-ting ref="setting"></set-ting>
   </div>
 </template>
 <script>
-import { CircleClose, Setting, QuestionFilled } from "@element-plus/icons-vue";
+import { CircleClose, Setting as SettingIcon, QuestionFilled } from "@element-plus/icons-vue";
 import { mapState, mapActions } from "vuex";
+import SetTing from "@/views/setting/SetTing.vue";
 export default {
   name: "UserPop",
   components: {
     CircleClose,
-    Setting,
+    SetTing,
+    SettingIcon,
     QuestionFilled,
   },
   data() {
     return {
-      dialogVisible: false,
       open: false,
     };
   },
@@ -84,6 +71,10 @@ export default {
     },
     doLogout() {
       this.LoginOut();
+    },
+    showSetting() {
+      console.log("showSetting");
+      this.$refs.setting.show()
     },
   },
   directives: {

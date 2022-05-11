@@ -2,7 +2,7 @@
   <el-dialog v-model="dialogVisible" custom-class="custom-dialog">
     <el-tabs
       tab-position="left"
-      style="height: 300px"
+      style="height: 400px"
       class="demo-tabs"
       type="border-card"
     >
@@ -71,12 +71,20 @@ export default {
   components: { UserFilled, Setting },
   data() {
     return {
-      dialogVisible: true,
+      dialogVisible: false,
     };
   },
   methods: {
     changeEmail() {
       this.$router.push("/setting/email");
+    },
+    show(){
+      this.dialogVisible = true;
+    }
+  },
+  watch: {
+    dialogVisible(val) {
+      console.log(val);
     },
   },
 };
@@ -149,16 +157,16 @@ export default {
     }
   }
   .content-avatar {
-    top: 0;
-    right: 0;
-    width: 90px;
-    height: 90px;
+    top: 50px;
+    right: 10px;
+    width: 50px;
+    height: 50px;
     overflow: hidden;
     position: absolute;
     border-radius: 45px;
     .avatar {
-      width: 90px;
-      height: 90px;
+      width: 50px;
+      height: 50px;
       img {
         color: transparent;
         width: 100%;
@@ -170,14 +178,14 @@ export default {
     }
   }
 }
-.custom-dialog{
-  .el-dialog__header{
+.custom-dialog {
+  .el-dialog__header {
     padding: 0 0 0 0;
   }
-  .el-dialog__body{
+  .el-dialog__body {
     padding: 0 0 0 0;
   }
-  .el-dialog__footer{
+  .el-dialog__footer {
     padding: 0 0 0 0;
   }
 }
