@@ -9,12 +9,12 @@ const router = createRouter({
       component: () => import('../components/HomeHeader.vue')
     },
     {
-      path: '/setting',
-      name: 'SetTing',
+      path: '/avatar',
+      name: 'AvatarSet',
       meta: {
         title: '设置'
       },
-      component: () => import('@/views/setting/SetTing.vue')
+      component: () => import('@/views/setting/component/AvatarSet.vue')
     },
     {
       path: '/Search',

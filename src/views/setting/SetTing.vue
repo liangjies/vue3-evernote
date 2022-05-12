@@ -1,74 +1,80 @@
 <template>
-  <el-dialog v-model="dialogVisible" custom-class="custom-dialog">
-    <el-tabs
-      tab-position="left"
-      style="height: 400px"
-      class="demo-tabs"
-      type="border-card"
-    >
-      <el-tab-pane>
-        <template #label>
-          <span class="custom-tabs-label">
-            <el-icon style="vertical-align: -10%">
-              <user-filled />
-            </el-icon>
-            账号设置
-          </span>
-        </template>
-        <div class="content">
-          <div class="content-box">
-            <p class="title">邮箱</p>
-            <div class="email-split">
-              <p class="email-content">113944@qq.com</p>
-              <p class="email-button" @click="changeEmail">更换邮箱</p>
+  <div>
+    <el-dialog v-model="dialogVisible" custom-class="custom-dialog">
+      <el-tabs
+        tab-position="left"
+        style="height: 400px"
+        class="demo-tabs"
+        type="border-card"
+      >
+        <el-tab-pane>
+          <template #label>
+            <span class="custom-tabs-label">
+              <el-icon style="vertical-align: -10%">
+                <user-filled />
+              </el-icon>
+              账号设置
+            </span>
+          </template>
+          <div class="content">
+            <div class="content-box">
+              <p class="title">邮箱</p>
+              <div class="email-split">
+                <p class="email-content">113944@qq.com</p>
+                <p class="email-button" @click="changeEmail">更换邮箱</p>
+              </div>
             </div>
-          </div>
 
-          <div class="content-box">
-            <p class="title">用户名</p>
-            <div class="split">
-              <p class="content">liangjies</p>
+            <div class="content-box">
+              <p class="title">用户名</p>
+              <div class="split">
+                <p class="content">liangjies</p>
+              </div>
             </div>
-          </div>
-          <div class="content-box">
-            <p class="title">注册时间</p>
-            <div class="split">
-              <p class="content">2021/4/22</p>
+            <div class="content-box">
+              <p class="title">注册时间</p>
+              <div class="split">
+                <p class="content">2021/4/22</p>
+              </div>
             </div>
-          </div>
 
-          <div class="content-avatar">
-            <div class="avatar">
-              <img
-                alt="1139629972"
-                src="https://as.wiz.cn/as/user/avatar/83570f00-a33f-11eb-afcd-b929454d220b?version=0"
-              />
-            </div>
-            <div class="split">
-              <p class="content">2021/4/22</p>
+            <div class="content-avatar">
+              <div class="avatar">
+                <img
+                  alt="1139629972"
+                  src="https://as.wiz.cn/as/user/avatar/83570f00-a33f-11eb-afcd-b929454d220b?version=0"
+                />
+                <avatar-set></avatar-set>
+              </div>
+              <div class="split">
+                <p class="content">2021/4/22</p>
+              </div>
             </div>
           </div>
-        </div>
-      </el-tab-pane>
-      <el-tab-pane>
-        <template #label>
-          <span class="custom-tabs-label">
-            <el-icon style="vertical-align: -10%">
-              <setting />
-            </el-icon>
-            偏好设置
-          </span>
-        </template>
-        Config
-      </el-tab-pane>
-    </el-tabs>
-  </el-dialog>
+        </el-tab-pane>
+        <el-tab-pane>
+          <template #label>
+            <span class="custom-tabs-label">
+              <el-icon style="vertical-align: -10%">
+                <setting />
+              </el-icon>
+              偏好设置
+            </span>
+          </template>
+          Config
+        </el-tab-pane>
+      </el-tabs>
+    </el-dialog>
+    <email-set ref="emailSet"></email-set>
+  </div>
 </template>
 <script>
 import { UserFilled, Setting } from "@element-plus/icons-vue";
+import EmailSet from "@/views/setting/component/EmailSet.vue";
+import AvatarSet from "@/views/setting/component/AvatarSet.vue";
 export default {
   name: "SetTing",
-  components: { UserFilled, Setting },
+  components: { UserFilled, Setting, EmailSet,AvatarSet },
   data() {
     return {
       dialogVisible: false,
@@ -76,20 +82,15 @@ export default {
   },
   methods: {
     changeEmail() {
-      this.$router.push("/setting/email");
+      this.$refs.emailSet.show();
     },
-    show(){
+    show() {
       this.dialogVisible = true;
-    }
-  },
-  watch: {
-    dialogVisible(val) {
-      console.log(val);
     },
   },
 };
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .content {
   .content-box {
     margin-top: 32px;

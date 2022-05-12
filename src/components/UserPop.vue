@@ -7,11 +7,11 @@
     </div>
     <div class="user-pop-func">
       <div class="user-pop-ourside user-setting">
-        <div class="user-pop-box">
+        <div class="user-pop-box" @click="showSetting">
           <el-icon class="user-pop-icon">
             <setting-icon />
           </el-icon>
-          <span class="user-pop-text" @click="showSetting">设置</span>
+          <span class="user-pop-text">设置</span>
         </div>
       </div>
       <div class="user-pop-ourside user-question">
@@ -35,7 +35,11 @@
   </div>
 </template>
 <script>
-import { CircleClose, Setting as SettingIcon, QuestionFilled } from "@element-plus/icons-vue";
+import {
+  CircleClose,
+  Setting as SettingIcon,
+  QuestionFilled,
+} from "@element-plus/icons-vue";
 import { mapState, mapActions } from "vuex";
 import SetTing from "@/views/setting/SetTing.vue";
 export default {
@@ -73,8 +77,7 @@ export default {
       this.LoginOut();
     },
     showSetting() {
-      console.log("showSetting");
-      this.$refs.setting.show()
+      this.$refs.setting.show();
     },
   },
   directives: {
