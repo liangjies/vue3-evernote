@@ -6,13 +6,17 @@
     :on-success="handleAvatarSuccess"
     :before-upload="beforeAvatarUpload"
   >
-    <img :src="imageUrl" class="avatar" />
+    <img :src="headerImg" class="avatar" />
   </el-upload>
 </template>
 
 <script setup>
 import { ref } from "vue";
 import { ElMessage } from "element-plus";
+import { useStore } from 'vuex'
+import { computed } from 'vue'
+const store = useStore()
+const headerImg = computed(() => store.state.user.userInfo.headerImg)
 const imageUrl = ref(
   "https://as.wiz.cn/as/user/avatar/83570f00-a33f-11eb-afcd-b929454d220b?version=0"
 );

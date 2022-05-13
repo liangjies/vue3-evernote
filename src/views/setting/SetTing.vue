@@ -19,16 +19,22 @@
           <div class="content">
             <div class="content-box">
               <p class="title">邮箱</p>
-              <div class="email-split">
-                <p class="email-content">113944@qq.com</p>
-                <p class="email-button" @click="changeEmail">更换邮箱</p>
+              <div class="split">
+                <p class="content">113944@qq.com</p>
+                <p class="button" @click="changeEmail">更换邮箱</p>
               </div>
             </div>
-
             <div class="content-box">
               <p class="title">用户名</p>
               <div class="split">
-                <p class="content">liangjies</p>
+                <p class="content">{{ userName }}</p>
+              </div>
+            </div>
+            <div class="content-box">
+              <p class="title">昵称</p>
+              <div class="split">
+                <p class="content">{{ nickName }}</p>
+                <p class="button" @click="changeNickName">修改昵称</p>
               </div>
             </div>
             <div class="content-box">
@@ -62,6 +68,7 @@
     </el-dialog>
     <email-set ref="emailSet"></email-set>
     <pass-set ref="passSet"></pass-set>
+    <nick-name-set ref="nickNameSet" :nickName="nickName"></nick-name-set>
   </div>
 </template>
 <script>
@@ -69,13 +76,28 @@ import { UserFilled, Setting } from "@element-plus/icons-vue";
 import EmailSet from "@/views/setting/component/EmailSet.vue";
 import AvatarSet from "@/views/setting/component/AvatarSet.vue";
 import PassSet from "@/views/setting/component/PassSet.vue";
+import NickNameSet from "@/views/setting/component/NickNameSet.vue";
+import { mapState } from "vuex";
 export default {
   name: "SetTing",
-  components: { UserFilled, Setting, EmailSet,AvatarSet,PassSet },
+  components: {
+    UserFilled,
+    Setting,
+    EmailSet,
+    AvatarSet,
+    PassSet,
+    NickNameSet,
+  },
   data() {
     return {
       dialogVisible: false,
     };
+  },
+  computed: {
+    ...mapState({
+      nickName: (state) => state.user.userInfo.nickName,
+      userName: (state) => state.user.userInfo.userName,
+    }),
   },
   methods: {
     changeEmail() {
@@ -83,6 +105,9 @@ export default {
     },
     changePass() {
       this.$refs.passSet.show();
+    },
+    changeNickName() {
+      this.$refs.nickNameSet.show();
     },
     show() {
       this.dialogVisible = true;
@@ -92,41 +117,6 @@ export default {
 </script>
 <style lang="less" scoped>
 .content {
-  .content-box {
-    margin-top: 32px;
-    .title {
-      color: #b2bccd;
-      font-size: 12px;
-    }
-    .email-split {
-      margin-top: 16px;
-      display: flex;
-      min-height: 24px;
-      align-items: center;
-      &:hover {
-        .email-button {
-          opacity: 1;
-        }
-      }
-      .email-content {
-        color: #07142a;
-        font-size: 14px;
-        line-height: 1;
-      }
-      .email-button {
-        border: none;
-        cursor: pointer;
-        opacity: 0;
-        outline: none;
-        padding: 0;
-        transition: opacity 0.2s ease-in;
-        margin-left: 16px;
-        background-color: transparent;
-        color: #448aff;
-        font-size: 14px;
-      }
-    }
-  }
   .content-box {
     .split {
       margin-top: 16px;

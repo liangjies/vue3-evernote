@@ -47,3 +47,15 @@ export const captcha = (data) => {
     data: data
   })
 }
+
+// @Summary 用户更新昵称
+// @Produce  application/json
+// @Param data
+// @Router /user/nickName [patch]
+export const UpdateNickName = (data) => {
+  return service({
+      url: '/user/nickName',
+      method: 'patch',
+      data
+  })
+}

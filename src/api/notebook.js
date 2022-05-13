@@ -39,7 +39,7 @@ export const DeleteNotebook = (data) => {
 // @Summary 用户修改笔记本
 // @Produce  application/json
 // @Param data
-// @Router /notebooks/del [post]
+// @Router /notebook/:id [patch]
 export const UpdateNotebook = (data) => {
     return service({
         url: '/notebook/'+data.id,

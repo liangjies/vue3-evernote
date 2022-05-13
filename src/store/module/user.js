@@ -7,11 +7,15 @@ export const user = {
     userInfo: {
       uuid: '',
       nickName: '',
+      userName: '',
       headerImg: '',
     },
     token: ''
   },
   mutations: {
+    setNickName(state, nickName) {
+      state.userInfo.nickName = nickName
+    },
     setUserInfo(state, userInfo) {
       // 这里的 `state` 对象是模块的局部状态
       state.userInfo = userInfo
