@@ -37,17 +37,12 @@
                 <p class="content">2021/4/22</p>
               </div>
             </div>
-
+            <div class="content-box">
+              <el-button @click="changePass">修改密码</el-button>
+            </div>
             <div class="content-avatar">
               <div class="avatar">
-                <img
-                  alt="1139629972"
-                  src="https://as.wiz.cn/as/user/avatar/83570f00-a33f-11eb-afcd-b929454d220b?version=0"
-                />
                 <avatar-set></avatar-set>
-              </div>
-              <div class="split">
-                <p class="content">2021/4/22</p>
               </div>
             </div>
           </div>
@@ -66,15 +61,17 @@
       </el-tabs>
     </el-dialog>
     <email-set ref="emailSet"></email-set>
+    <pass-set ref="passSet"></pass-set>
   </div>
 </template>
 <script>
 import { UserFilled, Setting } from "@element-plus/icons-vue";
 import EmailSet from "@/views/setting/component/EmailSet.vue";
 import AvatarSet from "@/views/setting/component/AvatarSet.vue";
+import PassSet from "@/views/setting/component/PassSet.vue";
 export default {
   name: "SetTing",
-  components: { UserFilled, Setting, EmailSet,AvatarSet },
+  components: { UserFilled, Setting, EmailSet,AvatarSet,PassSet },
   data() {
     return {
       dialogVisible: false,
@@ -83,6 +80,9 @@ export default {
   methods: {
     changeEmail() {
       this.$refs.emailSet.show();
+    },
+    changePass() {
+      this.$refs.passSet.show();
     },
     show() {
       this.dialogVisible = true;
