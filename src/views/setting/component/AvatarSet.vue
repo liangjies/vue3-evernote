@@ -24,6 +24,7 @@ const handleAvatarSuccess = (res, file) => {
   imageUrl.value = URL.createObjectURL(file.raw);
 };
 const beforeAvatarUpload = (file) => {
+  // 校验
   if (file.type === "image/jpeg" || file.type === "image/png") {
     if (file.size / 1024 / 1024 > 2) {
       ElMessage.error("Avatar picture size can not exceed 2MB!");
@@ -33,6 +34,7 @@ const beforeAvatarUpload = (file) => {
     ElMessage.error("Avatar picture must be JPG format!");
     return false;
   }
+  // 上传
 };
 </script>
 

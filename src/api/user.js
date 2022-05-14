@@ -59,3 +59,15 @@ export const UpdateNickName = (data) => {
       data
   })
 }
+
+// @Summary 用户修改密码
+// @Produce  application/json
+// @Param data
+// @Router /user/changePassword [patch]
+export const ChangePassword = (data) => {
+  return service({
+      url: '/user/changePassword',
+      method: 'patch',
+      data
+  })
+}

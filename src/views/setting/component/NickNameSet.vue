@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="dialogVisible" title="修改昵称">
+  <el-dialog v-model="dialogVisible" title="修改昵称" before-close="closeDialog">
     <el-input size="large" v-model="nickName"></el-input>
     <template #footer>
       <span class="dialog-footer">
@@ -40,18 +40,15 @@ export default {
           type: "success",
         });
         this.$store.commit("user/setNickName", this.nickName);
-      } else {
-        ElMessage({
-          showClose: true,
-          message: res.msg,
-          type: "error",
-        });
+        this.dialogVisible = false;
       }
-      this.dialogVisible = false;
     },
     show() {
       this.dialogVisible = true;
     },
+    closeDialog(){
+        this.nickName = "";
+    }
   },
 };
 </script>

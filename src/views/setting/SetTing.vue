@@ -1,9 +1,8 @@
 <template>
   <div>
-    <el-dialog v-model="dialogVisible" custom-class="custom-dialog">
+    <el-dialog v-model="dialogVisible" custom-class="custom-dialog" width="700px">
       <el-tabs
         tab-position="left"
-        style="height: 400px"
         class="demo-tabs"
         type="border-card"
       >
@@ -180,8 +179,11 @@ export default {
     padding: 0 0 0 0;
   }
 }
-.el-tabs--right .el-tabs__content,
-.el-tabs--left .el-tabs__content {
-  height: 100%;
+.demo-tabs {
+  height: 500px;
 }
+// .el-tabs--right .el-tabs__content,
+// .el-tabs--left .el-tabs__content {
+//   height: 100%;
+// }
 </style>
