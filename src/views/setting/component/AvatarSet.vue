@@ -1,29 +1,45 @@
 <template>
   <el-upload
     class="avatar-uploader"
-    action="https://jsonplaceholder.typicode.com/posts/"
+    :headers="headers"
+    :action="UploadAvatar"
     :show-file-list="false"
     :on-success="handleAvatarSuccess"
     :before-upload="beforeAvatarUpload"
   >
     <img :src="headerImg" class="avatar" />
+    <el-icon style="z-index: 1000" class="plus"><Plus /></el-icon>
   </el-upload>
 </template>
 
 <script setup>
 import { ref } from "vue";
+import { Plus } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
-import { useStore } from 'vuex'
-import { computed } from 'vue'
-const store = useStore()
-const headerImg = computed(() => store.state.user.userInfo.headerImg)
-const imageUrl = ref(
-  "https://as.wiz.cn/as/user/avatar/83570f00-a33f-11eb-afcd-b929454d220b?version=0"
-);
+import { useStore } from "vuex";
+import { computed } from "vue";
+import { UploadAvatar } from "@/api/upload";
+const store = useStore();
+const headerImg = computed(() => store.state.user.userInfo.headerImg);
+const headers = ref({ "x-token": store.getters["user/token"] });
 const handleAvatarSuccess = (res, file) => {
-  imageUrl.value = URL.createObjectURL(file.raw);
+  if (res.code === 200) {
+    ElMessage({
+      showClose: true,
+      message: res.msg,
+      type: "success",
+    });
+    store.commit("user/setHeaderImg", res.data.file.url);
+  } else {
+    ElMessage({
+      showClose: true,
+      message: res.msg,
+      type: "error",
+    });
+  }
 };
 const beforeAvatarUpload = (file) => {
+  console.log("beforeAvatarUpload");
   // 校验
   if (file.type === "image/jpeg" || file.type === "image/png") {
     if (file.size / 1024 / 1024 > 2) {
@@ -38,17 +54,34 @@ const beforeAvatarUpload = (file) => {
 };
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .avatar-uploader .avatar {
   width: 50px;
   height: 50px;
   border-radius: 45px;
-   overflow: hidden;
+  overflow: hidden;
+}
+.plus {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1000;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  color: #fff;
+  background-color: #409eff;
+  border-radius: 50%;
+  font-size: 20px;
+  opacity: 0;
+  &:hover {
+    opacity: 1;
+  }
 }
 </style>
 
 <style>
-
 .avatar-uploader .el-upload:hover {
   border-color: var(--el-color-primary);
 }

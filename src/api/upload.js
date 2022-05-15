@@ -80,3 +80,10 @@ export const UploadFile = (data) => {
         data,
     })
 }
+
+
+// @Summary 上传头像
+// @Produce  application/json
+// @Param data body 
+// @Router /trash/all [get]
+export const UploadAvatar = host + port + api + "user/uploadAvatar"

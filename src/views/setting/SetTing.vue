@@ -19,7 +19,7 @@
             <div class="content-box">
               <p class="title">邮箱</p>
               <div class="split">
-                <p class="content">113944@qq.com</p>
+                <p class="content">未绑定</p>
                 <p class="button" @click="changeEmail">更换邮箱</p>
               </div>
             </div>

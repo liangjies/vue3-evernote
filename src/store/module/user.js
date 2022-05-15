@@ -13,6 +13,9 @@ export const user = {
     token: ''
   },
   mutations: {
+    setHeaderImg(state, headerImg) {
+      state.userInfo.headerImg = headerImg
+    },
     setNickName(state, nickName) {
       state.userInfo.nickName = nickName
     },
