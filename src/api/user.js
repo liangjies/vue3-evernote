@@ -71,3 +71,16 @@ export const ChangePassword = (data) => {
       data
   })
 }
+
+
+// @Summary 用户修改邮箱
+// @Produce  application/json
+// @Param data
+// @Router /user/email [patch]
+export const UpdateEmail = (data) => {
+  return service({
+      url: '/user/email',
+      method: 'patch',
+      data
+  })
+}

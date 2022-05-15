@@ -9,10 +9,15 @@ export const user = {
       nickName: '',
       userName: '',
       headerImg: '',
+      email: '',
+      createdAt:'',
     },
     token: ''
   },
   mutations: {
+    setEmail(state, email) {
+      state.userInfo.email = email
+    },
     setHeaderImg(state, headerImg) {
       state.userInfo.headerImg = headerImg
     },

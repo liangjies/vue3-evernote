@@ -1,11 +1,11 @@
 <template>
   <div>
-    <el-dialog v-model="dialogVisible" custom-class="custom-dialog" width="700px">
-      <el-tabs
-        tab-position="left"
-        class="demo-tabs"
-        type="border-card"
-      >
+    <el-dialog
+      v-model="dialogVisible"
+      custom-class="custom-dialog"
+      width="700px"
+    >
+      <el-tabs tab-position="left" class="demo-tabs" type="border-card">
         <el-tab-pane>
           <template #label>
             <span class="custom-tabs-label">
@@ -19,7 +19,7 @@
             <div class="content-box">
               <p class="title">邮箱</p>
               <div class="split">
-                <p class="content">未绑定</p>
+                <p class="content">{{ email ? email : "未绑定" }}</p>
                 <p class="button" @click="changeEmail">更换邮箱</p>
               </div>
             </div>
@@ -39,7 +39,7 @@
             <div class="content-box">
               <p class="title">注册时间</p>
               <div class="split">
-                <p class="content">2021/4/22</p>
+                <p class="content">{{ createdAt }}</p>
               </div>
             </div>
             <div class="content-box">
@@ -76,6 +76,7 @@ import EmailSet from "@/views/setting/component/EmailSet.vue";
 import AvatarSet from "@/views/setting/component/AvatarSet.vue";
 import PassSet from "@/views/setting/component/PassSet.vue";
 import NickNameSet from "@/views/setting/component/NickNameSet.vue";
+import { getFullDate } from "@/utils/util";
 import { mapState } from "vuex";
 export default {
   name: "SetTing",
@@ -96,6 +97,8 @@ export default {
     ...mapState({
       nickName: (state) => state.user.userInfo.nickName,
       userName: (state) => state.user.userInfo.userName,
+      email: (state) => state.user.userInfo.email,
+      createdAt: (state) => getFullDate(state.user.userInfo.createdAt).substring(0, 10),
     }),
   },
   methods: {
