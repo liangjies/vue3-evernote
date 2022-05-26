@@ -79,8 +79,8 @@ export default {
     return {
       picPath: "",
       login: {
-        username: "",
-        password: "",
+        username: "demo",
+        password: "demo",
         captcha: "",
         captchaId: "",
         notice: "",
