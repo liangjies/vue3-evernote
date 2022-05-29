@@ -1,9 +1,27 @@
 <template>
-  <note v-on:childByValue="childByValue" :refresh="refresh"></note>
-  <div class="note-detail" v-show="this.id != -1">
+  <note
+    v-on:childByValue="childByValue"
+    :refresh="refresh"
+    :isCollapse="isCollapse"
+  ></note>
+  <div
+    class="note-detail"
+    v-show="this.id != -1"
+    :class="{ isCollapse: isCollapse }"
+  >
     <div class="note-header">
       <div class="note-operation">
         <div class="note-operation-left">
+          <!--伸缩功能-->
+          <span @click="totalCollapse">
+            <el-icon class="note-operation-icon" v-if="isCollapse"
+              ><expand
+            /></el-icon>
+            <el-icon class="note-operation-icon" v-else>
+              <fold />
+            </el-icon>
+          </span>
+          <!---->
           <el-popover placement="bottom" :width="300" trigger="hover">
             <template #reference>
               <el-icon class="note-operation-icon" ref="upload">
@@ -48,12 +66,12 @@
             <el-icon class="note-notebook-icon">
               <notebook />
             </el-icon>
-            <div class="note-tags">
+            <!-- <div class="note-tags">
               <el-icon class="note-tags-icon">
                 <price-tag />
               </el-icon>
-              <span class="note-tag"> 微信 </span>
-            </div>
+              <span class="note-tag"> {{ notebook }} </span>
+            </div> -->
             <el-dropdown trigger="click" style="margin-top: 1px">
               <span class="el-dropdown-link">
                 {{ notebook }}
@@ -112,8 +130,9 @@ import {
   InfoFilled,
   Notebook,
   ArrowDown,
-  PriceTag,
   Clock,
+  Expand,
+  Fold,
 } from "@element-plus/icons-vue";
 export default {
   components: {
@@ -122,10 +141,11 @@ export default {
     InfoFilled,
     Notebook,
     ArrowDown,
-    PriceTag,
     Clock,
     NoteEditor,
     History,
+    Expand,
+    Fold,
   },
   data() {
     return {
@@ -147,6 +167,7 @@ export default {
           time: "",
         },
       ],
+      isCollapse: false,
     };
   },
   computed: {
@@ -154,15 +175,57 @@ export default {
       notebooks: (state) => state.notebook.notebooks,
     }),
   },
-  mounted() {},
+  // 未保存提示
+  beforeRouteLeave: function (to, from, next) {
+    if (this.value !== this.content) {
+      this.$confirm("您还未保存，确定需要退出吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          // 选择确定
+          next();
+        })
+        .catch(() => {
+          next(false);
+        });
+    } else {
+      next();
+    }
+  },
+  mounted() {
+    // 未保存退出页面提示
+    const urlPath = "/NoteDetail/" + this.$route.params.id;
+    let that = this;
+    window.onbeforeunload = function (e) {
+      if (that.$route.fullPath == urlPath && that.value !== that.content) {
+        // 注意这里要替换成自己的当前页面的路由
+        e = e || window.event;
+        // 兼容IE8和Firefox 4之前的版本
+        if (e) {
+          e.returnValue = "关闭提示";
+        }
+        // Chrome, Safari, Firefox 4+, Opera 12+ , IE 9+
+        return "关闭提示";
+      } else {
+        window.onbeforeunload = null;
+      }
+    };
+  },
   methods: {
+    // 切换笔记
     childByValue: function (childValue) {
-      // childValue就是子组件传过来的值
+      // 未保存笔记自动保存
+      if (this.value !== this.content) {
+        this.doUpdateNote();
+      }
+      // 请求新的笔记
       if (typeof childValue != "undefined") {
         this.titleInput = childValue.title;
         this.id = childValue.id;
         this.notebookID = Number(childValue.notebookID);
-        // this.notebook = this.getNotebookById(this.notebookID);
+
         this.gridData[0].time = getFullDate(childValue.createdAt);
         this.gridData[1].time = getFullDate(childValue.updatedAt);
         this.GetNote(childValue.id);
@@ -173,10 +236,12 @@ export default {
         this.setNotebookTitle(this.$route.params.id);
       }
     },
+    // 切换焦点
     onClickEidtor: function () {
       this.$refs.upload.$el.click();
       this.setNotebookTitle(this.$route.params.id);
     },
+    // 获取笔记
     async GetNote(noteId) {
       if (noteId == -2) {
         this.value = "";
@@ -196,11 +261,13 @@ export default {
         }
       }
     },
+    // 输入值
     inputData: function (inputData) {
-      // childValue就是子组件传过来的值
       this.content = inputData;
     },
+    // 保存或新建笔记
     async doUpdateNote() {
+      // 保存笔记
       if (this.id != -2) {
         const res = await UpdateNote({
           id: this.id,
@@ -214,8 +281,10 @@ export default {
             message: res.msg,
             type: "success",
           });
+          this.value = this.content;
         }
       } else if (this.id == -2) {
+        // 新建笔记
         const res = await CreateNote({
           title: this.titleInput,
           content: this.content,
@@ -235,10 +304,12 @@ export default {
         }
       }
     },
+    // 笔记移动笔记本
     async updateNotebook(id) {
       this.notebookID = id;
       this.setNotebookTitle(id);
     },
+    // 根据ID显示笔记本名称
     setNotebookTitle(id) {
       this.notebooks.forEach((notebook) => {
         if (notebook.id == id) {
@@ -246,6 +317,7 @@ export default {
         }
       });
     },
+    // 取消新建笔记
     doCancel() {
       if (this.$route.params.id == -1) {
         router.push({ path: "/NoteDetail/0" });
@@ -253,6 +325,7 @@ export default {
       this.id = -1;
       this.refresh = !this.refresh;
     },
+    // 删除笔记
     doDelete() {
       ElMessageBox.confirm("是否删除?", "提示", {
         confirmButtonText: "是",
@@ -270,8 +343,13 @@ export default {
         }
       });
     },
+    // 笔记历史
     openHistory() {
-      this.$refs.historyRef.openHistory({id:this.id});
+      this.$refs.historyRef.openHistory({ id: this.id });
+    },
+    // 笔记列表伸缩
+    totalCollapse() {
+      this.isCollapse = !this.isCollapse;
     },
   },
 };
@@ -279,6 +357,21 @@ export default {
 
 <style lang="less" scoped>
 .note-detail {
+  @keyframes animationCollapse {
+    /* from 表示动画开始位置 可以用0%表示*/
+    from {
+      margin-left: 423px;
+    }
+    /* to表示动画结束位置 可以用100%表示，也可以用不同的百分比来表示，在不同的阶段展现不同的动画 */
+    to {
+      margin-left: 73px;
+    }
+  }
+  &.isCollapse {
+    animation: animationCollapse 0.5s 1;
+    margin-left: 73px;
+  }
+
   margin-left: 423px;
   background: white;
   border-left: 1px solid #ececec;
@@ -377,7 +470,7 @@ export default {
       border-bottom: 1px solid #ececec;
     }
   }
-  .note-header{
+  .note-header {
     height: 8vh;
   }
   .note-title {

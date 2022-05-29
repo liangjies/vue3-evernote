@@ -1,6 +1,6 @@
 <template>
   <sider-bar v-on:addNoteValue="addNoteValue"></sider-bar>
-  <div class="note-page">
+  <div class="note-page" v-show="!isCollapse">
     <div class="note-header">
       <div class="note-header-title">{{ title }}</div>
       <div class="note-add">
@@ -91,6 +91,10 @@ export default {
   components: { SiderBar, ArrowDown, Plus },
   props: {
     refresh: {
+      type: Boolean,
+      default: false,
+    },
+    isCollapse: {
       type: Boolean,
       default: false,
     },

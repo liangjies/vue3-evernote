@@ -59,7 +59,6 @@ import "tinymce/plugins/visualblocks"; //显示元素范围
 import "tinymce/plugins/visualchars"; //显示不可见字符
 import "tinymce/plugins/wordcount"; //字数统计
 import { UploadFile } from "@/api/upload";
-import axios from "axios";
 export default {
   name: "NoteEditor",
   emits: ["inputData", "onClickEidtor"],
@@ -129,37 +128,12 @@ export default {
           } else {
             let params = new FormData();
             params.append("file", blobInfo.blob());
-            let config = {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            };
             const res = await UploadFile(params);
             if (res.code == 200) {
               success(res.data.file.url);
             } else {
               failure("上传失败");
-            }
-
-            
-            // let url =
-            //   process.env.VUE_APP_BASE_PATH +
-            //   ":" +
-            //   process.env.VUE_APP_SERVER_PORT +
-            //   "/upload";
-            //  axios
-            //   .post(url, params)
-            //   .then((res) => {
-            //     if (res.data.code == 200) {
-            //       success(res.data.msg); //上传成功，在成功函数里填入图片路径
-            //     } else {
-            //       failure("上传失败");
-            //     }
-            //   })
-            //   .catch(() => {
-            //     failure("上传出错，服务器开小差了呢");
-            //   });
-            
+            }          
           }
         },
       },
