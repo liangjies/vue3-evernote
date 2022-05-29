@@ -212,6 +212,15 @@ export default {
         window.onbeforeunload = null;
       }
     };
+    // Ctrl + S 保存功能
+    document.onkeydown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+        //  执行save方法
+        this.doUpdateNote();
+        // 阻止默认事件
+        e.preventDefault();
+      }
+    };
   },
   methods: {
     // 切换笔记

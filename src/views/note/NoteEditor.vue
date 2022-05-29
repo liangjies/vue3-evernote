@@ -5,6 +5,7 @@
       :init="init"
       :disabled="disabled"
       @click="onClick"
+      @saveContent="saveContent"
     />
     <div id="textarea"></div>
   </div>
@@ -77,12 +78,12 @@ export default {
     plugins: {
       type: [String, Array],
       default:
-        "print preview searchreplace autolink directionality visualblocks visualchars fullscreen image media template code codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount textpattern",
+        "save print preview searchreplace autolink directionality visualblocks visualchars fullscreen image media template code codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount textpattern",
     },
     toolbar: {
       type: [String, Array],
       default:
-        "fullscreen undo redo restoredraft | cut copy paste pastetext | forecolor backcolor bold italic underline strikethrough anchor | alignleft aligncenter alignright alignjustify outdent indent | \
+        "save fullscreen undo redo restoredraft | cut copy paste pastetext | forecolor backcolor bold italic underline strikethrough anchor | alignleft aligncenter alignright alignjustify outdent indent | \
                 styleselect formatselect fontselect fontsizeselect | bullist numlist | blockquote subscript superscript removeformat | \
                 table image media charmap hr pagebreak insertdatetime print preview | code selectall searchreplace visualblocks | indent2em lineheight formatpainter axupimgs",
     },
@@ -122,6 +123,7 @@ export default {
         // images_upload_url: '/apib/api-upload/uploadimg',  //后端处理程序的url，建议直接自定义上传函数image_upload_handler，这个就可以不用了
         // images_upload_base_path: '/demo',  //相对基本路径--关于图片上传建议查看--http://tinymce.ax-z.cn/general/upload-images.php
         paste_data_images: true, //图片是否可粘贴
+        // 上传图片
         images_upload_handler: async (blobInfo, success, failure) => {
           if (blobInfo.blob().size / 1024 / 1024 > 2) {
             failure("上传失败，图片大小请控制在 2M 以内");
@@ -133,8 +135,14 @@ export default {
               success(res.data.file.url);
             } else {
               failure("上传失败");
-            }          
+            }
           }
+        },
+        // Ctrl + S保存
+        save_enablewhendirty: true,
+        save_onsavecallback: function () {
+          // this.save()
+          // alert("已保存");
         },
       },
       contentValue: this.value,
@@ -142,23 +150,30 @@ export default {
     };
   },
   watch: {
+    // 改变编辑框里内容
     value(newValue) {
       this.contentValue = newValue;
     },
+    // 编辑框里改变内容
     contentValue(newValue) {
       this.$emit("inputData", newValue);
     },
+    // 点击到编辑框
     onClickData(newValue) {
       this.$emit("onClickEidtor", newValue);
     },
   },
-  created() {
-    // this.contentValue ="test"
-  },
+  created() {},
   mounted() {
     tinymce.init({});
   },
   methods: {
+    // 保存笔记
+    saveContent() {
+      // alert("hello");
+      // console.log("save")
+      this.$parent.doUpdateNote();
+    },
     // 添加相关的事件，可用的事件参照文档=> https://github.com/tinymce/tinymce-vue => All available events
     onClick() {
       // this.$emit("onClickEidtor", e, tinymce);

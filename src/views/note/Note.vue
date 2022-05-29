@@ -190,6 +190,9 @@ export default {
         notebookID: this.$route.params.id,
       });
     },
+    clear() {
+      console.log("clear");
+    },
   },
   watch: {
     refresh() {
