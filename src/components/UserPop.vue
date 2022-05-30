@@ -14,7 +14,7 @@
           <span class="user-pop-text">设置</span>
         </div>
       </div>
-      <div class="user-pop-ourside user-question">
+      <div class="user-pop-ourside user-question"  @click="showQuestion">
         <div class="user-pop-box">
           <el-icon class="user-pop-icon">
             <question-filled />
@@ -64,21 +64,18 @@ export default {
   },
   methods: {
     ...mapActions("user", ["LoginOut"]),
-    toggleOpen: function () {
-      console.log("toggleOpen");
-      this.open = !this.open;
-    },
-    close: function (e) {
-      console.log("close");
-      if (this.$el.contains(e.target)) return;
-      this.open = false;
-    },
+    // 退出登录
     doLogout() {
       this.LoginOut();
     },
+    // 显示设置
     showSetting() {
       this.$refs.setting.show();
     },
+    // 跳转帮助页面
+    showQuestion(){
+      window.open("https://gitee.com/liangjies/evernote-client", '_blank');
+    }
   },
   directives: {
     clickoutside: {

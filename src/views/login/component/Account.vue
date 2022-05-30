@@ -57,6 +57,7 @@
         type="primary"
         class="login-content-submit"
         round
+        @keyup.enter="onSignIn"
         @click="onSignIn"
       >
         <span>登录</span>
@@ -93,7 +94,7 @@ export default {
     async onSignIn() {
       const data = await this.LoginIn(this.login);
       // 验证码错误刷新验证码
-      if(data.msg=="验证码错误"){
+      if (data.code != 200) {
         this.loginVerify();
       }
     },
