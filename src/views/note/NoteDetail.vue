@@ -196,6 +196,9 @@ export default {
       }
       // 请求新的笔记
       if (typeof childValue != "undefined") {
+        // 清空富媒体编辑框
+        this.clearEditor()
+        // 请求新的笔记
         this.titleInput = childValue.title;
         this.id = childValue.id;
         this.notebookID = Number(childValue.notebookID);
@@ -315,10 +318,7 @@ export default {
             type: "success",
           });
           // 清空编辑器标题与内容
-          this.titleInput = ""
-          this.notebookID = -1;
-          this.setNotebookTitle(-1);
-
+          this.clearEditor()
         }
       });
     },
@@ -329,6 +329,12 @@ export default {
     // 笔记列表伸缩
     totalCollapse() {
       this.isCollapse = !this.isCollapse;
+    },
+    // 清空富媒体编辑框
+    clearEditor() {
+      this.value = "";
+      this.titleInput = ""
+      this.notebookID = -1;
     },
   },
 };
