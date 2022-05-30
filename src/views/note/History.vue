@@ -52,6 +52,7 @@ export default {
   },
   created() {},
   methods: {
+    // 根据ID获取历史记录
     async getHistories(id) {
       const res = await GetHistories({ id: id });
       if (res.code === 200 && res.data.total > 0) {
@@ -60,6 +61,7 @@ export default {
         this.activeContent = this.historyData[0].content;
       }
     },
+    // 格式化日期
     _formateDate(dateStr) {
       if (dateStr == "") {
         return "";
@@ -67,10 +69,12 @@ export default {
         return getFullDate(dateStr);
       }
     },
+    // 切换历史内容
     clickSwitch(index) {
       this.activeContent = this.historyData[index].content;
       this.activeIndex = index;
     },
+    // 还原笔记历史版本
     async doRecover() {
       if (this.activeIndex == 0) {
         ElMessage({
@@ -89,12 +93,14 @@ export default {
         });
       }
     },
+    // 清空显示框
     _cleanForm() {
       this.historyData = [];
       this.historyTotal = 0;
       this.activeIndex = 0;
       this.activeContent = "";
     },
+    // 点击历史记录
     openHistory(data) {
       this._cleanForm();
       this.dialogFormVisible = true;

@@ -31,10 +31,9 @@
               <delete />
             </el-icon>
           </router-link>
-          <div class="userMenu" @click.stop="open = true">
+          <div class="userMenu" @click.stop="open = !open">
             <img :src="headerImg" alt="" class="userMenus-image" />
           </div>
-          <!-- <router-link to="/trash" title="回收站"><i class="trash el-icon-delete-solid" @click="trash"></i></router-link> -->
         </div>
       </div>
       <div class="logout" @click="onLogout">

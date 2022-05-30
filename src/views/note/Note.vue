@@ -90,10 +90,6 @@ export default {
   emits: ["childByValue"],
   components: { SiderBar, ArrowDown, Plus },
   props: {
-    refresh: {
-      type: Boolean,
-      default: false,
-    },
     isCollapse: {
       type: Boolean,
       default: false,
@@ -113,12 +109,14 @@ export default {
     this._getNotes();
   },
   methods: {
+    // 新增笔记
     addNoteValue: function (value) {
       if (this.addNoteState == false && value == true) {
         this.addNoteState = true;
         this.addNote();
       }
     },
+    // 排序方式
     orderCommand(command) {
       if (command == 1) {
         this.allNotes.sort((a, b) => (a.CreatedAt < b.CreatedAt ? 1 : -1));
@@ -133,8 +131,8 @@ export default {
       } else if (command == 6) {
         this.allNotes.sort((a, b) => (a.title > b.title ? 1 : -1));
       }
-      // this.$message("click on item " + command);
     },
+    // 获取所有笔记
     async getAllNotes() {
       const res = await GetAllNotes();
       if (res.code === 200) {
@@ -148,6 +146,7 @@ export default {
         }
       }
     },
+    // 根据笔记本ID获取笔记
     async getNotes(id) {
       const res = await GetNotes({ id: id });
       if (res.code === 200) {
@@ -171,10 +170,12 @@ export default {
         this.getNotes(this.$route.params.id);
       }
     },
+    // 点击笔记详情
     openNote(note, index) {
       this.currentIndex = index;
       this.$emit("childByValue", note);
     },
+    // 格式化日期
     _formateDate(dateStr) {
       if (dateStr == "") {
         return "";
@@ -182,6 +183,7 @@ export default {
         return friendlyDate(dateStr);
       }
     },
+    // 添加笔记
     addNote() {
       this.allNotes.unshift({ id: -2, title: "", updatedAt: "" });
       this.$emit("childByValue", {
@@ -190,15 +192,13 @@ export default {
         notebookID: this.$route.params.id,
       });
     },
-    clear() {
-      console.log("clear");
-    },
-  },
-  watch: {
+    // 刷新笔记列表
     refresh() {
       this.addNoteState = false;
       this._getNotes();
     },
+  },
+  watch: {
     "$route.params.id": function () {
       // 清空富媒体
       this.$emit("childByValue", {

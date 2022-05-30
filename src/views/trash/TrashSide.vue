@@ -1,6 +1,6 @@
 <template>
   <sider-bar></sider-bar>
-  <div class="note-page">
+  <div class="note-page" v-show="!isCollapse">
     <div class="note-header">
       <div class="note-header-title">回收站</div>
     </div>
@@ -74,6 +74,12 @@ import { ElMessage, ElMessageBox } from "element-plus";
 export default {
   name: "TrashSide",
   emits: ["TrashValue"],
+  props: {
+    isCollapse: {
+      type: Boolean,
+      default: false,
+    },
+  },
   components: { SiderBar, ArrowDown },
   data() {
     return {

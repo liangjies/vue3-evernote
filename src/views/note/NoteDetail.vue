@@ -1,6 +1,14 @@
 <template>
-  <note v-on:childByValue="childByValue" :refresh="refresh" :isCollapse="isCollapse"></note>
-  <div class="note-detail" v-show="this.id != -1" :class="{ isCollapse: isCollapse }">
+  <note
+    v-on:childByValue="childByValue"
+    ref="note"
+    :isCollapse="isCollapse"
+  ></note>
+  <div
+    class="note-detail"
+    v-show="this.id != -1"
+    :class="{ isCollapse: isCollapse }"
+  >
     <div class="note-header">
       <div class="note-operation">
         <div class="note-operation-left">
@@ -25,7 +33,11 @@
               <el-table-column width="300" property="time" label="time" />
             </el-table>
           </el-popover>
-          <el-icon class="note-operation-icon" title="历史记录" @click="openHistory">
+          <el-icon
+            class="note-operation-icon"
+            title="历史记录"
+            @click="openHistory"
+          >
             <clock />
           </el-icon>
           <span></span>
@@ -34,10 +46,21 @@
           </el-icon>
         </div>
         <div class="note-operation-right">
-          <el-button v-if="id == -2" type="danger" class="note-operation-icon" @click="doCancel()" size="small">
+          <el-button
+            v-if="id == -2"
+            type="danger"
+            class="note-operation-icon"
+            @click="doCancel()"
+            size="small"
+          >
             取消
           </el-button>
-          <el-button type="primary" class="note-operation-icon" @click="doUpdateNote()" size="small">
+          <el-button
+            type="primary"
+            class="note-operation-icon"
+            @click="doUpdateNote()"
+            size="small"
+          >
             保存
           </el-button>
           <div class="note-notebook">
@@ -59,7 +82,12 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item v-for="notebook in notebooks" :key="notebook.id" @click="updateNotebook(notebook.id)">{{ notebook.title }}</el-dropdown-item>
+                  <el-dropdown-item
+                    v-for="notebook in notebooks"
+                    :key="notebook.id"
+                    @click="updateNotebook(notebook.id)"
+                    >{{ notebook.title }}</el-dropdown-item
+                  >
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -70,11 +98,19 @@
       <div class="note-label"></div>
     </div>
     <div class="note-title">
-      <input class="note-title-input" v-model="titleInput" placeholder="请输入标题" />
+      <input
+        class="note-title-input"
+        v-model="titleInput"
+        placeholder="请输入标题"
+      />
     </div>
     <!-- 编辑器容器 -->
     <div id="editor">
-      <note-editor :value="value" v-on:inputData="inputData" v-on:onClickEidtor="onClickEidtor"></note-editor>
+      <note-editor
+        :value="value"
+        v-on:inputData="inputData"
+        v-on:onClickEidtor="onClickEidtor"
+      ></note-editor>
     </div>
   </div>
   <!-- 历史记录-->
@@ -120,7 +156,6 @@ export default {
       content: "",
       notebook: "",
       notebookID: -1,
-      refresh: false,
       showHistory: false,
       gridData: [
         {
@@ -150,6 +185,7 @@ export default {
       })
         .then(() => {
           // 选择确定
+          this.clearEditor(); // 清空富媒体编辑框
           next();
         })
         .catch(() => {
@@ -192,25 +228,26 @@ export default {
     childByValue: function (childValue) {
       // 未保存笔记自动保存
       if (this.value !== this.content) {
+        console.log("save here");
         this.doUpdateNote();
       }
       // 请求新的笔记
       if (typeof childValue != "undefined") {
         // 清空富媒体编辑框
-        this.clearEditor()
+        this.clearEditor();
         // 请求新的笔记
         this.titleInput = childValue.title;
         this.id = childValue.id;
         this.notebookID = Number(childValue.notebookID);
 
-        this.gridData[0].time = getFullDate(childValue.createdAt);
-        this.gridData[1].time = getFullDate(childValue.updatedAt);
-        this.GetNote(childValue.id);
+        this.gridData[0].time = getFullDate(childValue.createdAt); // 创建时间
+        this.gridData[1].time = getFullDate(childValue.updatedAt); // 更新时间
+        this.GetNote(childValue.id); // 发送请求
       } else {
         this.titleInput = "";
         this.value = "";
         this.notebookID = Number(this.$route.params.id);
-        this.setNotebookTitle(this.$route.params.id);
+        this.setNotebookTitle(this.$route.params.id); // 根据ID获取Name
       }
     },
     // 切换焦点
@@ -268,7 +305,7 @@ export default {
           notebookId: this.notebookID,
         });
         if (res.code === 200) {
-          this.refresh = !this.refresh;
+          this.$refs.note.refresh();
           this.id = res.data.id;
           ElMessage({
             showClose: true,
@@ -300,7 +337,7 @@ export default {
         router.push({ path: "/NoteDetail/0" });
       }
       this.id = -1;
-      this.refresh = !this.refresh;
+      this.$refs.note.refresh();
     },
     // 删除笔记
     doDelete() {
@@ -311,14 +348,14 @@ export default {
       }).then(async () => {
         const res = await DeleteNote({ id: this.id });
         if (res.code === 200) {
-          this.refresh = !this.refresh;
+          this.$refs.note.refresh();
           ElMessage({
             showClose: true,
             message: res.msg,
             type: "success",
           });
           // 清空编辑器标题与内容
-          this.clearEditor()
+          this.clearEditor();
         }
       });
     },
@@ -333,7 +370,7 @@ export default {
     // 清空富媒体编辑框
     clearEditor() {
       this.value = "";
-      this.titleInput = ""
+      this.titleInput = "";
       this.notebookID = -1;
     },
   },

@@ -1,5 +1,5 @@
 <template>
-  <div class="tinymce-box">
+  <div class="tinymce-box" @click="test">
     <Editor
       v-model="contentValue"
       :init="init"
@@ -140,10 +140,6 @@ export default {
         },
         // Ctrl + S保存
         save_enablewhendirty: true,
-        save_onsavecallback: function () {
-          // this.save()
-          // alert("已保存");
-        },
       },
       contentValue: this.value,
       onClickData: false,
@@ -169,20 +165,15 @@ export default {
   },
   methods: {
     // 保存笔记
-    saveContent() {
-      // alert("hello");
-      // console.log("save")
-      this.$parent.doUpdateNote();
+    saveContent(e) {
+      if (this.value !== this.contentValue && e.is_removing != true) {
+        this.$parent.doUpdateNote();
+      }
     },
     // 添加相关的事件，可用的事件参照文档=> https://github.com/tinymce/tinymce-vue => All available events
     onClick() {
-      // this.$emit("onClickEidtor", e, tinymce);
+      console.log("click");
       this.onClickData = !this.onClickData;
-      // console.log("Click");
-      // this.$emit("onClickEidtor", 1);
-    },
-    test() {
-      console.log("Click");
     },
     //清空内容
     clear() {
@@ -190,6 +181,9 @@ export default {
     },
     async Upload(params) {
       return await UploadFile(params);
+    },
+    test() {
+      console.log("mousedown");
     },
   },
 };
