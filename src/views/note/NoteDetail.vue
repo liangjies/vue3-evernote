@@ -1,22 +1,14 @@
 <template>
-  <note
-    v-on:childByValue="childByValue"
-    :refresh="refresh"
-    :isCollapse="isCollapse"
-  ></note>
-  <div
-    class="note-detail"
-    v-show="this.id != -1"
-    :class="{ isCollapse: isCollapse }"
-  >
+  <note v-on:childByValue="childByValue" :refresh="refresh" :isCollapse="isCollapse"></note>
+  <div class="note-detail" v-show="this.id != -1" :class="{ isCollapse: isCollapse }">
     <div class="note-header">
       <div class="note-operation">
         <div class="note-operation-left">
           <!--伸缩功能-->
           <span @click="totalCollapse">
-            <el-icon class="note-operation-icon" v-if="isCollapse"
-              ><expand
-            /></el-icon>
+            <el-icon class="note-operation-icon" v-if="isCollapse">
+              <expand />
+            </el-icon>
             <el-icon class="note-operation-icon" v-else>
               <fold />
             </el-icon>
@@ -33,33 +25,19 @@
               <el-table-column width="300" property="time" label="time" />
             </el-table>
           </el-popover>
-          <el-icon
-            class="note-operation-icon"
-            title="历史记录"
-            @click="openHistory"
-            ><clock
-          /></el-icon>
+          <el-icon class="note-operation-icon" title="历史记录" @click="openHistory">
+            <clock />
+          </el-icon>
           <span></span>
           <el-icon class="note-operation-icon" @click="doDelete()" title="删除">
             <delete />
           </el-icon>
         </div>
         <div class="note-operation-right">
-          <el-button
-            v-if="id == -2"
-            type="danger"
-            class="note-operation-icon"
-            @click="doCancel()"
-            size="small"
-          >
+          <el-button v-if="id == -2" type="danger" class="note-operation-icon" @click="doCancel()" size="small">
             取消
           </el-button>
-          <el-button
-            type="primary"
-            class="note-operation-icon"
-            @click="doUpdateNote()"
-            size="small"
-          >
+          <el-button type="primary" class="note-operation-icon" @click="doUpdateNote()" size="small">
             保存
           </el-button>
           <div class="note-notebook">
@@ -81,12 +59,7 @@
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item
-                    v-for="notebook in notebooks"
-                    :key="notebook.id"
-                    @click="updateNotebook(notebook.id)"
-                    >{{ notebook.title }}</el-dropdown-item
-                  >
+                  <el-dropdown-item v-for="notebook in notebooks" :key="notebook.id" @click="updateNotebook(notebook.id)">{{ notebook.title }}</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -97,19 +70,11 @@
       <div class="note-label"></div>
     </div>
     <div class="note-title">
-      <input
-        class="note-title-input"
-        v-model="titleInput"
-        placeholder="请输入标题"
-      />
+      <input class="note-title-input" v-model="titleInput" placeholder="请输入标题" />
     </div>
     <!-- 编辑器容器 -->
     <div id="editor">
-      <note-editor
-        :value="value"
-        v-on:inputData="inputData"
-        v-on:onClickEidtor="onClickEidtor"
-      ></note-editor>
+      <note-editor :value="value" v-on:inputData="inputData" v-on:onClickEidtor="onClickEidtor"></note-editor>
     </div>
   </div>
   <!-- 历史记录-->
@@ -349,6 +314,11 @@ export default {
             message: res.msg,
             type: "success",
           });
+          // 清空编辑器标题与内容
+          this.titleInput = ""
+          this.notebookID = -1;
+          this.setNotebookTitle(-1);
+
         }
       });
     },
