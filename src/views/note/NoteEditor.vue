@@ -38,7 +38,7 @@ import "tinymce/plugins/hr"; //水平分割线
 import "tinymce/plugins/image"; //插入编辑图片
 import "tinymce/plugins/importcss"; //引入css
 import "tinymce/plugins/insertdatetime"; //插入日期时间
-// import "tinymce/plugins/link"; //超链接
+import "tinymce/plugins/link"; //超链接
 import "tinymce/plugins/lists"; //列表插件
 import "tinymce/plugins/media"; //插入编辑媒体
 import "tinymce/plugins/nonbreaking"; //插入不间断空格
@@ -59,6 +59,7 @@ import "tinymce/plugins/toc"; //目录生成器
 import "tinymce/plugins/visualblocks"; //显示元素范围
 import "tinymce/plugins/visualchars"; //显示不可见字符
 import "tinymce/plugins/wordcount"; //字数统计
+import "tinymce/plugins/formatpainter"; //格式刷
 import { UploadFile } from "@/api/upload";
 export default {
   name: "NoteEditor",
@@ -78,14 +79,15 @@ export default {
     plugins: {
       type: [String, Array],
       default:
-        "save print preview searchreplace autolink directionality visualblocks visualchars fullscreen image media template code codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount textpattern",
+        "formatpainter link save print preview searchreplace autolink directionality visualblocks visualchars fullscreen image media template code codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount textpattern",
     },
     toolbar: {
       type: [String, Array],
-      default:
-        "save fullscreen undo redo restoredraft | cut copy paste pastetext | forecolor backcolor bold italic underline strikethrough anchor | alignleft aligncenter alignright alignjustify outdent indent | \
-                styleselect formatselect fontselect fontsizeselect | bullist numlist | blockquote subscript superscript removeformat | \
-                table image media charmap hr pagebreak insertdatetime print preview | code selectall searchreplace visualblocks | indent2em lineheight formatpainter axupimgs",
+      default(){
+        return ['save undo redo restoredraft | cut copy paste pastetext | formatpainter forecolor backcolor bold italic underline strikethrough removeformat | alignleft aligncenter alignright alignjustify outdent indent lineheight | searchreplace fullscreen',
+        'styleselect formatselect fontselect fontsizeselect | bullist numlist | link table image charmap hr code | visualblocks preview',
+        ]
+      }
     },
   },
   data() {
@@ -100,7 +102,10 @@ export default {
         plugins: this.plugins, //插件配置
         toolbar: this.toolbar, //工具栏配置，设为false则隐藏
         // menubar: 'file edit',  //菜单栏配置，设为false则隐藏，不配置则默认显示全部菜单，也可自定义配置--查看 http://tinymce.ax-z.cn/configure/editor-appearance.php --搜索“自定义菜单”
+        contextmenu: false, //右键菜单
 
+        default_link_target: "_blank", //默认链接打开方式
+        
         fontsize_formats:
           "12px 14px 16px 18px 20px 22px 24px 28px 32px 36px 48px 56px 72px", //字体大小
         font_formats:
@@ -140,6 +145,7 @@ export default {
         },
         // Ctrl + S保存
         save_enablewhendirty: true,
+        save_onsavecallback: function () { console.log('Saved'); }
       },
       contentValue: this.value,
       onClickData: false,

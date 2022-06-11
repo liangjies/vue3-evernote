@@ -25,7 +25,7 @@
         </template>
       </el-input>
     </el-form-item>
-    <el-form-item class="login-animation3">
+    <el-form-item class="login-animation3" @keyup.enter="onSignIn">
       <el-col :span="15">
         <el-input
           type="text"
@@ -57,7 +57,6 @@
         type="primary"
         class="login-content-submit"
         round
-        @keyup.enter="onSignIn"
         @click="onSignIn"
       >
         <span>登录</span>
