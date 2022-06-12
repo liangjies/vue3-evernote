@@ -1,8 +1,8 @@
 import { createStore } from 'vuex'
 import VuexPersistence from 'vuex-persist'
-import { user } from '@/store/module/user'
-import { note } from '@/store/module/note'
-import { notebook } from '@/store/module/notebook'
+import { user } from '@/store/module/user.js'
+import { note } from '@/store/module/note.js'
+import { notebook } from '@/store/module/notebook.js'
 
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage,

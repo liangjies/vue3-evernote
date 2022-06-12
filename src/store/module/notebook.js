@@ -1,4 +1,4 @@
-import { GetNotebooks } from '@/api/notebook'
+import { GetNotebooks } from '@/api/notebook.js'
 export const notebook = {
     namespaced: true,
     state: {

@@ -1,6 +1,6 @@
 <template>
   <div class="note-history">
-    <el-dialog v-model="dialogFormVisible" width="98%" top="2vh">
+    <el-dialog v-model="dialogFormVisible" width="98%" top="2vh" :modal-append-to-body='false'>
       <div class="modal-body">
         <div class="history-list-wrap pull-left">
           <div class="history-list-header">

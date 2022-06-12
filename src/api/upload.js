@@ -3,11 +3,11 @@ import { ElMessage } from 'element-plus'
 import { ElMessageBox } from 'element-plus'
 import { store } from '@/store'
 
-const host = process.env.VUE_APP_BASE_PATH
-const api = process.env.VUE_APP_BASE_API
+const host = import.meta.env.VITE_BASE_PATH
+const api = import.meta.env.VITE_BASE_API
 let port = ""
-if (process.env.VUE_APP_SERVER_PORT != 80) {
-    port = ":" + process.env.VUE_APP_SERVER_PORT
+if (import.meta.env.VITE_SERVER_PORT != 80) {
+    port = ":" + import.meta.env.VITE_SERVER_PORT
 }
 const service = axios.create({
     baseURL: host + port + api,
