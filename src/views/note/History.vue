@@ -1,6 +1,11 @@
 <template>
   <div class="note-history">
-    <el-dialog v-model="dialogFormVisible" width="98%" top="2vh" :modal-append-to-body='false'>
+    <el-dialog
+      v-model="dialogFormVisible"
+      width="98%"
+      top="2vh"
+      :show-close="false"
+    >
       <div class="modal-body">
         <div class="history-list-wrap pull-left">
           <div class="history-list-header">
@@ -25,6 +30,9 @@
             <el-button class="button-type" type="primary" @click="doRecover"
               >从该版本还原</el-button
             >
+            <div class="dialog-close" @click="dialogFormVisible = false">
+              <el-icon class="dialog-close-icon"><Close /></el-icon>
+            </div>
           </div>
           <div class="history-content">
             <div v-html="activeContent"></div>
@@ -39,8 +47,12 @@
 import { GetHistories, RecoverHistory } from "@/api/history";
 import { getFullDate } from "@/utils/util";
 import { ElMessage } from "element-plus";
+import { Close } from "@element-plus/icons-vue";
 export default {
   name: "History",
+  components: {
+    Close,
+  },
   data() {
     return {
       dialogFormVisible: false,
@@ -188,6 +200,30 @@ export default {
       .button-type {
         margin-left: 10px;
         margin-top: 5px;
+      }
+      .dialog-close {
+        position: absolute;
+        top: 0px;
+        right: 0;
+        padding: 0;
+        width: 54px;
+        height: 54px;
+        background: 0 0;
+        border: none;
+        outline: 0;
+        cursor: pointer;
+        .dialog-close-icon {
+          font-size: 16px;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+        &:hover {
+          .dialog-close-icon {
+            color: #409eff;
+          }
+        }
       }
     }
     .history-content {

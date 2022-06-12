@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Search from '@/views/search/Search.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -22,7 +21,7 @@ const router = createRouter({
       meta: {
         title: '搜索'
       },
-      component: Search
+      component: () => import('@/views/search/Search.vue')
     },
     {
       path: '/Login',

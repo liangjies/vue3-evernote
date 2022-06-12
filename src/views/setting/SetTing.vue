@@ -4,7 +4,13 @@
       v-model="dialogVisible"
       custom-class="custom-dialog"
       width="700px"
+      :show-close="false"
     >
+      <template #header="{ close }">
+        <div class="dialog-close" @click="close">
+          <el-icon class="dialog-close-icon"><Close /></el-icon>
+        </div>
+      </template>
       <el-tabs tab-position="left" class="demo-tabs" type="border-card">
         <el-tab-pane>
           <template #label>
@@ -71,7 +77,7 @@
   </div>
 </template>
 <script>
-import { UserFilled, Setting } from "@element-plus/icons-vue";
+import { UserFilled, Setting, Close } from "@element-plus/icons-vue";
 import EmailSet from "@/views/setting/component/EmailSet.vue";
 import AvatarSet from "@/views/setting/component/AvatarSet.vue";
 import PassSet from "@/views/setting/component/PassSet.vue";
@@ -83,6 +89,7 @@ export default {
   components: {
     UserFilled,
     Setting,
+    Close,
     EmailSet,
     AvatarSet,
     PassSet,
@@ -98,7 +105,8 @@ export default {
       nickName: (state) => state.user.userInfo.nickName,
       userName: (state) => state.user.userInfo.userName,
       email: (state) => state.user.userInfo.email,
-      createdAt: (state) => getFullDate(state.user.userInfo.createdAt).substring(0, 10),
+      createdAt: (state) =>
+        getFullDate(state.user.userInfo.createdAt).substring(0, 10),
     }),
   },
   methods: {
@@ -180,6 +188,31 @@ export default {
   }
   .el-dialog__footer {
     padding: 0 0 0 0;
+  }
+  .dialog-close {
+    position: absolute;
+    top: 0px;
+    right: 0;
+    padding: 0;
+    width: 54px;
+    height: 54px;
+    background: 0 0;
+    border: none;
+    outline: 0;
+    z-index: 999;
+    cursor: pointer;
+    .dialog-close-icon {
+      font-size: 16px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    &:hover {
+      .dialog-close-icon {
+        color: #409eff;
+      }
+    }
   }
 }
 .demo-tabs {
