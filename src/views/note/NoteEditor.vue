@@ -85,7 +85,7 @@ export default {
       type: [String, Array],
       default(){
         return ['save undo redo restoredraft | cut copy paste pastetext | formatpainter forecolor backcolor bold italic underline strikethrough removeformat | alignleft aligncenter alignright alignjustify outdent indent lineheight | searchreplace fullscreen',
-        'styleselect formatselect fontselect fontsizeselect | bullist numlist | link table image charmap hr code | visualblocks preview',
+        'styleselect formatselect fontselect fontsizeselect | bullist numlist | link table image charmap hr codesample | code visualblocks preview',
         ]
       }
     },
