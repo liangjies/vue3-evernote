@@ -46,7 +46,7 @@ export const user = {
         commit('setUserInfo', res.data.user)
         commit('setToken', res.data.token)
         console.log(res.data.token)
-        router.push({ path: "/" })
+        router.push({ path: "/NoteDetail/0" })
         return true
       }else{
         return res

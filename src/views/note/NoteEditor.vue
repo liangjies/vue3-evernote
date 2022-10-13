@@ -83,11 +83,12 @@ export default {
     },
     toolbar: {
       type: [String, Array],
-      default(){
-        return ['save undo redo restoredraft | cut copy paste pastetext | formatpainter forecolor backcolor bold italic underline strikethrough removeformat | alignleft aligncenter alignright alignjustify outdent indent lineheight | searchreplace fullscreen',
-        'styleselect formatselect fontselect fontsizeselect | bullist numlist | link table image charmap hr codesample | code visualblocks preview',
-        ]
-      }
+      default() {
+        return [
+          "save undo redo restoredraft | cut copy paste pastetext | formatpainter forecolor backcolor bold italic underline strikethrough removeformat | alignleft aligncenter alignright alignjustify outdent indent lineheight | searchreplace fullscreen",
+          "styleselect formatselect fontselect fontsizeselect | bullist numlist | link table image charmap hr codesample | code visualblocks preview",
+        ];
+      },
     },
   },
   data() {
@@ -105,7 +106,7 @@ export default {
         contextmenu: false, //右键菜单
 
         default_link_target: "_blank", //默认链接打开方式
-        
+
         fontsize_formats:
           "12px 14px 16px 18px 20px 22px 24px 28px 32px 36px 48px 56px 72px", //字体大小
         font_formats:
@@ -128,6 +129,15 @@ export default {
         // images_upload_url: '/apib/api-upload/uploadimg',  //后端处理程序的url，建议直接自定义上传函数image_upload_handler，这个就可以不用了
         // images_upload_base_path: '/demo',  //相对基本路径--关于图片上传建议查看--http://tinymce.ax-z.cn/general/upload-images.php
         paste_data_images: true, //图片是否可粘贴
+        urlconverter_callback: (url, node, onSave, name) => {
+          if (node === "img" && url.startsWith("blob:")) {
+            // Do some custom URL conversion
+            console.log("urlConverter:", url, node, onSave, name);
+            tinymce.activeEditor && tinymce.activeEditor.uploadImages();
+          }
+          // Return new URL
+          return url;
+        },
         // 上传图片
         images_upload_handler: async (blobInfo, success, failure) => {
           if (blobInfo.blob().size / 1024 / 1024 > 2) {
@@ -145,7 +155,9 @@ export default {
         },
         // Ctrl + S保存
         save_enablewhendirty: true,
-        save_onsavecallback: function () { console.log('Saved'); }
+        save_onsavecallback: function () {
+          console.log("Saved");
+        },
       },
       contentValue: this.value,
       onClickData: false,

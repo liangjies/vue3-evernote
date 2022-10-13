@@ -5,13 +5,16 @@ const router = createRouter({
     {
       path: '/',
       name: 'HomeHeader',
-      component: () => import('../components/HomeHeader.vue')
+      meta: {
+        title: '登录 - 云笔记'
+      },
+      component: () => import('@/views/login/Login.vue')
     },
     {
       path: '/avatar',
       name: 'AvatarSet',
       meta: {
-        title: '设置'
+        title: '设置 - 云笔记'
       },
       component: () => import('@/views/setting/component/AvatarSet.vue')
     },
@@ -19,7 +22,7 @@ const router = createRouter({
       path: '/Search',
       name: 'Search',
       meta: {
-        title: '搜索'
+        title: '搜索 - 云笔记'
       },
       component: () => import('@/views/search/Search.vue')
     },
@@ -27,7 +30,7 @@ const router = createRouter({
       path: '/Login',
       name: 'Login',
       meta: {
-        title: '登录'
+        title: '登录 - 云笔记'
       },
       component: () => import('@/views/login/Login.vue')
     },
@@ -35,7 +38,7 @@ const router = createRouter({
       path: '/NoteDetail/:id',
       name: 'NoteDetail',
       meta: {
-        title: '笔记'
+        title: '笔记 - 云笔记'
       },
       component: () => import('@/views/note/NoteDetail.vue'),
     },
@@ -48,7 +51,7 @@ const router = createRouter({
       path: '/NoteTrash',
       name: 'NoteTrash',
       meta: {
-        title: '废纸篓'
+        title: '废纸篓 - 云笔记'
       },
       component: () => import('@/views/trash/NoteTrash.vue')
     },
