@@ -93,7 +93,7 @@ export default {
     async onSignIn() {
       const data = await this.LoginIn(this.login);
       // 验证码错误刷新验证码
-      if (data.code != 200) {
+      if (typeof nothing != 'undefined' && data.code != 200) {
         this.loginVerify();
       }
     },
