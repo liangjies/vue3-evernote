@@ -135,13 +135,13 @@ export default {
         }
       }
     },
-    // 获取笔记详情
     async getNotes(id) {
       const res = await GetNotes({ id: id });
       if (res.code === 200) {
         this.title = res.msg;
         this.allNotes = res.data.list;
         this.noteNum = res.data.total;
+
         if (this.currentIndex == 0) {
           this.$emit("childByValue", this.allNotes[0]);
         }
@@ -180,14 +180,23 @@ export default {
     },
     // 高亮关键词
     HighlightKey(text, keyWord) {
-      if (text.includes(keyWord) && keyWord !== "") {
-        return text.replace(
-          keyWord,
-          '<span class="high-light">' + keyWord + "</span>"
-        );
-      } else {
-        return text;
-      }
+      var a = new RegExp(keyWord, "gi");
+      return text.replace(a, (value) => {
+        // 使用箭头函数才能获取this
+        let temp =
+          '<span class="high-light">' +
+          value +
+          "</span>";
+        return temp;
+      });
+      // if (text.includes(keyWord) && keyWord !== "") {
+      //   return text.replace(
+      //     keyWord,
+      //     '<span class="high-light">' + keyWord + "</span>"
+      //   );
+      // } else {
+      //   return text;
+      // }
     },
   },
   watch: {

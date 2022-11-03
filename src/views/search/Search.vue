@@ -157,7 +157,7 @@ import NoteEditor from "@/views/note/NoteEditor.vue";
 import { CircleCloseFilled } from "@element-plus/icons-vue";
 import SearchSide from "@/views/search/SearchSide.vue";
 import { mapState } from "vuex";
-import { getFullDate } from "@/utils/util";
+import { getFullDate, isHtmlLabel } from "@/utils/util";
 import {
   Delete,
   InfoFilled,
@@ -242,16 +242,18 @@ export default {
     },
     // 高亮关键词
     highlightKey(text, keyWord) {
+      // 排除html标签
+      if (isHtmlLabel(text, keyWord)) {
+        return text;
+      }
       var a = new RegExp(keyWord, "gi");
-      return text.replace(a, (value) => {// 使用箭头函数才能获取this
-        // 排除html标签
-        if(value=='p'){
-          return value;
-        }
-        console.log(1)
+      return text.replace(a, (value) => {
+        // 使用箭头函数才能获取this
         let temp =
           '<span id="highlight" style="border-style: solid;border-width:1px;border-color: rgb(255, 131, 29);\
-          background-color: rgba(255, 170, 0, 0.34);">'+value +"</span>";
+          background-color: rgba(255, 170, 0, 0.34);">' +
+          value +
+          "</span>";
         this.highlightArray.push(temp);
         return temp;
       });
@@ -259,10 +261,11 @@ export default {
     // 取消高亮关键词
     highlightKeyCancel(text, keyWord) {
       this.highlightArray.forEach((element) => {
-        var a = new RegExp('<span id=\"highlight\"(.*)>('+keyWord+')</span>',"i");
-        // console.log(textKeyWord)
-        // var a = new RegExp(keyWord, "gi");
-        console.log(element.match(a))
+        // 使用正则
+        var a = new RegExp(
+          '<span id="highlight"(.*)>(' + keyWord + ")</span>",
+          "i"
+        );
         text = text.replace(element, element.match(a)[2]);
       });
       return text;
@@ -298,7 +301,7 @@ export default {
       this.searchValue = { searchKey: this.searchKey };
     },
     onSearch() {
-      this.highlightArray =[];
+      this.highlightArray = [];
       this.searchValue = { searchKey: this.searchKey };
     },
     async doUpdateNote() {
