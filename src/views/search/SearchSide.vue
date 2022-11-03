@@ -57,9 +57,12 @@
             <div class="note-hover"></div>
             <div class="note-border"></div>
             <div class="note-snippetContent">
-              <div class="note-title">{{ note.title }}</div>
+              <div
+                class="note-title"
+                v-html="HighlightKey(note.title, this.searchValue.searchKey)"
+              ></div>
               <div class="note-date">{{ _formateDate(note.updatedAt) }}</div>
-              <div class="note-snippet">{{ note.snippet }}</div>
+              <div class="note-snippet" v-html="HighlightKey(note.snippet, this.searchValue.searchKey)"></div>
             </div>
           </div>
         </div>
@@ -118,6 +121,7 @@ export default {
       }
       // this.$message("click on item " + command);
     },
+    // 获取搜索结果
     async getSearchNotes(value) {
       const res = await SearchNote({ searchKey: value.searchKey });
       if (res.code === 200) {
@@ -131,6 +135,7 @@ export default {
         }
       }
     },
+    // 获取笔记详情
     async getNotes(id) {
       const res = await GetNotes({ id: id });
       if (res.code === 200) {
@@ -172,6 +177,17 @@ export default {
         title: "",
         notebookID: this.$route.params.id,
       });
+    },
+    // 高亮关键词
+    HighlightKey(text, keyWord) {
+      if (text.includes(keyWord) && keyWord !== "") {
+        return text.replace(
+          keyWord,
+          '<span class="high-light">' + keyWord + "</span>"
+        );
+      } else {
+        return text;
+      }
     },
   },
   watch: {
@@ -317,6 +333,10 @@ export default {
             word-wrap: break-word;
             line-height: 20px;
             width: 302px;
+            /deep/ .high-light {
+              border-color: rgb(255, 131, 29);
+              background-color: rgba(255, 170, 0, 0.34);
+            }
           }
           .note-date {
             font-size: 11px;
@@ -328,6 +348,10 @@ export default {
           .note-snippet {
             font-size: 12px;
             font-weight: 400;
+            /deep/ .high-light {
+              border-color: rgb(255, 131, 29);
+              background-color: rgba(255, 170, 0, 0.34);
+            }
           }
         }
       }

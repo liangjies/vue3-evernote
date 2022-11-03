@@ -92,8 +92,9 @@ export default {
     ...mapActions("user", ["LoginIn"]),
     async onSignIn() {
       const data = await this.LoginIn(this.login);
+      console.log(data.code)
       // 验证码错误刷新验证码
-      if (typeof nothing != 'undefined' && data.code != 200) {
+      if (typeof data.code != 'undefined' && data.code != 200) {
         this.loginVerify();
       }
     },

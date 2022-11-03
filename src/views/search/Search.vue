@@ -190,6 +190,7 @@ export default {
       notebook: "",
       notebookID: -1,
       refresh: false,
+      highlightArray: [],
       gridData: [
         {
           name: "创建时间",
@@ -234,8 +235,30 @@ export default {
       this.content = inputData;
     },
     onClickEidtor: function () {
+      // 取消高亮关键词
+      this.value = this.highlightKeyCancel(this.value, this.searchKey);
       this.$refs.upload.$el.click();
       this.setNotebookTitle(this.$route.params.id);
+    },
+    // 高亮关键词
+    highlightKey(text, keyWord) {
+      var a = new RegExp(keyWord, "gi");
+      return text.replace(a, (value) => {
+        // 使用箭头函数才能获取this
+        let temp =
+          '<span style="border-style: solid;border-width:1px;border-color: rgb(255, 131, 29);\
+          background-color: rgba(255, 170, 0, 0.34);">'+value +"</span>";
+        this.highlightArray.push(temp);
+        return temp;
+      });
+    },
+    // 取消高亮关键词
+    highlightKeyCancel(text, keyWord) {
+      this.highlightArray.forEach((element) => {
+        var a = new RegExp(keyWord, "gi");
+        text = text.replace(element, element.match(a)[0]);
+      });
+      return text;
     },
     async GetNote(noteId) {
       if (noteId == -2) {
@@ -250,7 +273,10 @@ export default {
       } else {
         const res = await GetNoteById({ id: noteId });
         if (res.code === 200) {
-          this.value = res.data.list[0].content;
+          this.value = this.highlightKey(
+            res.data.list[0].content,
+            this.searchKey
+          );
           this.notebookID = res.data.list[0].notebookId;
           this.setNotebookTitle(res.data.list[0].notebookId);
         }
