@@ -2,9 +2,7 @@
   <div class="login-container">
     <div class="login-icon-group">
       <div class="login-icon-group-title">
-        <img
-          src="@/assets/logo-mini.1646368269034.svg"
-        />
+        <img src="@/assets/logo-mini.1646368269034.svg" />
         <div class="login-icon-group-title-text font25">笔记</div>
       </div>
       <img
@@ -35,16 +33,16 @@ import { mapActions } from "vuex";
 import { register } from "@/api/user";
 import { ElMessage } from "element-plus";
 import Account from "@/views/login/component/Account.vue";
-import Register from "@/views/login/component/Register.vue"
+import Register from "@/views/login/component/Register.vue";
 export default {
   name: "Login",
   components: {
     Account,
-    Register
+    Register,
   },
   data() {
     return {
-      tabsActiveName:"account",
+      tabsActiveName: "account",
       isShowLogin: true,
       isShowRegister: false,
       register: {
@@ -56,9 +54,7 @@ export default {
       picPath: "",
     };
   },
-  created() {
-
-  },
+  created() {},
   methods: {
     ...mapActions("user", ["LoginIn"]),
     showRegister() {
@@ -241,12 +237,26 @@ export default {
       bottom: 0;
     }
   }
+  @media screen and (min-width: 720px) {
+    .login-content {
+      position: absolute;
+      width: 500px;
+      padding: 20px;
+      right: 200px;
+      top: 50%;
+    }
+  }
+  @media screen and (max-width: 720px) {
+    .login-content {
+      position: absolute;
+      width: 95%;
+      left: 0; 
+      right: 0;
+      margin:0 auto;
+      top: 50%;
+    }
+  }
   .login-content {
-    width: 500px;
-    padding: 20px;
-    position: absolute;
-    right: 200px;
-    top: 50%;
     transform: translateY(-50%) translate3d(0, 0, 0);
     background-color: var(--el-color-white);
     border: 5px solid var(--el-color-primary-light-8);

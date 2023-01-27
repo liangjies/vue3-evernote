@@ -189,14 +189,6 @@ export default {
           "</span>";
         return temp;
       });
-      // if (text.includes(keyWord) && keyWord !== "") {
-      //   return text.replace(
-      //     keyWord,
-      //     '<span class="high-light">' + keyWord + "</span>"
-      //   );
-      // } else {
-      //   return text;
-      // }
     },
   },
   watch: {
