@@ -152,6 +152,7 @@ export default {
     return {
       id: -1,
       titleInput: "",
+      title:"",
       value: "",
       content: "",
       notebook: "",
@@ -227,7 +228,7 @@ export default {
     // 切换笔记
     childByValue: function (childValue) {
       // 未保存笔记自动保存
-      if (this.value !== this.content) {
+      if (this.value !== this.content || this.title != this.titleInput) {
         console.log("save here");
         this.doUpdateNote();
       }
@@ -236,7 +237,7 @@ export default {
         // 清空富媒体编辑框
         this.clearEditor();
         // 请求新的笔记
-        this.titleInput = childValue.title;
+        this.title = this.titleInput = childValue.title;
         this.id = childValue.id;
         this.notebookID = Number(childValue.notebookID);
 
@@ -295,6 +296,7 @@ export default {
             message: res.msg,
             type: "success",
           });
+          // TODO 更新指定note
           this.value = this.content;
         }
       } else if (this.id == -2) {

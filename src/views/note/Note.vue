@@ -4,12 +4,30 @@
     <div class="note-header">
       <div class="note-header-title">{{ title }}</div>
       <div class="note-add">
-        <div class="note-add-button" @click="addNote">
-          <el-icon class="note-add-icon">
-            <plus />
-          </el-icon>
-          <span class="note-add-text">新建笔记</span>
-        </div>
+        <el-dropdown trigger="click">
+          <span>
+            <div class="note-add-button">
+              <el-icon class="note-add-icon">
+                <plus />
+              </el-icon>
+              <span class="note-add-text">新建笔记</span>
+            </div>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="addNote()"
+                ><img
+                  class="dropdown-img"
+                  src="/src/common/images/documents.png"
+                />空白文档</el-dropdown-item
+              >
+              <el-dropdown-item><img
+                  class="dropdown-img"
+                  src="/src/common/images/md.png"
+                />Markdown</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </div>
     </div>
     <div class="notes-view">
@@ -375,5 +393,11 @@ export default {
   color: var(--el-color-primary);
   display: flex;
   align-items: center;
+}
+
+.dropdown-img {
+  width: 20px;
+  margin-right: 5px;
+
 }
 </style>

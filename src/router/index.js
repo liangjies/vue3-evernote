@@ -60,6 +60,16 @@ const router = createRouter({
       name: 'History',
       component: () => import('@/views/note/History.vue')
     },
+    {
+      path: '/Home',
+      name: 'Home',
+      component: () => import('@/views/mobile/Home.vue')
+    },
+    {
+      path: '/Test',
+      name: 'Test',
+      component: () => import('@/views/mobile/Test.vue')
+    },
   ]
 })
 export default router

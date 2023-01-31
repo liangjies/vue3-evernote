@@ -5,6 +5,7 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import '@/router/permission'
 import router from '@/router/index'
+import "weui";
 
 const app = createApp(App)
 app.use(router)

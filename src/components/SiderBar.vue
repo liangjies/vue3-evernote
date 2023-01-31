@@ -2,7 +2,7 @@
   <div class="sider-bar" id="sidebar">
     <div class="sidebar-con">
       <div class="login">
-        <img src="https://s1.ax1x.com/2022/03/07/b6Ppwj.png" alt="" class="user-image" />
+        <img src="/src/common/images/yinxiang.png" alt="" class="user-image" />
         <div class="icons">
           <div class="addNote show" @click="addNote">
             <el-icon>
