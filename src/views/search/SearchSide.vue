@@ -99,12 +99,6 @@ export default {
     // this._getNotes();
   },
   methods: {
-    addNoteValue: function (value) {
-      if (this.addNoteState == false && value == true) {
-        this.addNoteState = true;
-        this.addNote();
-      }
-    },
     orderCommand(command) {
       if (command == 1) {
         this.allNotes.sort((a, b) => (a.CreatedAt < b.CreatedAt ? 1 : -1));

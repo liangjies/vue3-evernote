@@ -16,7 +16,7 @@
               </el-icon>
             </div>
           </router-link>
-          <router-link to="/NoteDetail/0" title="笔记">
+          <router-link to="/Note" title="笔记">
             <el-icon class="note el-icon-s-order">
               <document />
             </el-icon>
@@ -107,8 +107,8 @@ export default {
       this.notebookOpen = !this.notebookOpen;
     },
     addNote() {
-      if (this.$route.path.split("/")[1] != "NoteDetail") {
-        router.push({ path: "/NoteDetail/-1" })
+      if (this.$route.path.split("/")[1] != "Note") {
+         router.push({ name: "NoteDetail", params: { id: "add" } });
       } else {
         this.$emit("addNoteValue", true);
       }

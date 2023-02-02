@@ -21,10 +21,12 @@
                   src="/src/common/images/documents.png"
                 />空白文档</el-dropdown-item
               >
-              <el-dropdown-item><img
+              <el-dropdown-item
+                ><img
                   class="dropdown-img"
                   src="/src/common/images/md.png"
-                />Markdown</el-dropdown-item>
+                />Markdown</el-dropdown-item
+              >
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -101,16 +103,20 @@
 <script>
 import SiderBar from "@/components/SiderBar.vue";
 import { ArrowDown, Plus } from "@element-plus/icons-vue";
-import { GetAllNotes, GetNotes } from "@/api/note";
+import { GetAllNotes, GetNotesByNotebookID, GetNoteById } from "@/api/note";
 import { friendlyDate } from "@/utils/util";
 export default {
   name: "NoteList",
-  emits: ["childByValue"],
+  emits: ["noteChange"],
   components: { SiderBar, ArrowDown, Plus },
   props: {
     isCollapse: {
       type: Boolean,
       default: false,
+    },
+    noteSave: {
+      type: Number,
+      default: 0,
     },
   },
   data() {
@@ -160,27 +166,28 @@ export default {
           return;
         }
         if (this.currentIndex == 0) {
-          this.$emit("childByValue", this.allNotes[0]);
+          this.$emit("noteChange", this.allNotes[0]);
         }
       }
     },
     // 根据笔记本ID获取笔记
     async getNotes(id) {
-      const res = await GetNotes({ id: id });
+      const res = await GetNotesByNotebookID({ id: id });
       if (res.code === 200) {
         this.title = res.msg;
         this.allNotes = res.data.list;
         this.noteNum = res.data.total;
         if (this.currentIndex == 0) {
-          this.$emit("childByValue", this.allNotes[0]);
+          this.$emit("noteChange", this.allNotes[0]);
         }
       }
     },
+    // 获取笔记
     async _getNotes() {
       if (this.$route.params.id == 0) {
         this.getAllNotes();
         this.title = "笔记";
-      } else if (this.$route.params.id == -1) {
+      } else if (this.$route.params.id == "add") {
         await this.getAllNotes();
         this.title = "笔记";
         this.addNote();
@@ -191,7 +198,7 @@ export default {
     // 点击笔记详情
     openNote(note, index) {
       this.currentIndex = index;
-      this.$emit("childByValue", note);
+      this.$emit("noteChange", note);
     },
     // 格式化日期
     _formateDate(dateStr) {
@@ -204,7 +211,7 @@ export default {
     // 添加笔记
     addNote() {
       this.allNotes.unshift({ id: -2, title: "", updatedAt: "" });
-      this.$emit("childByValue", {
+      this.$emit("noteChange", {
         id: -2,
         title: "",
         notebookID: this.$route.params.id,
@@ -219,19 +226,39 @@ export default {
   watch: {
     "$route.params.id": function () {
       // 清空富媒体
-      this.$emit("childByValue", {
+      this.$emit("noteChange", {
         id: -2,
         title: "",
         notebookID: this.$route.params.id,
       });
+      console.log("---------------");
+      console.log(this.$route.params.id);
       if (this.$route.params.id == 0) {
         this.getAllNotes();
         this.title = "笔记";
       } else if (this.$route.params.id > 0) {
         this.getNotes(this.$route.params.id);
-      } else if (this.$route.params.id == -1) {
+      } else if (this.$route.params.id == "add") {
         this.addNote();
       }
+    },
+    // 监听保存事件
+    noteSave: {
+      async handler(newVal, oldVal) {
+        console.log(newVal, oldVal);
+        if (newVal == oldVal || newVal == 0) {
+          return;
+        }
+        const res = await GetNoteById({ id: newVal });
+        let temp = this.allNotes;
+        for (let i = 0; i < temp.length; i++) {
+          if (temp[i].id == newVal) {
+            temp[i] = res.data.list[0];
+            break;
+          }
+        }
+        this.allNotes = temp;
+      },
     },
   },
 };
@@ -398,6 +425,5 @@ export default {
 .dropdown-img {
   width: 20px;
   margin-right: 5px;
-
 }
 </style>

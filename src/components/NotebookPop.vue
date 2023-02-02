@@ -182,7 +182,7 @@ export default {
       return res;
     },
     doClickNotebook(id) {
-      router.push({ path: "/NoteDetail/" + id });
+      router.push({ name: "NoteDetail", params: { id: id } });
       this.open = !this.open;
       this.$emit("PopOpenValue", this.open);
     },

@@ -1,9 +1,5 @@
 <template>
-  <note
-    v-on:childByValue="childByValue"
-    ref="note"
-    :isCollapse="isCollapse"
-  ></note>
+  <note v-on:noteChange="noteChange" ref="note" :isCollapse="isCollapse" :noteSave="noteSave"></note>
   <div
     class="note-detail"
     v-show="this.id != -1"
@@ -22,7 +18,7 @@
             </el-icon>
           </span>
           <!---->
-          <el-popover placement="bottom" :width="300" trigger="hover">
+          <el-popover placement="bottom" :width="300" trigger="hover" show-after="300">
             <template #reference>
               <el-icon class="note-operation-icon" ref="upload">
                 <info-filled />
@@ -30,7 +26,7 @@
             </template>
             <el-table :data="gridData" :show-header="false">
               <el-table-column width="100" property="name" label="name" />
-              <el-table-column width="300" property="time" label="time" />
+              <el-table-column width="170" property="time" label="time" />
             </el-table>
           </el-popover>
           <el-icon
@@ -118,7 +114,7 @@
 </template>
 
 <script>
-import Note from "@/views/note/Note.vue";
+import Note from "@/views/note/NoteSide.vue";
 import NoteEditor from "@/views/note/NoteEditor.vue";
 import { GetNoteById, UpdateNote, CreateNote, DeleteNote } from "@/api/note";
 import { ElMessage, ElMessageBox } from "element-plus";
@@ -151,8 +147,9 @@ export default {
   data() {
     return {
       id: -1,
+      noteSave: 0,
       titleInput: "",
-      title:"",
+      title: "",
       value: "",
       content: "",
       notebook: "",
@@ -198,7 +195,7 @@ export default {
   },
   mounted() {
     // 未保存退出页面提示
-    const urlPath = "/NoteDetail/" + this.$route.params.id;
+    const urlPath = "/Note/" + this.$route.params.id;
     let that = this;
     window.onbeforeunload = function (e) {
       if (that.$route.fullPath == urlPath && that.value !== that.content) {
@@ -226,11 +223,12 @@ export default {
   },
   methods: {
     // 切换笔记
-    childByValue: function (childValue) {
+    noteChange: async function (childValue) {
       // 未保存笔记自动保存
       if (this.value !== this.content || this.title != this.titleInput) {
         console.log("save here");
-        this.doUpdateNote();
+        await this.doUpdateNote();
+        this.noteSave = this.id;
       }
       // 请求新的笔记
       if (typeof childValue != "undefined") {
@@ -315,7 +313,7 @@ export default {
             type: "success",
           });
           if (this.$route.params.id == -1) {
-            router.push({ path: "/NoteDetail/0" });
+            router.push({ path: "/Note/0" });
           }
         }
       }
@@ -336,7 +334,7 @@ export default {
     // 取消新建笔记
     doCancel() {
       if (this.$route.params.id == -1) {
-        router.push({ path: "/NoteDetail/0" });
+        router.push({ name: "NoteDetail", params: { id: 0 } });
       }
       this.id = -1;
       this.$refs.note.refresh();

@@ -35,17 +35,12 @@ const router = createRouter({
       component: () => import('@/views/login/Login.vue')
     },
     {
-      path: '/NoteDetail/:id',
+      path: '/Note/:id*',
       name: 'NoteDetail',
       meta: {
         title: '笔记 - 云笔记'
       },
       component: () => import('@/views/note/NoteDetail.vue'),
-    },
-    {
-      path: '/NoteEditor',
-      name: 'NoteEditor',
-      component: () => import('@/views/note/NoteEditor.vue')
     },
     {
       path: '/NoteTrash',
