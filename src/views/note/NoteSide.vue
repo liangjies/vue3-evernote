@@ -15,7 +15,7 @@
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="addNote()"
+              <el-dropdown-item @click="addNoteValue(true)"
                 ><img
                   class="dropdown-img"
                   src="/src/common/images/documents.png"
@@ -158,11 +158,12 @@ export default {
     },
     // 获取所有笔记
     async getAllNotes() {
+        console.log("getAllNotes")
       const res = await GetAllNotes();
       if (res.code === 200) {
         this.allNotes = res.data.list;
         this.noteNum = res.data.total;
-        if (this.$route.params.id == -1) {
+        if (this.$route.params.id == -1 || this.addNoteState) {
           return;
         }
         if (this.currentIndex == 0) {
@@ -172,6 +173,7 @@ export default {
     },
     // 根据笔记本ID获取笔记
     async getNotes(id) {
+        console.log("getNotes(id)")
       const res = await GetNotesByNotebookID({ id: id });
       if (res.code === 200) {
         this.title = res.msg;
@@ -184,19 +186,22 @@ export default {
     },
     // 获取笔记
     async _getNotes() {
-      if (this.$route.params.id == 0) {
-        this.getAllNotes();
+        console.log("_getNotes()")
+        console.log("this.$route.params.id",this.$route.params.id)
+      if (this.$route.params.id == 0 || this.$route.params.id == undefined) {
+        await this.getAllNotes();
         this.title = "笔记";
       } else if (this.$route.params.id == "add") {
         await this.getAllNotes();
         this.title = "笔记";
         this.addNote();
       } else {
-        this.getNotes(this.$route.params.id);
+        await this.getNotes(this.$route.params.id);
       }
     },
     // 点击笔记详情
     openNote(note, index) {
+        console.log("openNote(note, index)")
       this.currentIndex = index;
       this.$emit("noteChange", note);
     },
@@ -210,6 +215,8 @@ export default {
     },
     // 添加笔记
     addNote() {
+        console.log("addNote()")
+
       this.allNotes.unshift({ id: -2, title: "", updatedAt: "" });
       this.$emit("noteChange", {
         id: -2,
@@ -218,13 +225,19 @@ export default {
       });
     },
     // 刷新笔记列表
-    refresh() {
+    async refresh() {
+        console.log("refresh()")
+      await this._getNotes();
       this.addNoteState = false;
-      this._getNotes();
     },
   },
   watch: {
-    "$route.params.id": function () {
+    "$route.params.id": async function () {
+        console.log("watch $route.params.id")
+        //
+        if(this.$route.params.addNoteState){
+            return
+        }
       // 清空富媒体
       this.$emit("noteChange", {
         id: -2,
@@ -234,19 +247,20 @@ export default {
       console.log("---------------");
       console.log(this.$route.params.id);
       if (this.$route.params.id == 0) {
-        this.getAllNotes();
+        await this.getAllNotes();
         this.title = "笔记";
       } else if (this.$route.params.id > 0) {
-        this.getNotes(this.$route.params.id);
+        await this.getNotes(this.$route.params.id);
       } else if (this.$route.params.id == "add") {
-        this.addNote();
+        await this.addNote();
       }
     },
     // 监听保存事件
     noteSave: {
       async handler(newVal, oldVal) {
+        console.log("watch noteSave")
         console.log(newVal, oldVal);
-        if (newVal == oldVal || newVal == 0) {
+        if (newVal == oldVal || newVal == 0 || newVal <= 0 || oldVal <= 0) {
           return;
         }
         const res = await GetNoteById({ id: newVal });

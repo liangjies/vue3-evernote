@@ -16,7 +16,7 @@ export const GetAllNotes = (data) => {
 // @Produce  application/json
 // @Param data body {username:"string",password:"string"}
 // @Router /base/login [post]
-export const GetNotes = (data) => {
+export const GetNotesByNotebookID = (data) => {
     return service({
         url: '/notes/list/' + data.id,
         method: 'get',

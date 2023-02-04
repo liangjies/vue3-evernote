@@ -334,7 +334,7 @@ export default {
             type: "success",
           });
           if (this.$route.params.id == -1) {
-            router.push({ path: "/NoteDetail/0" });
+            router.push({ name: "NoteDetail", params: { id: 0 } });
           }
         }
       }
@@ -352,7 +352,7 @@ export default {
     },
     doCancel() {
       if (this.$route.params.id == -1) {
-        router.push({ path: "/NoteDetail/0" });
+        router.push({ name: "NoteDetail", params: { id: 0 } });
       }
       this.id = -1;
       this.refresh = !this.refresh;

@@ -1,5 +1,10 @@
 <template>
-  <note v-on:noteChange="noteChange" ref="note" :isCollapse="isCollapse" :noteSave="noteSave"></note>
+  <note
+    v-on:noteChange="noteChange"
+    ref="note"
+    :isCollapse="isCollapse"
+    :noteSave="noteSave"
+  ></note>
   <div
     class="note-detail"
     v-show="this.id != -1"
@@ -18,7 +23,12 @@
             </el-icon>
           </span>
           <!---->
-          <el-popover placement="bottom" :width="300" trigger="hover" show-after="300">
+          <el-popover
+            placement="bottom"
+            :width="300"
+            trigger="hover"
+            :show-after="300"
+          >
             <template #reference>
               <el-icon class="note-operation-icon" ref="upload">
                 <info-filled />
@@ -101,12 +111,15 @@
       />
     </div>
     <!-- 编辑器容器 -->
-    <div id="editor">
+    <div id="editor" v-if="noteType == 1">
       <note-editor
         :value="value"
         v-on:inputData="inputData"
         v-on:onClickEidtor="onClickEidtor"
       ></note-editor>
+    </div>
+    <div id="editor" v-else-if="noteType == 2">
+      <note-md :value="value"></note-md>
     </div>
   </div>
   <!-- 历史记录-->
@@ -116,6 +129,7 @@
 <script>
 import Note from "@/views/note/NoteSide.vue";
 import NoteEditor from "@/views/note/NoteEditor.vue";
+import NoteMd from "@/views/note/NoteMD.vue";
 import { GetNoteById, UpdateNote, CreateNote, DeleteNote } from "@/api/note";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { getFullDate } from "@/utils/util";
@@ -140,6 +154,7 @@ export default {
     ArrowDown,
     Clock,
     NoteEditor,
+    NoteMd,
     History,
     Expand,
     Fold,
@@ -147,6 +162,7 @@ export default {
   data() {
     return {
       id: -1,
+      noteType: 1,
       noteSave: 0,
       titleInput: "",
       title: "",
@@ -224,6 +240,7 @@ export default {
   methods: {
     // 切换笔记
     noteChange: async function (childValue) {
+      console.log("noteChange");
       // 未保存笔记自动保存
       if (this.value !== this.content || this.title != this.titleInput) {
         console.log("save here");
@@ -232,6 +249,8 @@ export default {
       }
       // 请求新的笔记
       if (typeof childValue != "undefined") {
+        console.log("请求新的笔记");
+        console.log(childValue.id);
         // 清空富媒体编辑框
         this.clearEditor();
         // 请求新的笔记
@@ -241,7 +260,7 @@ export default {
 
         this.gridData[0].time = getFullDate(childValue.createdAt); // 创建时间
         this.gridData[1].time = getFullDate(childValue.updatedAt); // 更新时间
-        this.GetNote(childValue.id); // 发送请求
+        await this.GetNote(childValue.id); // 发送请求
       } else {
         this.titleInput = "";
         this.value = "";
@@ -256,8 +275,14 @@ export default {
     },
     // 获取笔记
     async GetNote(noteId) {
+      console.log("GetNote(noteId))");
       if (noteId == -2) {
-        this.value = "";
+        console.log("noteId == -2");
+        console.log(this.content);
+        setTimeout(() => {
+          this.content = "";
+          this.value = "";
+        }, 100);
         if (this.$route.params.id == 0) {
           this.notebook = "笔记本";
           this.notebookID = 0;
@@ -269,6 +294,7 @@ export default {
         const res = await GetNoteById({ id: noteId });
         if (res.code === 200) {
           this.value = res.data.list[0].content;
+          this.noteType  = res.data.list[0].type;
           this.notebookID = res.data.list[0].notebookId;
           this.setNotebookTitle(res.data.list[0].notebookId);
         }
@@ -280,6 +306,7 @@ export default {
     },
     // 保存或新建笔记
     async doUpdateNote() {
+      console.log("doUpdateNote()");
       // 保存笔记
       if (this.id != -2) {
         const res = await UpdateNote({
@@ -296,6 +323,7 @@ export default {
           });
           // TODO 更新指定note
           this.value = this.content;
+          this.noteSave = this.id;
         }
       } else if (this.id == -2) {
         // 新建笔记
@@ -305,16 +333,21 @@ export default {
           notebookId: this.notebookID,
         });
         if (res.code === 200) {
-          this.$refs.note.refresh();
           this.id = res.data.id;
+          this.value = this.content;
+          this.noteSave = this.id;
           ElMessage({
             showClose: true,
             message: res.msg,
             type: "success",
           });
-          if (this.$route.params.id == -1) {
-            router.push({ path: "/Note/0" });
+          if (this.$route.params.id == "add") {
+            await router.push({
+              name: "NoteDetail",
+              params: { addNoteState: true },
+            });
           }
+          this.$refs.note.refresh();
         }
       }
     },

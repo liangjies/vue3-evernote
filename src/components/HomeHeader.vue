@@ -10,9 +10,7 @@ export default {
     SiderBar,
   },
   created() {
-    this.$router.push({
-      path: "/NoteDetail/0",
-    });
+    router.push({ name: "NoteDetail", params: { id: 0 } });
   },
   data() {
     return {};
