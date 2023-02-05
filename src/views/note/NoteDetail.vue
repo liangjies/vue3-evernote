@@ -1,10 +1,10 @@
 <template>
-  <note
+  <note-list
     v-on:noteChange="noteChange"
     ref="note"
     :isCollapse="isCollapse"
     :noteSave="noteSave"
-  ></note>
+  ></note-list>
   <div
     class="note-detail"
     v-show="this.id != -1"
@@ -119,7 +119,7 @@
       ></note-editor>
     </div>
     <div id="editor" v-else-if="noteType == 2">
-      <note-md :value="value"></note-md>
+      <note-md :value="value" v-on:inputData="inputData"></note-md>
     </div>
   </div>
   <!-- 历史记录-->
@@ -127,7 +127,7 @@
 </template>
 
 <script>
-import Note from "@/views/note/NoteSide.vue";
+import NoteList from "@/views/note/NoteList.vue";
 import NoteEditor from "@/views/note/NoteEditor.vue";
 import NoteMd from "@/views/note/NoteMD.vue";
 import { GetNoteById, UpdateNote, CreateNote, DeleteNote } from "@/api/note";
@@ -147,7 +147,7 @@ import {
 } from "@element-plus/icons-vue";
 export default {
   components: {
-    Note,
+    NoteList,
     Delete,
     InfoFilled,
     Notebook,
@@ -293,8 +293,8 @@ export default {
       } else {
         const res = await GetNoteById({ id: noteId });
         if (res.code === 200) {
-          this.value = res.data.list[0].content;
-          this.noteType  = res.data.list[0].type;
+          this.value = this.content = res.data.list[0].content;
+          this.noteType = res.data.list[0].type;
           this.notebookID = res.data.list[0].notebookId;
           this.setNotebookTitle(res.data.list[0].notebookId);
         }
@@ -381,12 +381,13 @@ export default {
       }).then(async () => {
         const res = await DeleteNote({ id: this.id });
         if (res.code === 200) {
-          this.$refs.note.refresh();
+          //   this.$refs.note.refresh();
           ElMessage({
             showClose: true,
             message: res.msg,
             type: "success",
           });
+          this.$refs.note.delNote(this.id);
           // 清空编辑器标题与内容
           this.clearEditor();
         }
@@ -403,6 +404,7 @@ export default {
     // 清空富媒体编辑框
     clearEditor() {
       this.value = "";
+      this.content = "";
       this.titleInput = "";
       this.notebookID = -1;
     },
@@ -436,97 +438,97 @@ export default {
   right: 0;
   top: 0;
   min-width: 403px;
-  .note-operation {
-    position: relative;
-    padding: 12px 0;
-    .note-operation-left {
-      display: inline-block;
-      padding-top: 2px;
-      padding-left: 18px;
-      opacity: 1;
-      transition: opacity 0.2s ease-in-out;
-      position: relative;
-      .note-operation-icon {
-        cursor: pointer;
-        opacity: 0.4;
-        font-size: 23px;
-        color: black;
-        margin: 0 16px 0 0;
-        &:hover {
-          opacity: 1;
-          color: #2dbe60;
-        }
-      }
-    }
-    .note-operation-right {
-      float: right;
-      margin-left: 20px;
-      .note-notebook {
-        margin-top: 2px;
-        float: right;
-        .note-notebook-icon {
-          margin-top: 2px;
-          vertical-align: top;
-          opacity: 0.5;
-          font-size: 14px;
-        }
-        .el-dropdown-link {
-          margin-left: 5px;
-          font-size: 13px;
-          font-weight: 400;
-          color: #878787;
-          .el-icon--right {
-            opacity: 0.5;
-            margin-left: 0;
-            top: 2px;
-          }
-        }
-        .note-label-split {
-          border-left: 1px solid #ececec;
-          height: 19px;
-          display: inline-block;
-          vertical-align: top;
-          margin: 0 8px 0;
-        }
-      }
-      .note-tags {
-        margin: 0 16px 0 0;
-        float: right;
-        .note-tags-icon {
-          opacity: 0.5;
-        }
-        .note-tag {
-          float: right;
-          margin-left: 5px;
-          color: #fff;
-          border-color: #2dbe60;
-          background-color: #2dbe60;
-          vertical-align: top;
-          padding: 1px 8px 1px 6px;
-          border-radius: 4px;
-          font-size: 12px;
-          font-weight: 400;
-          line-height: 17px;
-          text-align: center;
-        }
-      }
-      .note-operation-icon {
-        margin-right: 8px;
-        float: right;
-      }
-    }
-    .note-label {
-      position: relative;
-      max-width: 960px;
-      min-width: 240px;
-      padding: 0 48px;
-      margin: 0 auto 38px;
-      height: 35px;
-      border-bottom: 1px solid #ececec;
-    }
-  }
   .note-header {
     height: 8vh;
+    padding: 12px 0;
+    .note-operation {
+      position: relative;
+      .note-operation-left {
+        display: inline-block;
+        padding-top: 2px;
+        padding-left: 18px;
+        opacity: 1;
+        transition: opacity 0.2s ease-in-out;
+        position: relative;
+        .note-operation-icon {
+          cursor: pointer;
+          opacity: 0.4;
+          font-size: 23px;
+          color: black;
+          margin: 0 16px 0 0;
+          &:hover {
+            opacity: 1;
+            color: #2dbe60;
+          }
+        }
+      }
+      .note-operation-right {
+        float: right;
+        margin-left: 20px;
+        .note-notebook {
+          margin-top: 2px;
+          float: right;
+          .note-notebook-icon {
+            margin-top: 2px;
+            vertical-align: top;
+            opacity: 0.5;
+            font-size: 14px;
+          }
+          .el-dropdown-link {
+            margin-left: 5px;
+            font-size: 13px;
+            font-weight: 400;
+            color: #878787;
+            .el-icon--right {
+              opacity: 0.5;
+              margin-left: 0;
+              top: 2px;
+            }
+          }
+          .note-label-split {
+            border-left: 1px solid #ececec;
+            height: 19px;
+            display: inline-block;
+            vertical-align: top;
+            margin: 0 8px 0;
+          }
+        }
+        .note-tags {
+          margin: 0 16px 0 0;
+          float: right;
+          .note-tags-icon {
+            opacity: 0.5;
+          }
+          .note-tag {
+            float: right;
+            margin-left: 5px;
+            color: #fff;
+            border-color: #2dbe60;
+            background-color: #2dbe60;
+            vertical-align: top;
+            padding: 1px 8px 1px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 17px;
+            text-align: center;
+          }
+        }
+        .note-operation-icon {
+          margin-right: 8px;
+          float: right;
+        }
+      }
+      .note-label {
+        position: relative;
+        max-width: 960px;
+        min-width: 240px;
+        padding: 0 48px;
+        margin: 0 auto 38px;
+        height: 35px;
+        border-bottom: 1px solid #ececec;
+      }
+    }
   }
   .note-title {
     height: 7vh;
