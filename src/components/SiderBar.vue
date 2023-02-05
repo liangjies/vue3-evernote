@@ -4,54 +4,94 @@
       <div class="login">
         <img src="/src/common/images/yinxiang.png" alt="" class="user-image" />
         <div class="icons">
-          <div class="addNote show">
-            <el-popover placement="right" :width="120" trigger="click" :hide-after=0>
-              <template #reference>
+          <el-tooltip
+            class="box-item"
+            effect="dark"
+            content="新建"
+            placement="right-start"
+          >
+            <div class="addNote show">
+              <el-popover
+                placement="right"
+                :width="120"
+                trigger="click"
+                :hide-after="0"
+              >
+                <template #reference>
+                  <el-icon>
+                    <plus />
+                  </el-icon>
+                </template>
+                <ul class="file-type-list">
+                  <li class="can-disabled" @click="addNote">
+                    <img
+                      class="dropdown-img"
+                      src="/src/common/images/documents.png"
+                    /><span>空白文档</span>
+                  </li>
+                  <li class="can-disabled" @click="addNote('md')">
+                    <img
+                      class="dropdown-img"
+                      src="/src/common/images/md.png"
+                    /><span>Markdown</span>
+                  </li>
+                </ul>
+              </el-popover>
+            </div>
+          </el-tooltip>
+          <el-tooltip
+            class="box-item"
+            effect="dark"
+            content="搜索"
+            placement="right-start"
+          >
+            <router-link to="/Search">
+              <div class="searchNote show">
                 <el-icon>
-                  <plus />
+                  <search />
                 </el-icon>
-              </template>
-              <ul class="file-type-list">
-                <li class="can-disabled" @click="addNote">
-                  <img
-                    class="dropdown-img"
-                    src="/src/common/images/documents.png"
-                  /><span>空白文档</span>
-                </li>
-                <li class="can-disabled" @click="addNote('md')">
-                  <img
-                    class="dropdown-img"
-                    src="/src/common/images/md.png"
-                  /><span>Markdown</span>
-                </li>
-              </ul>
-            </el-popover>
-          </div>
-          <router-link to="/Search" title="搜索">
-            <div class="searchNote show">
-              <el-icon>
-                <search />
+              </div>
+            </router-link>
+          </el-tooltip>
+          <el-tooltip
+            class="box-item"
+            effect="dark"
+            content="笔记"
+            placement="right-start"
+          >
+            <router-link to="/Note">
+              <el-icon class="note el-icon-s-order">
+                <document />
+              </el-icon>
+            </router-link>
+          </el-tooltip>
+          <el-tooltip
+            class="box-item"
+            effect="dark"
+            content="笔记本"
+            placement="right-start"
+          >
+            <div title="笔记本" @click.stop="doClickOpenNotebook">
+              <el-icon
+                class="book el-icon-s-platform"
+                :class="{ 'note-book-open': notebookOpen }"
+              >
+                <notebook />
               </el-icon>
             </div>
-          </router-link>
-          <router-link to="/Note" title="笔记">
-            <el-icon class="note el-icon-s-order">
-              <document />
-            </el-icon>
-          </router-link>
-          <div title="笔记本" @click.stop="doClickOpenNotebook">
-            <el-icon
-              class="book el-icon-s-platform"
-              :class="{ 'note-book-open': notebookOpen }"
-            >
-              <notebook />
-            </el-icon>
-          </div>
-          <router-link to="/NoteTrash" title="回收站">
-            <el-icon class="note el-icon-s-order">
-              <delete />
-            </el-icon>
-          </router-link>
+          </el-tooltip>
+          <el-tooltip
+            class="box-item"
+            effect="dark"
+            content="回收站"
+            placement="right-start"
+          >
+            <router-link to="/NoteTrash">
+              <el-icon class="note el-icon-s-order">
+                <delete />
+              </el-icon>
+            </router-link>
+          </el-tooltip>
           <div class="userMenu" @click.stop="open = !open">
             <img :src="headerImg" alt="" class="userMenus-image" />
           </div>
