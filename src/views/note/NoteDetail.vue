@@ -135,28 +135,12 @@ import { getFullDate } from "@/utils/util";
 import { mapState } from "vuex";
 import History from "@/views/note/History.vue";
 import router from "@/router/index";
-import {
-  Delete,
-  InfoFilled,
-  Notebook,
-  ArrowDown,
-  Clock,
-  Expand,
-  Fold,
-} from "@element-plus/icons-vue";
 export default {
   components: {
     NoteList,
-    Delete,
-    InfoFilled,
-    Notebook,
-    ArrowDown,
-    Clock,
     NoteEditor,
     NoteMd,
     History,
-    Expand,
-    Fold,
   },
   data() {
     return {

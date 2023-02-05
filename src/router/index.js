@@ -20,11 +20,11 @@ const router = createRouter({
     },
     {
       path: '/Search',
-      name: 'Search',
+      name: 'SearchDetail',
       meta: {
         title: '搜索 - 云笔记'
       },
-      component: () => import('@/views/search/Search.vue')
+      component: () => import('@/views/search/SearchDetail.vue')
     },
     {
       path: '/Login',

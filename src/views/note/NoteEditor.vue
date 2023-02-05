@@ -185,6 +185,7 @@ export default {
     // 保存笔记
     saveContent(e) {
       if (this.value !== this.contentValue && e.is_removing != true) {
+        console.log(this)
         this.$parent.doUpdateNote();
       }
     },

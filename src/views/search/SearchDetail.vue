@@ -31,7 +31,9 @@
     <div class="search-page search-page-top">
       <div class="search-top">
         <div class="search-input-box">
-          <input
+          <el-input
+            prefix-icon="Search"
+            :clearable="true"
             type="text"
             class="search-input-text"
             id="gwt-debug-searchViewSearchBox"
@@ -41,28 +43,48 @@
             ref="search"
             @keydown.enter="onSearch"
           />
-          <el-icon class="search-input-icon" @click="clearSearch"
+          <!-- <el-icon class="search-input-icon" @click="clearSearch"
             ><circle-close-filled
-          /></el-icon>
+          /></el-icon> -->
         </div>
       </div>
-      <div class="search-input-footer">
+      <!-- <div class="search-input-footer">
         <div class="search-footer-box">
           <div class="search-input-footer-text">正在搜索&nbsp;</div>
           <div class="search-input-footer-tip">你的笔记本</div>
         </div>
-      </div>
+      </div> -->
     </div>
-    <div class="search-input-footer-split"></div>
+    <!-- <div class="search-input-footer-split"></div> -->
     <search-side
       :searchValue="searchValue"
-      v-on:childByValue="childByValue"
+      v-on:noteChange="noteChange"
+      ref="note"
     ></search-side>
-    <div class="note-detail" v-show="this.id != -1">
+    <div
+      class="note-detail"
+      v-show="this.id != -1"
+      :class="{ isCollapse: isCollapse }"
+    >
       <div class="note-header">
         <div class="note-operation">
           <div class="note-operation-left">
-            <el-popover placement="bottom" :width="300" trigger="hover">
+            <!--伸缩功能-->
+            <span @click="totalCollapse">
+              <el-icon class="note-operation-icon" v-if="isCollapse">
+                <expand />
+              </el-icon>
+              <el-icon class="note-operation-icon" v-else>
+                <fold />
+              </el-icon>
+            </span>
+            <!---->
+            <el-popover
+              placement="bottom"
+              :width="300"
+              trigger="hover"
+              :show-after="300"
+            >
               <template #reference>
                 <el-icon class="note-operation-icon" ref="upload">
                   <info-filled />
@@ -70,11 +92,22 @@
               </template>
               <el-table :data="gridData" :show-header="false">
                 <el-table-column width="100" property="name" label="name" />
-                <el-table-column width="300" property="time" label="time" />
+                <el-table-column width="170" property="time" label="time" />
               </el-table>
             </el-popover>
+            <el-icon
+              class="note-operation-icon"
+              title="历史记录"
+              @click="openHistory"
+            >
+              <clock />
+            </el-icon>
             <span></span>
-            <el-icon class="note-operation-icon" @click="doDelete()">
+            <el-icon
+              class="note-operation-icon"
+              @click="doDelete()"
+              title="删除"
+            >
               <delete />
             </el-icon>
           </div>
@@ -100,12 +133,12 @@
               <el-icon class="note-notebook-icon">
                 <notebook />
               </el-icon>
-              <div class="note-tags">
-                <el-icon class="note-tags-icon">
-                  <price-tag />
-                </el-icon>
-                <span class="note-tag"> 微信 </span>
-              </div>
+              <!-- <div class="note-tags">
+              <el-icon class="note-tags-icon">
+                <price-tag />
+              </el-icon>
+              <span class="note-tag"> {{ notebook }} </span>
+            </div> -->
               <el-dropdown trigger="click" style="margin-top: 1px">
                 <span class="el-dropdown-link">
                   {{ notebook }}
@@ -138,51 +171,48 @@
         />
       </div>
       <!-- 编辑器容器 -->
-      <div id="editor">
+      <div id="editor" v-if="noteType == 1">
         <note-editor
           :value="value"
           v-on:inputData="inputData"
           v-on:onClickEidtor="onClickEidtor"
         ></note-editor>
       </div>
+      <div id="editor" v-else-if="noteType == 2">
+        <note-md :value="value" v-on:inputData="inputData"></note-md>
+      </div>
     </div>
   </div>
+  <!-- 历史记录-->
+  <history ref="historyRef"></history>
 </template>
-
 <script>
 import SiderBar from "@/components/SiderBar.vue";
+import NoteMd from "@/views/note/NoteMD.vue";
+import History from "@/views/note/History.vue";
 import { GetNoteById, UpdateNote, CreateNote, DeleteNote } from "@/api/note";
 import { ElMessage, ElMessageBox } from "element-plus";
 import NoteEditor from "@/views/note/NoteEditor.vue";
-import { CircleCloseFilled } from "@element-plus/icons-vue";
 import SearchSide from "@/views/search/SearchSide.vue";
 import { mapState } from "vuex";
 import { getFullDate, isHtmlLabel } from "@/utils/util";
-import {
-  Delete,
-  InfoFilled,
-  Notebook,
-  ArrowDown,
-  PriceTag,
-} from "@element-plus/icons-vue";
+
 export default {
-  name: "Search",
+  name: "SearchDetail",
   components: {
     SiderBar,
-    CircleCloseFilled,
     SearchSide,
-    Delete,
-    InfoFilled,
-    Notebook,
-    ArrowDown,
-    PriceTag,
     NoteEditor,
+    NoteMd,
+    History,
   },
   data() {
     return {
       detailShow: false,
       id: -1,
+      noteType: 1,
       titleInput: "",
+      title: "",
       value: "",
       searchKey: "",
       searchValue: {},
@@ -190,6 +220,7 @@ export default {
       notebook: "",
       notebookID: -1,
       refresh: false,
+      showHistory: false,
       highlightArray: [],
       gridData: [
         {
@@ -201,6 +232,7 @@ export default {
           time: "",
         },
       ],
+      isCollapse: false,
     };
   },
   created() {
@@ -213,26 +245,58 @@ export default {
     }),
   },
   methods: {
-    childByValue: function (childValue) {
-      // childValue就是子组件传过来的值
+    // 切换笔记
+    noteChange: async function (childValue) {
+      console.log("noteChange");
+      // 未保存笔记自动保存
+      console.log(this.value);
+      console.log(this.content);
+      console.log(this.title);
+      console.log(this.titleInput);
+      if (this.value !== this.content || this.title != this.titleInput) {
+        console.log("save here");
+        await this.doUpdateNote();
+        // this.noteSave = this.id;
+        this.$refs.note.noteSave(this.id);
+      }
+      // 请求新的笔记
       if (typeof childValue != "undefined") {
-        this.titleInput = childValue.title;
+        console.log("请求新的笔记");
+        console.log(childValue.id);
+        // 清空富媒体编辑框
+        this.clearEditor(1);
+        // 请求新的笔记
+        this.title = this.titleInput = childValue.title;
         this.id = childValue.id;
         this.notebookID = Number(childValue.notebookID);
-        // this.notebook = this.getNotebookById(this.notebookID);
-        this.gridData[0].time = getFullDate(childValue.createdAt);
-        this.gridData[1].time = getFullDate(childValue.updatedAt);
-        this.GetNote(childValue.id);
+        this.noteType = childValue.type;
+        console.log;
+        this.gridData[0].time = getFullDate(childValue.createdAt); // 创建时间
+        this.gridData[1].time = getFullDate(childValue.updatedAt); // 更新时间
+        await this.GetNote(childValue.id); // 发送请求
       } else {
         this.titleInput = "";
         this.value = "";
+        this.noteType = childValue.type;
         this.notebookID = Number(this.$route.params.id);
-        this.setNotebookTitle(this.$route.params.id);
+        this.setNotebookTitle(this.$route.params.id); // 根据ID获取Name
       }
     },
     inputData: function (inputData) {
       // childValue就是子组件传过来的值
       this.content = inputData;
+    },
+    clearSearch() {
+      this.searchKey = "";
+      this.$refs.search.focus();
+    },
+    onSearchFirst() {
+      this.detailShow = true;
+      this.searchValue = { searchKey: this.searchKey };
+    },
+    onSearch() {
+      this.highlightArray = [];
+      this.searchValue = { searchKey: this.searchKey };
     },
     onClickEidtor: function () {
       // 取消高亮关键词
@@ -270,9 +334,21 @@ export default {
       });
       return text;
     },
+    // 切换焦点
+    onClickEidtor: function () {
+      this.$refs.upload.$el.click();
+      this.setNotebookTitle(this.$route.params.id);
+    },
+    // 获取笔记
     async GetNote(noteId) {
+      console.log("GetNote(noteId))");
       if (noteId == -2) {
-        this.value = "";
+        console.log("noteId == -2");
+        console.log(this.content);
+        setTimeout(() => {
+          this.content = "";
+          this.value = "";
+        }, 100);
         if (this.$route.params.id == 0) {
           this.notebook = "笔记本";
           this.notebookID = 0;
@@ -283,28 +359,21 @@ export default {
       } else {
         const res = await GetNoteById({ id: noteId });
         if (res.code === 200) {
-          this.value = this.highlightKey(
-            res.data.list[0].content,
-            this.searchKey
-          );
+          this.value = this.content = res.data.list[0].content;
+          this.noteType = res.data.list[0].type;
           this.notebookID = res.data.list[0].notebookId;
           this.setNotebookTitle(res.data.list[0].notebookId);
         }
       }
     },
-    clearSearch() {
-      this.searchKey = "";
-      this.$refs.search.focus();
+    // 输入值
+    inputData: function (inputData) {
+      this.content = inputData;
     },
-    onSearchFirst() {
-      this.detailShow = true;
-      this.searchValue = { searchKey: this.searchKey };
-    },
-    onSearch() {
-      this.highlightArray = [];
-      this.searchValue = { searchKey: this.searchKey };
-    },
+    // 保存或新建笔记
     async doUpdateNote() {
+      console.log("doUpdateNote()");
+      // 保存笔记
       if (this.id != -2) {
         const res = await UpdateNote({
           id: this.id,
@@ -318,31 +387,46 @@ export default {
             message: res.msg,
             type: "success",
           });
+          // TODO 更新指定note
+          this.value = this.content;
+          this.title = this.titleInput;
+          this.$refs.note.noteSave(this.id);
         }
       } else if (this.id == -2) {
+        // 新建笔记
         const res = await CreateNote({
           title: this.titleInput,
           content: this.content,
           notebookId: this.notebookID,
+          type: this.noteType,
         });
         if (res.code === 200) {
-          this.refresh = !this.refresh;
           this.id = res.data.id;
+          this.value = this.content;
+          this.title = this.titleInput;
+          this.$refs.note.noteSave(this.id);
+
           ElMessage({
             showClose: true,
             message: res.msg,
             type: "success",
           });
-          if (this.$route.params.id == -1) {
-            router.push({ name: "NoteDetail", params: { id: 0 } });
+          if (this.$route.params.id == "add") {
+            await router.push({
+              name: "NoteDetail",
+              params: { addNoteState: true },
+            });
           }
+          this.$refs.note.refresh();
         }
       }
     },
+    // 笔记移动笔记本
     async updateNotebook(id) {
       this.notebookID = id;
       this.setNotebookTitle(id);
     },
+    // 根据ID显示笔记本名称
     setNotebookTitle(id) {
       this.notebooks.forEach((notebook) => {
         if (notebook.id == id) {
@@ -350,13 +434,16 @@ export default {
         }
       });
     },
+    // 取消新建笔记
     doCancel() {
       if (this.$route.params.id == -1) {
         router.push({ name: "NoteDetail", params: { id: 0 } });
       }
       this.id = -1;
-      this.refresh = !this.refresh;
+      this.noteType = 1;
+      this.$refs.note.refresh();
     },
+    // 删除笔记
     doDelete() {
       ElMessageBox.confirm("是否删除?", "提示", {
         confirmButtonText: "是",
@@ -365,14 +452,38 @@ export default {
       }).then(async () => {
         const res = await DeleteNote({ id: this.id });
         if (res.code === 200) {
-          this.refresh = !this.refresh;
+          //   this.$refs.note.refresh();
           ElMessage({
             showClose: true,
             message: res.msg,
             type: "success",
           });
+          this.$refs.note.delNote(this.id);
+          // 清空编辑器标题与内容
+          this.clearEditor();
         }
       });
+    },
+    // 笔记历史
+    openHistory() {
+      this.$refs.historyRef.openHistory({ id: this.id });
+    },
+    // 笔记列表伸缩
+    totalCollapse() {
+      this.isCollapse = !this.isCollapse;
+    },
+    // 清空富媒体编辑框
+    clearEditor(type) {
+      this.titleInput = "";
+      this.notebookID = -1;
+      if (type == 1 && this.noteType == 1) {
+        console.log("run here");
+        this.value = "&nbsp;";
+        this.content = "&nbsp;";
+      } else {
+        this.value = "";
+        this.content = "";
+      }
     },
   },
 };
@@ -387,7 +498,7 @@ export default {
     .search-input-box {
       position: relative;
       height: 52px;
-      line-height: 52px;
+      line-height: 45px;
       .search-input-text {
         background-color: transparent;
         margin: 0;
@@ -399,8 +510,8 @@ export default {
         position: absolute;
         top: 0;
         left: 0;
-        width: 90%;
-        font-size: 44px;
+        width: 100%;
+        font-size: 30px;
         font-weight: 500;
         letter-spacing: -0.3px;
         &:focus {
@@ -449,8 +560,9 @@ export default {
   transition: margin 0.3s ease-in-out;
 }
 .search-page-top {
+  height: 12vh;
   width: 350px;
-  padding: 24px 24px 0px;
+  padding: 20px;
   .search-top {
     padding: 0;
   }
@@ -583,5 +695,8 @@ export default {
   color: var(--el-color-primary);
   display: flex;
   align-items: center;
+}
+:deep(.el-input__wrapper) {
+  border-radius: 100px;
 }
 </style>>

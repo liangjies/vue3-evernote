@@ -62,7 +62,13 @@
                 v-html="HighlightKey(note.title, this.searchValue.searchKey)"
               ></div>
               <div class="note-date">{{ _formateDate(note.updatedAt) }}</div>
-              <div class="note-snippet" v-html="HighlightKey(note.snippet, this.searchValue.searchKey)"></div>
+              <div
+                class="note-snippet"
+                v-html="HighlightKey(note.snippet, this.searchValue.searchKey)"
+              ></div>
+              <div class="note-markdown" v-if="note.type == 2">
+                <img src="/src/common/images/markdown.png" />
+              </div>
             </div>
           </div>
         </div>
@@ -73,11 +79,11 @@
 
 <script>
 import { ArrowDown, Plus } from "@element-plus/icons-vue";
-import { SearchNote, GetNotesByNotebookID } from "@/api/note";
+import { GetNoteById,SearchNote, GetNotesByNotebookID } from "@/api/note";
 import { friendlyDate } from "@/utils/util";
 export default {
   name: "SearchSide",
-  emits: ["childByValue"],
+  emits: ["noteChange"],
   components: { ArrowDown, Plus },
   props: {
     searchValue: {
@@ -125,38 +131,45 @@ export default {
           return;
         }
         if (this.currentIndex == 0) {
-          this.$emit("childByValue", this.allNotes[0]);
+          this.$emit("noteChange", this.allNotes[0]);
         }
       }
     },
+    // 根据笔记本ID获取笔记
     async getNotes(id) {
+      console.log("getNotes(id)");
       const res = await GetNotesByNotebookID({ id: id });
       if (res.code === 200) {
         this.title = res.msg;
         this.allNotes = res.data.list;
         this.noteNum = res.data.total;
-
         if (this.currentIndex == 0) {
-          this.$emit("childByValue", this.allNotes[0]);
+          this.$emit("noteChange", this.allNotes[0]);
         }
       }
     },
+    // 获取笔记
     async _getNotes() {
-      if (this.$route.params.id == 0) {
-        this.getAllNotes();
+      console.log("_getNotes()");
+      console.log("this.$route.params.id", this.$route.params.id);
+      if (this.$route.params.id == 0 || this.$route.params.id == undefined) {
+        await this.getAllNotes();
         this.title = "笔记";
-      } else if (this.$route.params.id == -1) {
+      } else if (this.$route.params.id == "add") {
         await this.getAllNotes();
         this.title = "笔记";
         this.addNote();
       } else {
-        this.getNotes(this.$route.params.id);
+        await this.getNotes(this.$route.params.id);
       }
     },
+    // 点击笔记详情
     openNote(note, index) {
+      console.log("openNote(note, index)");
       this.currentIndex = index;
-      this.$emit("childByValue", note);
+      this.$emit("noteChange", note);
     },
+    // 格式化日期
     _formateDate(dateStr) {
       if (dateStr == "") {
         return "";
@@ -164,23 +177,63 @@ export default {
         return friendlyDate(dateStr);
       }
     },
-    addNote() {
-      this.allNotes.unshift({ id: -2, title: "", updatedAt: "" });
-      this.$emit("childByValue", {
-        id: -2,
-        title: "",
-        notebookID: this.$route.params.id,
-      });
+    // 添加笔记
+    addNote(type) {
+      console.log("addNote()");
+      if (type == "md") {
+        this.allNotes.unshift({ id: -2, title: "", updatedAt: "", type: 2 });
+        this.$emit("noteChange", {
+          id: -2,
+          title: "",
+          notebookID: this.$route.params.id,
+          type: 2,
+        });
+      } else {
+        this.allNotes.unshift({ id: -2, title: "", updatedAt: "", type: 1 });
+        this.$emit("noteChange", {
+          id: -2,
+          title: "",
+          notebookID: this.$route.params.id,
+          type: 1,
+        });
+      }
+    },
+
+    // 刷新笔记列表
+    async refresh() {
+      this.addNoteState = false;
+      console.log("refresh()");
+      await this._getNotes();
+    },
+    // 删除笔记
+    async delNote(id) {
+      let index;
+      for (let i = 0; i < this.allNotes.length; i++) {
+        if (this.allNotes[i].id == id) {
+          index = i;
+          break;
+        }
+      }
+      this.allNotes.splice(index, 1);
+      this.currentIndex = -1;
+    },
+    async noteSave(id) {
+      const res = await GetNoteById({ id: id });
+      let temp = this.allNotes;
+      for (let i = 0; i < temp.length; i++) {
+        if (temp[i].id == id) {
+          temp[i] = res.data.list[0];
+          break;
+        }
+      }
+      this.allNotes = temp;
     },
     // 高亮关键词
     HighlightKey(text, keyWord) {
       var a = new RegExp(keyWord, "gi");
       return text.replace(a, (value) => {
         // 使用箭头函数才能获取this
-        let temp =
-          '<span class="high-light">' +
-          value +
-          "</span>";
+        let temp = '<span class="high-light">' + value + "</span>";
         return temp;
       });
     },
@@ -199,49 +252,7 @@ export default {
   margin-left: 73px;
   width: 350px;
   position: absolute;
-  .note-header {
-    height: 8vh;
-    box-sizing: border-box;
-    margin: 0 auto;
-    padding: 24px 20px 0 24px;
-    text-align: left;
-    position: relative;
-    margin-bottom: -7px;
-    .note-header-title {
-      color: #878787;
-      display: inline-block;
-      vertical-align: top;
-      font-size: 21px;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      font-weight: 300;
-      line-height: 26px;
-    }
-    .note-add {
-      position: absolute;
-      top: 24px;
-      right: 25px;
-      z-index: 1;
-      .note-add-button {
-        display: flex;
-        border: 1px solid #2dbe60;
-        border-radius: 3px;
-        background-color: #2dbe60;
-        font-size: 11px;
-        color: white;
-        line-height: 27px;
-        cursor: pointer;
-        .note-add-icon {
-          margin: 8px 3px 0 5px;
-        }
-        .note-add-text {
-          margin-right: 9px;
-        }
-      }
-    }
-  }
   .notes-view {
-    height: 7vh;
     color: #878787;
     height: 100%;
     width: 350px;
@@ -253,8 +264,7 @@ export default {
       border-bottom: 1px solid #ececec;
       padding: 0 24px;
       width: 100%;
-      height: 24px;
-      margin-top: 24px;
+      height: 3vh;
       .subheader-text {
         font-size: 13px;
         font-weight: 400;
@@ -346,6 +356,14 @@ export default {
             :deep(.high-light) {
               border-color: rgb(255, 131, 29);
               background-color: rgba(255, 170, 0, 0.34);
+            }
+          }
+          .note-markdown {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            img {
+              width: 34px;
             }
           }
         }

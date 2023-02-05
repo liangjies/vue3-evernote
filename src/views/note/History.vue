@@ -47,12 +47,8 @@
 import { GetHistories, RecoverHistory } from "@/api/history";
 import { getFullDate } from "@/utils/util";
 import { ElMessage } from "element-plus";
-import { Close } from "@element-plus/icons-vue";
 export default {
   name: "History",
-  components: {
-    Close,
-  },
   data() {
     return {
       dialogFormVisible: false,

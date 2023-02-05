@@ -141,6 +141,7 @@ export default {
     Delete,
   },
   created() {
+    console.log(this.$parent)
     this.GetNotebooksData();
   },
   data() {

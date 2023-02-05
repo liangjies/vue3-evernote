@@ -67,13 +67,6 @@
 </template>
 
 <script>
-import {
-  FolderAdd,
-  Search,
-  DeleteFilled,
-  Notebook,
-  Edit,
-} from "@element-plus/icons-vue";
 import { mapState } from "vuex";
 import { CreateNotebook, DeleteNotebook, UpdateNotebook } from "@/api/notebook";
 import { mapActions } from "vuex";
@@ -82,7 +75,6 @@ import router from "@/router/index";
 export default {
   name: "NotebookPop",
   emits: ["PopOpenValue"],
-  components: { FolderAdd, Search, DeleteFilled, Notebook, Edit },
   data() {
     return {
       notebookInput: "",

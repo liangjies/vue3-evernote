@@ -105,13 +105,12 @@
 
 <script>
 import SiderBar from "@/components/SiderBar.vue";
-import { ArrowDown, Plus } from "@element-plus/icons-vue";
 import { GetAllNotes, GetNotesByNotebookID, GetNoteById } from "@/api/note";
 import { friendlyDate } from "@/utils/util";
 export default {
   name: "NoteList",
   emits: ["noteChange"],
-  components: { SiderBar, ArrowDown, Plus },
+  components: { SiderBar },
   props: {
     isCollapse: {
       type: Boolean,
