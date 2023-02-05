@@ -73,7 +73,7 @@
 
 <script>
 import { ArrowDown, Plus } from "@element-plus/icons-vue";
-import { SearchNote, GetNotes } from "@/api/note";
+import { SearchNote, GetNotesByNotebookID } from "@/api/note";
 import { friendlyDate } from "@/utils/util";
 export default {
   name: "SearchSide",
@@ -130,7 +130,7 @@ export default {
       }
     },
     async getNotes(id) {
-      const res = await GetNotes({ id: id });
+      const res = await GetNotesByNotebookID({ id: id });
       if (res.code === 200) {
         this.title = res.msg;
         this.allNotes = res.data.list;
@@ -328,7 +328,7 @@ export default {
             word-wrap: break-word;
             line-height: 20px;
             width: 302px;
-            /deep/ .high-light {
+            :deep(.high-light) {
               border-color: rgb(255, 131, 29);
               background-color: rgba(255, 170, 0, 0.34);
             }
@@ -343,7 +343,7 @@ export default {
           .note-snippet {
             font-size: 12px;
             font-weight: 400;
-            /deep/ .high-light {
+            :deep(.high-light) {
               border-color: rgb(255, 131, 29);
               background-color: rgba(255, 170, 0, 0.34);
             }

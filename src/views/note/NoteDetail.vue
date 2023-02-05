@@ -3,7 +3,6 @@
     v-on:noteChange="noteChange"
     ref="note"
     :isCollapse="isCollapse"
-    :noteSave="noteSave"
   ></note-list>
   <div
     class="note-detail"
@@ -163,7 +162,6 @@ export default {
     return {
       id: -1,
       noteType: 1,
-      noteSave: 0,
       titleInput: "",
       title: "",
       value: "",
@@ -245,25 +243,28 @@ export default {
       if (this.value !== this.content || this.title != this.titleInput) {
         console.log("save here");
         await this.doUpdateNote();
-        this.noteSave = this.id;
+        // this.noteSave = this.id;
+        this.$refs.note.noteSave(this.id);
       }
       // 请求新的笔记
       if (typeof childValue != "undefined") {
         console.log("请求新的笔记");
         console.log(childValue.id);
         // 清空富媒体编辑框
-        this.clearEditor();
+        this.clearEditor(1);
         // 请求新的笔记
         this.title = this.titleInput = childValue.title;
         this.id = childValue.id;
         this.notebookID = Number(childValue.notebookID);
-
+        this.noteType = childValue.type;
+        console.log;
         this.gridData[0].time = getFullDate(childValue.createdAt); // 创建时间
         this.gridData[1].time = getFullDate(childValue.updatedAt); // 更新时间
         await this.GetNote(childValue.id); // 发送请求
       } else {
         this.titleInput = "";
         this.value = "";
+        this.noteType = childValue.type;
         this.notebookID = Number(this.$route.params.id);
         this.setNotebookTitle(this.$route.params.id); // 根据ID获取Name
       }
@@ -323,7 +324,8 @@ export default {
           });
           // TODO 更新指定note
           this.value = this.content;
-          this.noteSave = this.id;
+          this.title = this.titleInput;
+          this.$refs.note.noteSave(this.id);
         }
       } else if (this.id == -2) {
         // 新建笔记
@@ -331,11 +333,14 @@ export default {
           title: this.titleInput,
           content: this.content,
           notebookId: this.notebookID,
+          type: this.noteType,
         });
         if (res.code === 200) {
           this.id = res.data.id;
           this.value = this.content;
-          this.noteSave = this.id;
+          this.title = this.titleInput;
+          this.$refs.note.noteSave(this.id);
+
           ElMessage({
             showClose: true,
             message: res.msg,
@@ -370,6 +375,7 @@ export default {
         router.push({ name: "NoteDetail", params: { id: 0 } });
       }
       this.id = -1;
+      this.noteType = 1;
       this.$refs.note.refresh();
     },
     // 删除笔记
@@ -402,11 +408,17 @@ export default {
       this.isCollapse = !this.isCollapse;
     },
     // 清空富媒体编辑框
-    clearEditor() {
-      this.value = "";
-      this.content = "";
+    clearEditor(type) {
       this.titleInput = "";
       this.notebookID = -1;
+      if (type == 1 && this.noteType == 1) {
+        console.log("run here");
+        this.value = "&nbsp;";
+        this.content = "&nbsp;";
+      } else {
+        this.value = "";
+        this.content = "";
+      }
     },
   },
 };

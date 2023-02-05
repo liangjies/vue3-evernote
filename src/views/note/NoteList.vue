@@ -15,13 +15,13 @@
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="addNoteValue(true)"
+              <el-dropdown-item @click="addNoteValue()"
                 ><img
                   class="dropdown-img"
                   src="/src/common/images/documents.png"
                 />空白文档</el-dropdown-item
               >
-              <el-dropdown-item
+              <el-dropdown-item @click="addNoteValue('md')"
                 ><img
                   class="dropdown-img"
                   src="/src/common/images/md.png"
@@ -92,6 +92,9 @@
               <div class="note-title">{{ note.title }}</div>
               <div class="note-date">{{ _formateDate(note.updatedAt) }}</div>
               <div class="note-snippet">{{ note.snippet }}</div>
+              <div class="note-markdown" v-if="note.type == 2">
+                <img src="/src/common/images/markdown.png" />
+              </div>
             </div>
           </div>
         </div>
@@ -114,10 +117,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    noteSave: {
-      type: Number,
-      default: 0,
-    },
   },
   data() {
     return {
@@ -135,9 +134,9 @@ export default {
   methods: {
     // 新增笔记
     addNoteValue: function (value) {
-      if (this.addNoteState == false && value == true) {
+      if (this.addNoteState == false) {
         this.addNoteState = true;
-        this.addNote();
+        this.addNote(value);
       }
     },
     // 排序方式
@@ -214,15 +213,25 @@ export default {
       }
     },
     // 添加笔记
-    addNote() {
+    addNote(type) {
       console.log("addNote()");
-
-      this.allNotes.unshift({ id: -2, title: "", updatedAt: "" });
-      this.$emit("noteChange", {
-        id: -2,
-        title: "",
-        notebookID: this.$route.params.id,
-      });
+      if (type == "md") {
+        this.allNotes.unshift({ id: -2, title: "", updatedAt: "", type: 2 });
+        this.$emit("noteChange", {
+          id: -2,
+          title: "",
+          notebookID: this.$route.params.id,
+          type: 2,
+        });
+      } else {
+        this.allNotes.unshift({ id: -2, title: "", updatedAt: "", type: 1 });
+        this.$emit("noteChange", {
+          id: -2,
+          title: "",
+          notebookID: this.$route.params.id,
+          type: 1,
+        });
+      }
     },
     // 刷新笔记列表
     async refresh() {
@@ -241,6 +250,17 @@ export default {
       }
       this.allNotes.splice(index, 1);
       this.currentIndex = -1;
+    },
+    async noteSave(id) {
+      const res = await GetNoteById({ id: id });
+      let temp = this.allNotes;
+      for (let i = 0; i < temp.length; i++) {
+        if (temp[i].id == id) {
+          temp[i] = res.data.list[0];
+          break;
+        }
+      }
+      this.allNotes = temp;
     },
   },
   watch: {
@@ -268,24 +288,24 @@ export default {
       }
     },
     // 监听保存事件
-    noteSave: {
-      async handler(newVal, oldVal) {
-        console.log("watch noteSave");
-        console.log(newVal, oldVal);
-        if (newVal == oldVal || newVal == 0 || newVal <= 0 || oldVal <= 0) {
-          return;
-        }
-        const res = await GetNoteById({ id: newVal });
-        let temp = this.allNotes;
-        for (let i = 0; i < temp.length; i++) {
-          if (temp[i].id == newVal) {
-            temp[i] = res.data.list[0];
-            break;
-          }
-        }
-        this.allNotes = temp;
-      },
-    },
+    // noteSave: {
+    //   async handler(newVal, oldVal) {
+    //     console.log("watch noteSave");
+    //     console.log(newVal, oldVal);
+    //     if (newVal == oldVal || newVal == 0 || newVal <= 0 || oldVal <= 0) {
+    //       return;
+    //     }
+    //     const res = await GetNoteById({ id: newVal });
+    //     let temp = this.allNotes;
+    //     for (let i = 0; i < temp.length; i++) {
+    //       if (temp[i].id == newVal) {
+    //         temp[i] = res.data.list[0];
+    //         break;
+    //       }
+    //     }
+    //     this.allNotes = temp;
+    //   },
+    // },
   },
 };
 </script>
@@ -434,6 +454,14 @@ export default {
           .note-snippet {
             font-size: 12px;
             font-weight: 400;
+          }
+          .note-markdown {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            img {
+              width: 34px;
+            }
           }
         }
       }

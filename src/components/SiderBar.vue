@@ -4,10 +4,28 @@
       <div class="login">
         <img src="/src/common/images/yinxiang.png" alt="" class="user-image" />
         <div class="icons">
-          <div class="addNote show" @click="addNote">
-            <el-icon>
-              <plus />
-            </el-icon>
+          <div class="addNote show">
+            <el-popover placement="right" :width="120" trigger="click" :hide-after=0>
+              <template #reference>
+                <el-icon>
+                  <plus />
+                </el-icon>
+              </template>
+              <ul class="file-type-list">
+                <li class="can-disabled" @click="addNote">
+                  <img
+                    class="dropdown-img"
+                    src="/src/common/images/documents.png"
+                  /><span>空白文档</span>
+                </li>
+                <li class="can-disabled" @click="addNote('md')">
+                  <img
+                    class="dropdown-img"
+                    src="/src/common/images/md.png"
+                  /><span>Markdown</span>
+                </li>
+              </ul>
+            </el-popover>
           </div>
           <router-link to="/Search" title="搜索">
             <div class="searchNote show">
@@ -22,7 +40,10 @@
             </el-icon>
           </router-link>
           <div title="笔记本" @click.stop="doClickOpenNotebook">
-            <el-icon class="book el-icon-s-platform" :class="{ 'note-book-open': notebookOpen }">
+            <el-icon
+              class="book el-icon-s-platform"
+              :class="{ 'note-book-open': notebookOpen }"
+            >
               <notebook />
             </el-icon>
           </div>
@@ -44,7 +65,10 @@
       <user-pop v-clickoutside="handleClickOutside"></user-pop>
     </div>
     <div v-if="notebookOpen">
-      <notebook-pop v-clickoutside="notebookClickOutside" v-on:PopOpenValue="PopOpenValue"></notebook-pop>
+      <notebook-pop
+        v-clickoutside="notebookClickOutside"
+        v-on:PopOpenValue="PopOpenValue"
+      ></notebook-pop>
     </div>
   </div>
 </template>
@@ -61,7 +85,7 @@ import UserPop from "./UserPop.vue";
 import NotebookPop from "./NotebookPop.vue";
 import clickoutside from "../utils/click-outside";
 import { mapActions, mapState } from "vuex";
-import router from '@/router/index'
+import router from "@/router/index";
 
 export default {
   directives: { clickoutside },
@@ -84,6 +108,7 @@ export default {
       isCollapse: false,
       open: false,
       notebookOpen: false,
+      showAdd: false,
     };
   },
   computed: {
@@ -106,13 +131,13 @@ export default {
     doClickOpenNotebook() {
       this.notebookOpen = !this.notebookOpen;
     },
-    addNote() {
+    addNote(value) {
       if (this.$route.path.split("/")[1] != "Note") {
-         router.push({ name: "NoteDetail", params: { id: "add" } });
+        router.push({ name: "NoteDetail", params: { id: "add" } });
       } else {
-        this.$emit("addNoteValue", true);
+        this.$emit("addNoteValue", value);
       }
-    }
+    },
   },
 };
 </script>
@@ -156,6 +181,7 @@ export default {
         .note,
         .trash,
         .addNote {
+          position: relative;
           cursor: pointer;
           font-size: 20px;
           display: flex;
@@ -221,6 +247,30 @@ export default {
       i {
         margin: auto;
       }
+    }
+  }
+}
+
+.el-popper .file-type-list {
+  li {
+    cursor: pointer;
+    list-style: none;
+    padding: 10px;
+    border-radius: 4px;
+    &:hover {
+      background-color: #ecf5ff;
+      color: #409eff;
+    }
+
+    span {
+      color: #4e5a70;
+      font-size: 14px;
+      vertical-align: middle;
+    }
+    img {
+      width: 20px;
+      margin-right: 5px;
+      vertical-align: middle;
     }
   }
 }
