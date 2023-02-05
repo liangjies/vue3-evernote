@@ -162,6 +162,7 @@ export default {
       if (res.code === 200) {
         this.allNotes = res.data.list;
         this.noteNum = res.data.total;
+
         if (this.$route.params.id == -1 || this.addNoteState) {
           return;
         }
@@ -235,9 +236,9 @@ export default {
     },
     // 刷新笔记列表
     async refresh() {
+      this.addNoteState = false;
       console.log("refresh()");
       await this._getNotes();
-      this.addNoteState = false;
     },
     // 删除笔记
     async delNote(id) {
