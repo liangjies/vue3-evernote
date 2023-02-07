@@ -3,7 +3,7 @@
     <div class="user-pop-img">
       <img :src="headerImg" alt="" class="user-image" />
       <div class="user-name">{{ userName }}</div>
-      <div class="user-type">印象笔记免费帐户</div>
+      <div class="user-type">云笔记免费帐户</div>
     </div>
     <div class="user-pop-func">
       <div class="user-pop-ourside user-setting">

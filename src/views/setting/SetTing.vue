@@ -58,7 +58,7 @@
             </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane>
+        <!-- <el-tab-pane>
           <template #label>
             <span class="custom-tabs-label">
               <el-icon style="vertical-align: -10%">
@@ -68,7 +68,7 @@
             </span>
           </template>
           Config
-        </el-tab-pane>
+        </el-tab-pane> -->
       </el-tabs>
     </el-dialog>
     <email-set ref="emailSet"></email-set>
