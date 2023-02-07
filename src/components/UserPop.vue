@@ -1,5 +1,5 @@
 <template>
-  <div class="user-pop">
+  <div class="user-pop" v-if="open">
     <div class="user-pop-img">
       <img :src="headerImg" alt="" class="user-image" />
       <div class="user-name">{{ userName }}</div>
@@ -14,7 +14,7 @@
           <span class="user-pop-text">设置</span>
         </div>
       </div>
-      <div class="user-pop-ourside user-question"  @click="showQuestion">
+      <div class="user-pop-ourside user-question" @click="showQuestion">
         <div class="user-pop-box">
           <el-icon class="user-pop-icon">
             <question-filled />
@@ -52,7 +52,7 @@ export default {
   },
   data() {
     return {
-      open: false,
+      open: true,
     };
   },
   created() {},
@@ -66,6 +66,7 @@ export default {
     ...mapActions("user", ["LoginOut"]),
     // 退出登录
     doLogout() {
+      this.open = false;
       this.LoginOut();
     },
     // 显示设置
@@ -73,9 +74,9 @@ export default {
       this.$refs.setting.show();
     },
     // 跳转帮助页面
-    showQuestion(){
-      window.open("https://gitee.com/liangjies/evernote-client", '_blank');
-    }
+    showQuestion() {
+      window.open("https://github.com/liangjies/evernote-client", "_blank");
+    },
   },
   directives: {
     clickoutside: {
