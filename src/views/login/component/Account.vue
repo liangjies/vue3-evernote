@@ -25,7 +25,7 @@
         </template>
       </el-input>
     </el-form-item>
-    <el-form-item class="login-animation3" @keyup.enter="onSignIn">
+    <!-- <el-form-item class="login-animation3" @keyup.enter="onSignIn">
       <el-col :span="15">
         <el-input
           type="text"
@@ -51,7 +51,7 @@
           />
         </div>
       </el-col>
-    </el-form-item>
+    </el-form-item> -->
     <el-form-item class="login-animation4">
       <el-button
         type="primary"
@@ -64,7 +64,6 @@
     </el-form-item>
   </el-form>
 </template>
-
 <script>
 import { User, Unlock, Position } from "@element-plus/icons-vue";
 import { captcha } from "@/api/user";
@@ -73,7 +72,7 @@ export default {
   name: "Account",
   components: { User, Unlock, Position },
   created() {
-    this.loginVerify();
+    // this.loginVerify();
   },
   data() {
     return {
@@ -81,8 +80,10 @@ export default {
       login: {
         username: "demo",
         password: "demo",
-        captcha: "",
-        captchaId: "",
+        // captcha: "",
+        // captchaId: "",
+        ticket: "",
+        randstr: "",
         notice: "",
         isError: false,
       },
@@ -90,13 +91,19 @@ export default {
   },
   methods: {
     ...mapActions("user", ["LoginIn"]),
-    async onSignIn() {
+    onSignIn() {
+      var captcha = new TencentCaptcha("2046626881", this._onSignIn);
+      captcha.show();
+    },
+    async _onSignIn(e) {
+      this.login.ticket = e.ticket;
+      this.login.randstr = e.randstr;
       const data = await this.LoginIn(this.login);
-      console.log(data.code)
+      //   console.log(data.code);
       // 验证码错误刷新验证码
-      if (typeof data.code != 'undefined' && data.code != 200) {
-        this.loginVerify();
-      }
+      //   if (typeof data.code != "undefined" && data.code != 200) {
+      //     this.loginVerify();
+      //   }
     },
     loginVerify() {
       captcha({}).then((ele) => {
