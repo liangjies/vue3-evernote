@@ -30,7 +30,7 @@ export const logout = (data) => {
 // @Router /base/resige [post]
 export const register = (data) => {
   return service({
-    url: '/user/register',
+    url: '/base/register',
     method: 'post',
     data: data
   })
@@ -47,6 +47,18 @@ export const captcha = (data) => {
     data: data
   })
 }
+
+// @Summary 获取验证码
+// @Produce  application/json
+// @Param data body {username:"string",password:"string"}
+// @Router /base/captcha [post]
+export const verifyCode = (data) => {
+    return service({
+      url: '/base/sendVerifyCode',
+      method: 'post',
+      data: data
+    })
+  }
 
 // @Summary 用户更新昵称
 // @Produce  application/json

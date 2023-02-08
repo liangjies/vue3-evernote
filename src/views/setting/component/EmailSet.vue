@@ -163,6 +163,9 @@ export default {
     },
 
     async _getCheckCode(e) {
+      if (e.ticket == "") {
+        return;
+      }
       const res = await verifyCode({
         email: this.email,
         ticket: e.ticket,

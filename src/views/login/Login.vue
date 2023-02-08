@@ -273,7 +273,7 @@ export default {
         font-size: 22px;
         text-align: center;
         letter-spacing: 4px;
-        margin: 15px 0 30px;
+        margin: 10px 0 10px;
         white-space: nowrap;
         z-index: 5;
         position: relative;
