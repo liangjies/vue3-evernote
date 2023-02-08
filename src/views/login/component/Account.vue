@@ -58,6 +58,7 @@
         class="login-content-submit"
         round
         @click="onSignIn"
+        :disabled="btlStatus"
       >
         <span>登录</span>
       </el-button>
@@ -76,6 +77,7 @@ export default {
   },
   data() {
     return {
+      btlStatus: false,
       picPath: "",
       login: {
         username: "demo",
@@ -98,12 +100,14 @@ export default {
     async _onSignIn(e) {
       this.login.ticket = e.ticket;
       this.login.randstr = e.randstr;
+      this.btlStatus = true;
       const data = await this.LoginIn(this.login);
       //   console.log(data.code);
       // 验证码错误刷新验证码
-      //   if (typeof data.code != "undefined" && data.code != 200) {
-      //     this.loginVerify();
-      //   }
+      if (typeof data.code != "undefined" && data.code != 200) {
+        this.btlStatus = false;
+        //   this.loginVerify();
+      }
     },
     loginVerify() {
       captcha({}).then((ele) => {
