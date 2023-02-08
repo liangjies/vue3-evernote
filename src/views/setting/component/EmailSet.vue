@@ -1,9 +1,66 @@
 <template>
-  <el-dialog v-model="dialogVisible" title="更换邮箱" :before-close="closeDialog">
-    <p>密码</p>
-    <el-input size="large" type="password" v-model="pass"></el-input>
-    <p>邮箱</p>
-    <el-input size="large" type="email" v-model="email"></el-input>
+  <el-dialog
+    v-model="dialogVisible"
+    title="更换邮箱"
+    :before-close="closeDialog"
+  >
+    <el-form-item class="login-animation3">
+      <el-col :span="3">
+        <span>密码</span>
+      </el-col>
+      <el-col :span="21">
+        <el-input
+          type="password"
+          placeholder="请输入密码"
+          clearable
+          autocomplete="off"
+          v-model="pass"
+        >
+        </el-input>
+      </el-col>
+    </el-form-item>
+    <el-form-item class="login-animation3">
+      <el-col :span="3">
+        <span>邮箱</span>
+      </el-col>
+      <el-col :span="13">
+        <el-input
+          type="text"
+          placeholder="请输入邮箱"
+          clearable
+          autocomplete="off"
+          v-model="email"
+        >
+        </el-input>
+      </el-col>
+      <el-col :span="1"></el-col>
+      <el-col :span="5">
+        <el-button
+          type="warning"
+          :loading="loading"
+          :disabled="disabled"
+          @click="getCheckCode"
+        >
+          {{ text }}
+        </el-button>
+      </el-col>
+    </el-form-item>
+
+    <el-form-item class="login-animation3">
+      <el-col :span="3">
+        <span>验证码</span>
+      </el-col>
+      <el-col :span="20">
+        <el-input
+          type="text"
+          placeholder="请输入验证码"
+          clearable
+          autocomplete="off"
+          v-model="verify"
+        >
+        </el-input>
+      </el-col>
+    </el-form-item>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="closeDialog">取消</el-button>
@@ -13,7 +70,7 @@
   </el-dialog>
 </template>
 <script>
-import { UpdateEmail } from "@/api/user";
+import { UpdateEmail, verifyCode } from "@/api/user";
 import { ElMessage } from "element-plus";
 export default {
   name: "EmailSet",
@@ -23,6 +80,12 @@ export default {
       dialogVisible: false,
       pass: "",
       email: "",
+      verify: "",
+      text: "获取验证码",
+      loading: false,
+      disabled: false,
+      duration: 60,
+      timer: null,
     };
   },
   methods: {
@@ -37,7 +100,12 @@ export default {
         return;
       }
       // 校验邮箱
-      if (/^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/.test(this.pass) || this.email.length==0) {
+      if (
+        /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/.test(
+          this.pass
+        ) ||
+        this.email.length == 0
+      ) {
         ElMessage({
           showClose: true,
           message: "请输入正确的邮箱",
@@ -45,9 +113,19 @@ export default {
         });
         return;
       }
+      // 校验验证码
+      if (this.verify.length == 0) {
+        ElMessage({
+          showClose: true,
+          message: "请输验证码",
+          type: "error",
+        });
+        return;
+      }
       const res = await UpdateEmail({
         password: this.pass,
         email: this.email,
+        verifyCode: this.verify,
       });
       if (res.code === 200) {
         ElMessage({
@@ -66,6 +144,63 @@ export default {
       this.pass = "";
       this.email = "";
       this.dialogVisible = false;
+    },
+    getCheckCode() {
+      if (
+        /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(this.email) ==
+          false ||
+        this.email.length == 0
+      ) {
+        ElMessage({
+          showClose: true,
+          message: "请输入正确的邮箱",
+          type: "error",
+        });
+        return;
+      }
+      var captcha = new TencentCaptcha("2046626881", this._getCheckCode);
+      captcha.show();
+    },
+
+    async _getCheckCode(e) {
+      const res = await verifyCode({
+        email: this.email,
+        ticket: e.ticket,
+        randstr: e.randstr,
+      });
+      if (res.code === 200) {
+        ElMessage({
+          showClose: true,
+          message: res.msg,
+          type: "success",
+        });
+      } else {
+        ElMessage({
+          showClose: true,
+          message: res.msg,
+          type: "error",
+        });
+      }
+      // 倒计时期间按钮不能单击
+      if (this.duration !== 10) {
+        this.disabled = true;
+      }
+      // 清除掉定时器
+      this.timer && clearInterval(this.timer);
+      // 开启定时器
+      this.timer = setInterval(() => {
+        const tmp = this.duration--;
+        this.text = `${tmp}秒`;
+        if (tmp <= 0) {
+          // 清除掉定时器
+          clearInterval(this.timer);
+          this.duration = 10;
+          this.text = "重新获取";
+          // 设置按钮可以单击
+          this.disabled = false;
+        }
+        console.info(this.duration);
+      }, 1000);
     },
   },
 };
