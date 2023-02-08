@@ -43,8 +43,8 @@ export const user = {
     async LoginIn({ commit, dispatch, rootGetters, getters }, loginInfo) {
       const res = await login(loginInfo)
       if (res.code === 200) {
-        commit('setUserInfo', res.data.user)
-        commit('setToken', res.data.token)
+        await commit('setUserInfo', res.data.user)
+        await commit('setToken', res.data.token)
         console.log(res.data.token)
         router.push({ name: "NoteDetail", params: { id: 0 } });
         return true
