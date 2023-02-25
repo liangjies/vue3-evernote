@@ -1,6 +1,6 @@
 <template>
   <md-editor
-    v-model="value"
+    v-model="valueEditor"
     @onChange="onChange"
     @onSave="onSave"
     @onUploadImg="onUploadImg"
@@ -17,7 +17,7 @@ export default {
 import { ref } from "vue";
 import MdEditor from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
-import { getCurrentInstance, onMounted, onUnmounted } from "vue";
+import { getCurrentInstance, onMounted, onUnmounted, computed } from "vue";
 import { UploadFile } from "@/api/upload";
 // import TurndownService from "turndown"
 import TurndownService from "turndown";
@@ -26,6 +26,11 @@ const emit = defineEmits(["inputData", "updateData"]);
 const { proxy } = getCurrentInstance();
 const props = defineProps({
   value: String,
+});
+const text = ref("");
+const valueEditor = computed({
+  get: () => props.value,
+  set: (value) => {text.value = value;  emit("updateData",value)},
 });
 var turndownService = new TurndownService({
   codeBlockStyle: "fenced",
@@ -46,10 +51,10 @@ turndownService.addRule("pre2Code", {
 const onPaste = (event) => {
   let data = event.clipboardData.getData("text/html");
   let htmlValue = turndownService.turndown(data);
-  let value = props.value
+  let value = props.value;
   if (htmlValue) {
     setTimeout(() => {
-      if (props.value.indexOf(value) == -1) {
+      if (text.value.indexOf(value) == -1) {
         return;
       }
       emit("updateData", value + "\n" + htmlValue);
@@ -66,6 +71,7 @@ onUnmounted(() => {
 });
 // 改变内容
 const onChange = (v) => {
+  text.value = v;
   emit("inputData", v);
 };
 // 保存笔记
