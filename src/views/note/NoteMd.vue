@@ -3,7 +3,7 @@
     v-model="value"
     @onChange="onChange"
     @onSave="onSave"
-    @on-upload-img="onUploadImg"
+    @onUploadImg="onUploadImg"
     :toolbarsExclude="toolbarsExclude"
   />
 </template>
@@ -34,14 +34,18 @@ const onSave = (v, h) => {
 };
 // 上传图片
 const onUploadImg = async (files, callback) => {
-  await files.map(async (file) => {
-    let params = new FormData();
-    params.append("file", file);
-    const res = await UploadFile(params);
-    if (res.code == 200) {
-      callback(res.data.file.url);
-    }
-  });
+    const res = await Promise.all(
+    files.map(async (file) => {
+        return new Promise(async (rev, rej) => {
+        let params = new FormData();
+        params.append("file", file);
+        const res = await UploadFile(params)
+        .then((res) => rev(res))
+        .catch((error) => rej(error));
+        })
+
+    }));
+    callback(res.map((item) => item.data.file.url));
 };
 const toolbarsExclude = ["github"];
 </script>
