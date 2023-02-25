@@ -118,7 +118,11 @@
       ></note-editor>
     </div>
     <div id="editor" v-else-if="noteType == 2">
-      <note-md :value="value" v-on:inputData="inputData"></note-md>
+      <note-md
+        :value="value"
+        v-on:inputData="inputData"
+        v-on:updateData="updateData"
+      ></note-md>
     </div>
   </div>
   <!-- 历史记录-->
@@ -288,6 +292,10 @@ export default {
     // 输入值
     inputData: function (inputData) {
       this.content = inputData;
+    },
+    // 更新值
+    updateData: function (updateData) {
+      this.value = updateData;
     },
     // 保存或新建笔记
     async doUpdateNote() {
