@@ -1,6 +1,6 @@
 <template>
   <md-editor
-    v-model="valueEditor"
+    v-model="text"
     @onChange="onChange"
     @onSave="onSave"
     @onUploadImg="onUploadImg"
@@ -17,7 +17,13 @@ export default {
 import { ref } from "vue";
 import MdEditor from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
-import { getCurrentInstance, onMounted, onUnmounted, computed } from "vue";
+import {
+  getCurrentInstance,
+  onMounted,
+  onUnmounted,
+  computed,
+  watch,
+} from "vue";
 import { UploadFile } from "@/api/upload";
 // import TurndownService from "turndown"
 import TurndownService from "turndown";
@@ -30,7 +36,9 @@ const props = defineProps({
 const text = ref("");
 const valueEditor = computed({
   get: () => props.value,
-  set: (value) => {text.value = value;  emit("updateData",value)},
+  set: (value) => {
+    text.value = value;
+  },
 });
 var turndownService = new TurndownService({
   codeBlockStyle: "fenced",
@@ -51,17 +59,22 @@ turndownService.addRule("pre2Code", {
 const onPaste = (event) => {
   let data = event.clipboardData.getData("text/html");
   let htmlValue = turndownService.turndown(data);
-  let value = props.value;
+  let value = text.value;
   if (htmlValue) {
     setTimeout(() => {
       if (text.value.indexOf(value) == -1) {
         return;
       }
-      emit("updateData", value + "\n" + htmlValue);
+      text.value = value + "\n" + htmlValue;
     }, 100);
   }
 };
-
+watch(
+  () => props.value,
+  () => {
+    text.value = props.value;
+  }
+);
 onMounted(() => {
   window.addEventListener("paste", onPaste);
 });
