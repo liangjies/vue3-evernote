@@ -401,6 +401,7 @@ export default {
     },
     // 清空富媒体编辑框
     clearEditor(type) {
+      this.title = "";
       this.titleInput = "";
       this.notebookID = -1;
       if (type == 1 && this.noteType == 1) {
