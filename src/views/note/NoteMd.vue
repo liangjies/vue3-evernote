@@ -5,6 +5,7 @@
     @onSave="onSave"
     @onUploadImg="onUploadImg"
     :toolbarsExclude="toolbarsExclude"
+    :autoDetectCode="true"
   />
 </template>
 
@@ -25,7 +26,6 @@ import {
   watch,
 } from "vue";
 import { UploadFile } from "@/api/upload";
-// import TurndownService from "turndown"
 import TurndownService from "turndown";
 import { gfm, tables, strikethrough } from "turndown-plugin-gfm";
 const emit = defineEmits(["inputData", "updateData"]);
@@ -56,6 +56,18 @@ turndownService.addRule("pre2Code", {
     return "```js\n" + result + "\n```\n";
   },
 });
+const SetHtml =async (e)=> {
+    e.preventDefault();
+    const list = e.clipboardData.items;
+    for (let i = 0; i < list.length; i++) {
+        if (list[i].kind === 'string' && list[i].type.match('^text/html')) {
+            const h = await new Promise(t => list[i].getAsString(e => t(e)));
+            const ts = new TurndownService()
+            text.value = ts.turndown(h)
+        }
+    }
+}
+
 const onPaste = (event) => {
   let data = event.clipboardData.getData("text/html");
   let htmlValue = turndownService.turndown(data);
@@ -76,11 +88,11 @@ watch(
   }
 );
 onMounted(() => {
-  window.addEventListener("paste", onPaste);
+//   window.addEventListener("paste", SetHtml);
 });
 
 onUnmounted(() => {
-  window.removeEventListener("paste", onPaste);
+//   window.removeEventListener("paste", SetHtml);
 });
 // 改变内容
 const onChange = (v) => {

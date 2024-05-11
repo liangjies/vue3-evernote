@@ -5,7 +5,6 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import '@/router/permission'
 import router from '@/router/index'
-import "weui";
 // 统一导入el-icon图标
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 

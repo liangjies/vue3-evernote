@@ -1,6 +1,6 @@
 <template>
   <el-dialog v-model="dialogVisible" title="修改昵称" :before-close="closeDialog">
-    <el-input size="large" v-model="nickName"></el-input>
+    <el-input size="large" :value="nickName"></el-input>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogVisible = false">取消</el-button>
